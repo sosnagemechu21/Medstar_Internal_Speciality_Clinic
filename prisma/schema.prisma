@@ -1,0 +1,98 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String    @id @default(uuid())
+  phoneNumber  String    @unique
+  email        String?   @unique
+  passwordHash String
+  role         String    // patient, doctor, admin, staff
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  patient      Patient?
+  doctor       Doctor?
+}
+
+model Patient {
+  id          String        @id @default(uuid())
+  userId      String?       @unique
+  user        User?         @relation(fields: [userId], references: [id])
+  firstNameEn String
+  lastNameEn  String
+  firstNameAm String
+  lastNameAm  String
+  gender      String
+  dateOfBirth DateTime
+  createdAt   DateTime      @default(now())
+  appointments Appointment[]
+}
+
+model Specialty {
+  id            String   @id @default(uuid())
+  nameEn        String
+  nameAm        String
+  descriptionEn String?
+  descriptionAm String?
+  doctors       Doctor[]
+}
+
+model Doctor {
+  id              String           @id @default(uuid())
+  userId          String?          @unique
+  user            User?            @relation(fields: [userId], references: [id])
+  specialtyId     String
+  specialty       Specialty        @relation(fields: [specialtyId], references: [id])
+  firstNameEn     String
+  lastNameEn      String
+  firstNameAm     String
+  lastNameAm      String
+  bioEn           String?
+  bioAm           String?
+  isActive        Boolean          @default(true)
+  schedules       DoctorSchedule[]
+  appointments    Appointment[]
+}
+
+model DoctorSchedule {
+  id                  String   @id @default(uuid())
+  doctorId            String
+  doctor              Doctor   @relation(fields: [doctorId], references: [id])
+  dayOfWeek           Int      // 0 = Sunday, 1 = Monday, etc.
+  startTime           String   // e.g., "08:00"
+  endTime             String   // e.g., "17:00"
+  slotDurationMinutes Int      @default(20)
+}
+
+model Appointment {
+  id                 String   @id @default(uuid())
+  patientId          String
+  patient            Patient  @relation(fields: [patientId], references: [id])
+  doctorId           String
+  doctor             Doctor   @relation(fields: [doctorId], references: [id])
+  appointmentDate    DateTime
+  startTime          String
+  endTime            String
+  status             String   // pending, confirmed, rescheduled, cancelled, completed
+  cancellationReason String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  payment            Payment?
+}
+
+model Payment {
+  id                String      @id @default(uuid())
+  appointmentId     String      @unique
+  appointment       Appointment @relation(fields: [appointmentId], references: [id])
+  amount            Float
+  currency          String      @default("ETB")
+  paymentMethod     String      // Chapa, Telebirr, CBE Birr, Card
+  status            String      // pending, initiated, completed, failed, refunded
+  providerReference String?     @unique
+  paidAt            DateTime?
+  createdAt         DateTime    @default(now())
+}
