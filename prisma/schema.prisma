@@ -1,5 +1,6 @@
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -29,6 +30,7 @@ model Patient {
   gender      String
   dateOfBirth DateTime
   createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   appointments Appointment[]
 }
 
@@ -54,6 +56,9 @@ model Doctor {
   bioEn           String?
   bioAm           String?
   isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
   schedules       DoctorSchedule[]
   appointments    Appointment[]
 }
@@ -82,6 +87,10 @@ model Appointment {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   payment            Payment?
+
+  @@index([doctorId])
+  @@index([patientId])
+  @@index([appointmentDate])
 }
 
 model Payment {
@@ -95,4 +104,5 @@ model Payment {
   providerReference String?     @unique
   paidAt            DateTime?
   createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 }
