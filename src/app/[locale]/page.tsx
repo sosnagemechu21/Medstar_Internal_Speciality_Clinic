@@ -1,114 +1,209 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState, useRef, useCallback } from "react"
-import { Navbar } from "@/components/ui/navbar"
-import { Container } from "@/components/ui/container"
-import { ProtectedLink } from "@/components/auth/protected-link"
+import Link from "next/link";
+import { useState, useRef, useCallback } from "react";
+import { Navbar } from "@/components/ui/navbar";
+import { Container } from "@/components/ui/container";
+import { ProtectedLink } from "@/components/auth/protected-link";
 
 /* ─── Specialty data ───────────────────────────────────────────────────── */
 const specialties = [
   {
-    id: "cardiology", name: "Cardiology", doctors: 8,
+    id: "cardiology",
+    name: "Cardiology",
+    doctors: 8,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-8 h-8"
+      >
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
       </svg>
     ),
   },
   {
-    id: "neurology", name: "Neurology", doctors: 5,
+    id: "neurology",
+    name: "Neurology",
+    doctors: 5,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
-        <circle cx="12" cy="12" r="3" /><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-8 h-8"
+      >
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
       </svg>
     ),
   },
   {
-    id: "ophthalmology", name: "Ophthalmology", doctors: 6,
+    id: "ophthalmology",
+    name: "Ophthalmology",
+    doctors: 6,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-8 h-8"
+      >
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
       </svg>
     ),
   },
   {
-    id: "orthopedics", name: "Orthopedics", doctors: 7,
+    id: "orthopedics",
+    name: "Orthopedics",
+    doctors: 7,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-8 h-8"
+      >
         <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.5 2.5-1 3.5L17 22H7l2-12.5C8.5 8.5 8 7.5 8 6a4 4 0 0 1 4-4z" />
       </svg>
     ),
   },
   {
-    id: "pediatrics", name: "Pediatrics", doctors: 9,
+    id: "pediatrics",
+    name: "Pediatrics",
+    doctors: 9,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-8 h-8"
+      >
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
         <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
       </svg>
     ),
   },
   {
-    id: "general", name: "General Medicine", doctors: 12,
+    id: "general",
+    name: "General Medicine",
+    doctors: 12,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-8 h-8"
+      >
         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
       </svg>
     ),
   },
-]
+];
 
 /* ─── Stat strip ───────────────────────────────────────────────────────── */
 const heroStats = [
-  { value: "80+",  label: "SPECIALISTS" },
-  { value: "24",   label: "DEPARTMENTS" },
+  { value: "80+", label: "SPECIALISTS" },
+  { value: "24", label: "DEPARTMENTS" },
   { value: "45K+", label: "PATIENTS / YR" },
-  { value: "98%",  label: "SATISFACTION" },
-]
+  { value: "98%", label: "SATISFACTION" },
+];
 
 /* ─── Features ─────────────────────────────────────────────────────────── */
 const features = [
   {
-    id: "booking", title: "Instant Booking",
+    id: "booking",
+    title: "Instant Booking",
     body: "Choose your specialist, pick a date from our live calendar, and confirm in under 2 minutes.",
-    cta: "Book Now", href: "/book",
+    cta: "Book Now",
+    href: "/book",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-        <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-6 h-6"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
       </svg>
     ),
   },
   {
-    id: "portal", title: "Patient Portal",
+    id: "portal",
+    title: "Patient Portal",
     body: "View upcoming appointments, access medical records, and manage your health journey.",
-    cta: "Go to Portal", href: "/portal",
+    cta: "Go to Portal",
+    href: "/portal",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-6 h-6"
+      >
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
     ),
   },
   {
-    id: "payments", title: "Secure Payments",
+    id: "payments",
+    title: "Secure Payments",
     body: "Pay via Chapa or Telebirr in ETB. Instant receipts and full payment history.",
-    cta: "Learn More", href: "/payments",
+    cta: "Learn More",
+    href: "/payments",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-6 h-6"
+      >
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
       </svg>
     ),
   },
-]
+];
 
 /* ─── Metrics ──────────────────────────────────────────────────────────── */
 const metrics = [
-  { value: "80+",  label: "Specialist Doctors",  sub: "Across 24 departments" },
-  { value: "45K+", label: "Patients Annually",   sub: "Since 2018" },
-  { value: "98%",  label: "Satisfaction Rate",   sub: "Verified reviews" },
-  { value: "24/7", label: "Emergency Care",       sub: "Always here for you" },
-]
+  { value: "80+", label: "Specialist Doctors", sub: "Across 24 departments" },
+  { value: "45K+", label: "Patients Annually", sub: "Since 2018" },
+  { value: "98%", label: "Satisfaction Rate", sub: "Verified reviews" },
+  { value: "24/7", label: "Emergency Care", sub: "Always here for you" },
+];
 
 /* ══════════════════════════════════════════════════════════════════════════
    Cursor-spotlight hero — tracks mouse position and paints a radial
@@ -116,41 +211,46 @@ const metrics = [
    blue overlay, matching the effect visible in the reference mockup.
    ══════════════════════════════════════════════════════════════════════════ */
 function HeroSection() {
-  const heroRef = useRef<HTMLElement>(null)
-  const spotRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLElement>(null);
+  const spotRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   /* Track pointer inside the hero only */
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    const el = heroRef.current
-    const spot = spotRef.current
-    if (!el || !spot) return
-    const rect = el.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    spot.style.background = `radial-gradient(600px circle at ${x}px ${y}px,
-      rgba(255,255,255,0.07) 0%,
-      rgba(30,58,138,0.18) 40%,
-      transparent 70%)`
-  }, [])
+    const el = heroRef.current;
+    const spot = spotRef.current;
+    const grid = gridRef.current;
+    if (!el || !spot) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    spot.style.setProperty('--mouse-x', `${x}px`);
+    spot.style.setProperty('--mouse-y', `${y}px`);
 
-  const handleMouseLeave = useCallback(() => {
-    if (spotRef.current) spotRef.current.style.background = "transparent"
-  }, [])
+    if (grid) {
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      // Parallax tilt based on mouse to enhance the cloth feel
+      const rotateX = ((y - centerY) / centerY) * -8;
+      const rotateY = ((x - centerX) / centerX) * 8;
+      grid.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+    }
+  }, []);
 
   return (
     <section
       ref={heroRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative min-h-[92vh] flex flex-col justify-between overflow-hidden"
+      className="group relative min-h-[92vh] flex flex-col justify-between overflow-hidden"
       style={{ background: "#0B1F6B" }}
     >
       {/* ── Photo layer — more visible to match reference ── */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('/clinic_lobby_bg.png')",
-          opacity: 0.42,
+          backgroundImage: "url('../medstarbg.jpg')",
+          opacity: 0.90,
           mixBlendMode: "luminosity",
         }}
         aria-hidden="true"
@@ -159,31 +259,69 @@ function HeroSection() {
       {/* ── Navy overlay so photo doesn't overpower ── */}
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(120deg, rgba(11,31,107,0.82) 50%, rgba(11,31,107,0.55) 100%)" }}
-        aria-hidden="true"
-      />
-
-      {/* ── Dot grid ── */}
-      <div
-        className="absolute inset-0 opacity-[0.07]"
         style={{
-          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px)",
-          backgroundSize: "36px 36px",
+          background:
+            "linear-gradient(120deg, rgba(11,31,107,0.82) 50%, rgba(11,31,107,0.55) 100%)",
         }}
         aria-hidden="true"
       />
 
-      {/* ── Cursor spotlight overlay (updated on mousemove) ── */}
+      {/* ── Base faint dot grid (always visible) ── */}
       <div
-        ref={spotRef}
-        className="pointer-events-none absolute inset-0 z-10 transition-none"
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+          backgroundPosition: "40px 40px",
+        }}
         aria-hidden="true"
       />
+
+      {/* ── SVG Filter for Cloth Wave ── */}
+      <svg width="0" height="0" className="absolute">
+        <filter id="cloth-wave">
+          <feTurbulence type="fractalNoise" baseFrequency="0.005" numOctaves="2" result="noise">
+            <animate attributeName="baseFrequency" values="0.005;0.008;0.005" dur="12s" repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="35" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+
+      {/* ── Cursor spotlight wrapper ── */}
+      <div
+        ref={spotRef}
+        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          WebkitMaskImage: "radial-gradient(450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%)",
+          maskImage: "radial-gradient(450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%)",
+        }}
+        aria-hidden="true"
+      >
+        {/* ── The animated/tilted fabric grid ── */}
+        <div
+          ref={gridRef}
+          className="absolute inset-[-10%] w-[120%] h-[120%]"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at center, rgba(255,255,255,1) 2px, transparent 2px),
+              linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)
+            `,
+            backgroundSize: "80px 80px",
+            backgroundPosition: "40px 40px, 0 0, 0 0",
+            transition: "transform 0.15s ease-out",
+            filter: "url(#cloth-wave)",
+          }}
+        />
+      </div>
 
       {/* ── Red glow accent top-right ── */}
       <div
         className="pointer-events-none absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full opacity-10"
-        style={{ background: "radial-gradient(circle, #CC2936 0%, transparent 70%)" }}
+        style={{
+          background: "radial-gradient(circle, #CC2936 0%, transparent 70%)",
+        }}
         aria-hidden="true"
       />
 
@@ -204,7 +342,10 @@ function HeroSection() {
           </span>
           <em
             className="block text-5xl md:text-6xl lg:text-[68px] font-bold not-italic text-white"
-            style={{ fontFamily: "Merriweather, Georgia, serif", fontStyle: "italic" }}
+            style={{
+              fontFamily: "Merriweather, Georgia, serif",
+              fontStyle: "italic",
+            }}
           >
             Our Speciality
           </em>
@@ -212,7 +353,8 @@ function HeroSection() {
 
         {/* Sub */}
         <p className="mt-6 max-w-sm text-white/65 text-base leading-relaxed">
-          World-class specialists. Compassionate care. A clinic built entirely around you.
+          World-class specialists. Compassionate care. A clinic built entirely
+          around you.
         </p>
 
         {/* CTA buttons */}
@@ -222,7 +364,14 @@ function HeroSection() {
             id="hero-book-btn"
             className="group flex items-center gap-2 rounded-full bg-ms-red px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:bg-ms-red-dark hover:scale-[1.04] hover:shadow-ms-red/40 hover:shadow-xl active:scale-100"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className="w-4 h-4 transition-transform group-hover:rotate-6">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              className="w-4 h-4 transition-transform group-hover:rotate-6"
+            >
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
               <line x1="8" y1="2" x2="8" y2="6" />
@@ -236,7 +385,14 @@ function HeroSection() {
             className="group flex items-center gap-2 rounded-full border border-white/40 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
           >
             Patient Portal
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4 transition-transform group-hover:translate-x-1">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              className="w-4 h-4 transition-transform group-hover:translate-x-1"
+            >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </ProtectedLink>
@@ -248,7 +404,10 @@ function HeroSection() {
         <Container>
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
             {heroStats.map((s) => (
-              <div key={s.label} className="group py-5 px-6 text-white transition-colors hover:bg-white/5 cursor-default">
+              <div
+                key={s.label}
+                className="group py-5 px-6 text-white transition-colors hover:bg-white/5 cursor-default"
+              >
                 <p className="text-3xl font-black tracking-tight group-hover:text-ms-red transition-colors duration-200">
                   {s.value}
                 </p>
@@ -262,36 +421,42 @@ function HeroSection() {
       </div>
 
       {/* Scroll hint */}
-      <div className="pointer-events-none absolute bottom-24 right-8 hidden md:flex flex-col items-center gap-2 text-white/25 text-[10px] tracking-[0.3em] uppercase rotate-90" aria-hidden="true">
+      <div
+        className="pointer-events-none absolute bottom-24 right-8 hidden md:flex flex-col items-center gap-2 text-white/25 text-[10px] tracking-[0.3em] uppercase rotate-90"
+        aria-hidden="true"
+      >
         scroll
       </div>
     </section>
-  )
+  );
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
    Specialty card with magnetic hover: translates toward the cursor inside
    the card bounds.
    ══════════════════════════════════════════════════════════════════════════ */
-function SpecialtyCard({ sp }: { sp: typeof specialties[0] }) {
-  const cardRef = useRef<HTMLAnchorElement>(null)
+function SpecialtyCard({ sp }: { sp: (typeof specialties)[0] }) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-    const card = cardRef.current
-    if (!card) return
-    const rect = card.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-    const dx = (e.clientX - cx) / (rect.width / 2)
-    const dy = (e.clientY - cy) / (rect.height / 2)
-    card.style.transform = `translate(${dx * 5}px, ${dy * 5}px) scale(1.04)`
-  }, [])
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      const card = cardRef.current;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) / (rect.width / 2);
+      const dy = (e.clientY - cy) / (rect.height / 2);
+      card.style.transform = `translate(${dx * 5}px, ${dy * 5}px) scale(1.04)`;
+    },
+    [],
+  );
 
   const handleMouseLeave = useCallback(() => {
-    const card = cardRef.current
-    if (!card) return
-    card.style.transform = "translate(0,0) scale(1)"
-  }, [])
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.transform = "translate(0,0) scale(1)";
+  }, []);
 
   return (
     <Link
@@ -304,7 +469,11 @@ function SpecialtyCard({ sp }: { sp: typeof specialties[0] }) {
       className="group flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm
         hover:shadow-lg hover:border-ms-blue/40 hover:shadow-ms-blue/10
         transition-[box-shadow,border-color] duration-300"
-      style={{ willChange: "transform", transition: "transform 0.15s ease, box-shadow 0.3s ease, border-color 0.3s ease" }}
+      style={{
+        willChange: "transform",
+        transition:
+          "transform 0.15s ease, box-shadow 0.3s ease, border-color 0.3s ease",
+      }}
     >
       <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-50 text-ms-blue/60 group-hover:bg-ms-blue group-hover:text-white transition-all duration-300">
         {sp.icon}
@@ -314,27 +483,29 @@ function SpecialtyCard({ sp }: { sp: typeof specialties[0] }) {
         <p className="text-xs text-slate-400 mt-0.5">{sp.doctors} doctors</p>
       </div>
     </Link>
-  )
+  );
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
    Feature card with subtle tilt-on-hover (CSS perspective)
    ══════════════════════════════════════════════════════════════════════════ */
-function FeatureCard({ f }: { f: typeof features[0] }) {
-  const ref = useRef<HTMLDivElement>(null)
+function FeatureCard({ f }: { f: (typeof features)[0] }) {
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -14
-    el.style.transform = `perspective(600px) rotateX(${y}deg) rotateY(${x}deg) scale(1.02)`
-  }, [])
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -14;
+    el.style.transform = `perspective(600px) rotateX(${y}deg) rotateY(${x}deg) scale(1.02)`;
+  }, []);
 
   const handleMouseLeave = useCallback(() => {
-    if (ref.current) ref.current.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)"
-  }, [])
+    if (ref.current)
+      ref.current.style.transform =
+        "perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)";
+  }, []);
 
   return (
     <div
@@ -355,24 +526,31 @@ function FeatureCard({ f }: { f: typeof features[0] }) {
         className="group/link inline-flex items-center gap-1.5 text-sm font-semibold text-ms-red hover:underline underline-offset-4"
       >
         {f.cta}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1"
+        >
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
       </ProtectedLink>
     </div>
-  )
+  );
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
    Home Page
    ══════════════════════════════════════════════════════════════════════════ */
 export default function HomePage() {
-  const [tab, setTab] = useState<"specialities" | "doctors">("specialities")
-  const [search, setSearch] = useState("")
+  const [tab, setTab] = useState<"specialities" | "doctors">("specialities");
+  const [search, setSearch] = useState("");
 
   const filtered = specialties.filter((s) =>
-    s.name.toLowerCase().includes(search.toLowerCase())
-  )
+    s.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <>
@@ -386,8 +564,12 @@ export default function HomePage() {
         <section className="bg-[#F4F6FB] py-20">
           <Container>
             <div className="mb-10 text-center">
-              <h2 className="text-3xl font-bold text-ms-blue md:text-4xl">Find the Right Care</h2>
-              <p className="mt-2 text-sm text-slate-500">Browse specialities or search for a specific doctor.</p>
+              <h2 className="text-3xl font-bold text-ms-blue md:text-4xl">
+                Find the Right Care
+              </h2>
+              <p className="mt-2 text-sm text-slate-500">
+                Browse specialities or search for a specific doctor.
+              </p>
             </div>
 
             {/* Tabs + Search */}
@@ -410,9 +592,17 @@ export default function HomePage() {
               </div>
 
               <div className="relative w-full sm:w-64">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true">
-                  <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+                  aria-hidden="true"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
                 </svg>
                 <input
                   id="search-speciality"
@@ -428,9 +618,13 @@ export default function HomePage() {
             {/* Cards */}
             {tab === "specialities" && (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                {filtered.map((sp) => <SpecialtyCard key={sp.id} sp={sp} />)}
+                {filtered.map((sp) => (
+                  <SpecialtyCard key={sp.id} sp={sp} />
+                ))}
                 {filtered.length === 0 && (
-                  <p className="col-span-6 py-12 text-center text-sm text-slate-400">No speciality matches "{search}".</p>
+                  <p className="col-span-6 py-12 text-center text-sm text-slate-400">
+                    No speciality matches "{search}".
+                  </p>
                 )}
               </div>
             )}
@@ -447,13 +641,18 @@ export default function HomePage() {
         <section className="bg-ms-blue py-20">
           <Container>
             <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold text-white md:text-4xl">Everything You Need, In One Place</h2>
+              <h2 className="text-3xl font-bold text-white md:text-4xl">
+                Everything You Need, In One Place
+              </h2>
               <p className="mt-3 mx-auto max-w-lg text-sm text-white/55 leading-relaxed">
-                From booking to billing — Medstar's digital platform handles it all, securely and simply.
+                From booking to billing — Medstar's digital platform handles it
+                all, securely and simply.
               </p>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
-              {features.map((f) => <FeatureCard key={f.id} f={f} />)}
+              {features.map((f) => (
+                <FeatureCard key={f.id} f={f} />
+              ))}
             </div>
           </Container>
         </section>
@@ -470,7 +669,9 @@ export default function HomePage() {
                   <p className="text-4xl font-black text-ms-blue group-hover:text-ms-red transition-colors duration-300">
                     {m.value}
                   </p>
-                  <p className="mt-2 text-sm font-semibold text-slate-700">{m.label}</p>
+                  <p className="mt-2 text-sm font-semibold text-slate-700">
+                    {m.label}
+                  </p>
                   <p className="mt-0.5 text-xs text-slate-400">{m.sub}</p>
                 </div>
               ))}
@@ -483,8 +684,16 @@ export default function HomePage() {
           <Container>
             <div className="text-center">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-1.5 text-xs font-semibold text-green-400 uppercase tracking-widest">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-3.5 h-3.5">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className="w-3.5 h-3.5"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
                 Appointments available today
               </div>
@@ -493,7 +702,8 @@ export default function HomePage() {
                 Ready to take charge of your health?
               </h2>
               <p className="mx-auto mt-4 max-w-md text-sm text-white/45 leading-relaxed">
-                Book with a specialist in under 2 minutes. No waiting rooms, no paperwork — just care.
+                Book with a specialist in under 2 minutes. No waiting rooms, no
+                paperwork — just care.
               </p>
 
               <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -502,9 +712,18 @@ export default function HomePage() {
                   id="cta-book-btn"
                   className="group flex items-center gap-2 rounded-full bg-ms-red px-8 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:bg-ms-red-dark hover:scale-[1.04] hover:shadow-ms-red/40 hover:shadow-xl active:scale-100"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className="w-4 h-4 transition-transform group-hover:rotate-6">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    className="w-4 h-4 transition-transform group-hover:rotate-6"
+                  >
                     <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
                   Book Appointment
                 </ProtectedLink>
@@ -514,7 +733,14 @@ export default function HomePage() {
                   className="group flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
                 >
                   Sign In
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4 transition-transform group-hover:translate-x-1">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  >
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </ProtectedLink>
@@ -530,7 +756,11 @@ export default function HomePage() {
               <p>© 2026 Medstar Specialty Clinic. All rights reserved.</p>
               <div className="flex gap-6">
                 {["Privacy", "Terms", "Contact"].map((l) => (
-                  <Link key={l} href={`/${l.toLowerCase()}`} className="hover:text-white/80 transition-colors">
+                  <Link
+                    key={l}
+                    href={`/${l.toLowerCase()}`}
+                    className="hover:text-white/80 transition-colors"
+                  >
                     {l}
                   </Link>
                 ))}
@@ -540,5 +770,5 @@ export default function HomePage() {
         </footer>
       </main>
     </>
-  )
+  );
 }
