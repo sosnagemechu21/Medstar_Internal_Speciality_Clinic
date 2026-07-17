@@ -5,8 +5,8 @@ import jwt from 'jsonwebtoken';
 export class LoginUser {
   constructor(private userRepo: UserRepository) {}
 
-  async execute(phoneNumber: string, password: string) {
-    const user = await this.userRepo.findByPhoneNumber(phoneNumber);
+  async execute(email: string, password: string) {
+    const user = await this.userRepo.findByEmail(email);
     if (!user) {
       throw new Error('INVALID_CREDENTIALS');
     }
@@ -18,7 +18,6 @@ export class LoginUser {
 
     const jwtSecret = process.env.JWT_SECRET || 'fallback_secret_key_change_this';
     
-    // Package session claims securely
     const token = jwt.sign(
       { 
         userId: user.id, 
@@ -30,6 +29,21 @@ export class LoginUser {
       { expiresIn: '7d' }
     );
 
-    return { token, user: { id: user.id, phoneNumber: user.phoneNumber, role: user.role } };
+    const displayName = user.patient
+      ? user.patient.firstNameEn
+      : user.doctor
+        ? user.doctor.firstNameEn
+        : email.split('@')[0];
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        displayName,
+        patientId: user.patient?.id ?? null,
+      },
+    };
   }
 }

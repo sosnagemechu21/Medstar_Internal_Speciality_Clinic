@@ -5,16 +5,16 @@ import { LoginUser } from '@/core/use-cases/LoginUser';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { phoneNumber, password } = body;
+    const { email, password } = body;
 
-    if (!phoneNumber || !password) {
+    if (!email || !password) {
       return NextResponse.json({ error: 'Missing credentials identification' }, { status: 400 });
     }
 
     const userRepo = new UserRepository();
     const loginUserUseCase = new LoginUser(userRepo);
 
-    const { token, user } = await loginUserUseCase.execute(phoneNumber, password);
+    const { token, user } = await loginUserUseCase.execute(email, password);
     const response = NextResponse.json({ success: true, user });
 
     // Inject token via an HTTP-Only secure cookie to avoid XSS vulnerabilities
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error: any) {
     if (error.message === 'INVALID_CREDENTIALS') {
-      return NextResponse.json({ error: 'Invalid phone number or password credentials.' }, { status: 401 });
+      return NextResponse.json({ error: 'Invalid email or password credentials.' }, { status: 401 });
     }
     return NextResponse.json({ error: 'Authentication processing failure' }, { status: 500 });
   }

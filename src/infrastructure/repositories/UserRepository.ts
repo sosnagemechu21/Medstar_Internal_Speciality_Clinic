@@ -9,6 +9,13 @@ export class UserRepository {
     });
   }
 
+  async findByEmail(email: string) {
+    return await prisma.user.findUnique({
+      where: { email },
+      include: { patient: true, doctor: true },
+    });
+  }
+
   async registerPatient(user: UserEntity, profile: PatientProfileInput) {
     // Perform an atomic registration transaction using Prisma
     return await prisma.$transaction(async (tx) => {

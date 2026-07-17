@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useState, useRef, useCallback } from "react"
 import { Navbar } from "@/components/ui/navbar"
 import { Container } from "@/components/ui/container"
+import { ProtectedLink } from "@/components/auth/protected-link"
 
 /* ─── Specialty data ───────────────────────────────────────────────────── */
 const specialties = [
@@ -216,7 +217,7 @@ function HeroSection() {
 
         {/* CTA buttons */}
         <div className="mt-8 flex flex-wrap gap-4">
-          <Link
+          <ProtectedLink
             href="/book"
             id="hero-book-btn"
             className="group flex items-center gap-2 rounded-full bg-ms-red px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:bg-ms-red-dark hover:scale-[1.04] hover:shadow-ms-red/40 hover:shadow-xl active:scale-100"
@@ -228,8 +229,8 @@ function HeroSection() {
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
             Book Appointment
-          </Link>
-          <Link
+          </ProtectedLink>
+          <ProtectedLink
             href="/portal"
             id="hero-portal-btn"
             className="group flex items-center gap-2 rounded-full border border-white/40 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
@@ -238,7 +239,7 @@ function HeroSection() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4 transition-transform group-hover:translate-x-1">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-          </Link>
+          </ProtectedLink>
         </div>
       </Container>
 
@@ -349,7 +350,7 @@ function FeatureCard({ f }: { f: typeof features[0] }) {
       </div>
       <h3 className="text-lg font-bold text-white mb-2">{f.title}</h3>
       <p className="text-sm text-white/55 leading-relaxed mb-5">{f.body}</p>
-      <Link
+      <ProtectedLink
         href={f.href}
         className="group/link inline-flex items-center gap-1.5 text-sm font-semibold text-ms-red hover:underline underline-offset-4"
       >
@@ -357,7 +358,7 @@ function FeatureCard({ f }: { f: typeof features[0] }) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1">
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
-      </Link>
+      </ProtectedLink>
     </div>
   )
 }
@@ -496,7 +497,7 @@ export default function HomePage() {
               </p>
 
               <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <Link
+                <ProtectedLink
                   href="/book"
                   id="cta-book-btn"
                   className="group flex items-center gap-2 rounded-full bg-ms-red px-8 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:bg-ms-red-dark hover:scale-[1.04] hover:shadow-ms-red/40 hover:shadow-xl active:scale-100"
@@ -506,8 +507,8 @@ export default function HomePage() {
                     <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
                   Book Appointment
-                </Link>
-                <Link
+                </ProtectedLink>
+                <ProtectedLink
                   href="/portal"
                   id="cta-portal-btn"
                   className="group flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
@@ -516,7 +517,7 @@ export default function HomePage() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4 transition-transform group-hover:translate-x-1">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
-                </Link>
+                </ProtectedLink>
               </div>
             </div>
           </Container>

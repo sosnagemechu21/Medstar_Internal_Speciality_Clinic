@@ -1,19 +1,5 @@
-import { Inter, Merriweather } from "next/font/google"
 import "../../app/globals.css"
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-})
-
-const merriweather = Merriweather({
-  subsets: ["latin"],
-  weight: ["700"],
-  style: ["normal", "italic"],
-  variable: "--font-heading",
-  display: "swap",
-})
+import { AuthProvider } from "@/providers/auth-provider"
 
 export default async function LocaleLayout({
   children,
@@ -25,7 +11,7 @@ export default async function LocaleLayout({
   const { locale } = await params
 
   return (
-    <html lang={locale} className={`${inter.variable} ${merriweather.variable}`}>
+    <html lang={locale}>
       <head>
         <title>Medstar Specialty Clinic — Your Health Matters</title>
         <meta
@@ -35,7 +21,7 @@ export default async function LocaleLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className="font-sans bg-background text-foreground antialiased">
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   )
