@@ -1,7 +1,7 @@
 export interface UserEntity {
   id?: string;
   phoneNumber: string;
-  email?: string | null;
+  email: string;
   passwordHash: string;
   role: 'patient' | 'doctor' | 'admin' | 'staff';
 }

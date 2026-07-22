@@ -2,13 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DoctorRepository } from '@/infrastructure/repositories/DoctorRepository';
 import { CalculateAvailability } from '@/core/use-cases/CalculateAvailability';
 
-// 🛑 Ensure it is named exactly "GET" in uppercase
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const doctorId = params.id;
+    const { id: doctorId } = await params;
     const { searchParams } = new URL(request.url);
     const dateParam = searchParams.get('date');
 

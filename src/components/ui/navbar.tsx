@@ -1,37 +1,51 @@
 "use client";
 
 import Link from "next/link";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Logo } from "@/components/ui/logo";
 import { Container } from "@/components/ui/container";
 import { ProtectedLink } from "@/components/auth/protected-link";
+import { resolveLocale } from "@/lib/i18n-utils";
+import { getLocalizedPath, swapLocaleInPathname } from "@/lib/locale-routing";
 import { useAuth } from "@/providers/auth-provider";
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const params = useParams<{ locale?: string }>();
+  const pathname = usePathname();
+  const router = useRouter();
   const { user, isAuthenticated, loading, logout } = useAuth();
+  const locale = resolveLocale(typeof params.locale === "string" ? params.locale : undefined);
+  const nextLocale = locale === "en" ? "am" : "en";
+
+  const localize = (href: string) => getLocalizedPath(locale, href);
 
   const handleLogout = async () => {
     await logout();
     setProfileOpen(false);
-    window.location.href = "/";
+    window.location.href = localize("/");
+  };
+
+  const handleLocaleToggle = () => {
+    router.push(swapLocaleInPathname(pathname, nextLocale));
   };
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-[#0B1F6B] shadow-lg">
       <Container>
         <div className="flex h-16 items-center justify-between gap-6">
-          <Logo size="md" />
+          <Logo size="md" href={localize("/")} />
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
-            <Link href="/doctors" className="hover:text-white transition-colors">
+            <Link href={localize("/doctors")} className="hover:text-white transition-colors">
               Find a Doctor
             </Link>
-            <Link href="/departments" className="hover:text-white transition-colors">
+            <Link href={localize("/departments")} className="hover:text-white transition-colors">
               Departments
             </Link>
-            <ProtectedLink href="/portal" className="hover:text-white transition-colors">
+            <ProtectedLink href={localize("/portal")} className="hover:text-white transition-colors">
               My Portal
             </ProtectedLink>
           </nav>
@@ -39,9 +53,10 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <button
               aria-label="Toggle language"
+              onClick={handleLocaleToggle}
               className="flex items-center gap-1.5 rounded-full border border-white/30 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/10 transition-colors"
             >
-              EN&nbsp;<span className="text-white/40">|</span>&nbsp;አማ
+              {locale === "en" ? "EN" : "አማ"}&nbsp;<span className="text-white/40">|</span>&nbsp;{locale === "en" ? "አማ" : "EN"}
             </button>
 
             {!loading && isAuthenticated && user ? (
@@ -60,12 +75,20 @@ export function Navbar() {
                 </button>
                 {profileOpen && (
                   <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white shadow-xl py-1 text-sm z-50">
-                    <ProtectedLink href="/portal" className="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
+                    <Link
+                      href={localize("/portal")}
+                      className="block px-4 py-2.5 text-slate-700 hover:bg-slate-50"
+                      onClick={() => setProfileOpen(false)}
+                    >
                       My Portal
-                    </ProtectedLink>
-                    <ProtectedLink href="/book" className="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
+                    </Link>
+                    <Link
+                      href={localize("/book")}
+                      className="block px-4 py-2.5 text-slate-700 hover:bg-slate-50"
+                      onClick={() => setProfileOpen(false)}
+                    >
                       Book Appointment
-                    </ProtectedLink>
+                    </Link>
                     <hr className="my-1 border-slate-100" />
                     <button
                       onClick={handleLogout}
@@ -78,7 +101,7 @@ export function Navbar() {
               </div>
             ) : (
               <Link
-                href="/login"
+                href={localize("/login")}
                 className="flex items-center gap-1.5 rounded-full border border-white/30 px-4 py-1.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
               >
                 Login
@@ -86,7 +109,7 @@ export function Navbar() {
             )}
 
             <ProtectedLink
-              href="/book"
+              href={localize("/book")}
               className="rounded-full bg-ms-red px-5 py-2 text-sm font-bold text-white shadow-md hover:bg-ms-red-dark transition-colors"
             >
               Book Appointment
@@ -120,18 +143,25 @@ export function Navbar() {
         <div className="md:hidden bg-[#0B1F6B] border-t border-white/10 py-4">
           <Container>
             <nav className="flex flex-col gap-3 text-sm font-medium text-white/80">
-              <Link href="/doctors" onClick={() => setMenuOpen(false)} className="hover:text-white">Find a Doctor</Link>
-              <Link href="/departments" onClick={() => setMenuOpen(false)} className="hover:text-white">Departments</Link>
-              <ProtectedLink href="/portal" onClick={() => setMenuOpen(false)} className="hover:text-white">My Portal</ProtectedLink>
+              <Link href={localize("/doctors")} onClick={() => setMenuOpen(false)} className="hover:text-white">Find a Doctor</Link>
+              <Link href={localize("/departments")} onClick={() => setMenuOpen(false)} className="hover:text-white">Departments</Link>
+              <ProtectedLink href={localize("/portal")} onClick={() => setMenuOpen(false)} className="hover:text-white">My Portal</ProtectedLink>
               <hr className="border-white/10 my-1" />
               {!loading && isAuthenticated ? (
                 <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="text-left hover:text-white">
                   Sign Out ({user?.displayName})
                 </button>
               ) : (
-                <Link href="/login" onClick={() => setMenuOpen(false)} className="hover:text-white">Login</Link>
+                <Link href={localize("/login")} onClick={() => setMenuOpen(false)} className="hover:text-white">Login</Link>
               )}
-              <ProtectedLink href="/book" onClick={() => setMenuOpen(false)} className="inline-block rounded-full bg-ms-red px-5 py-2 text-center text-sm font-bold text-white">
+              <button
+                type="button"
+                onClick={() => { handleLocaleToggle(); setMenuOpen(false); }}
+                className="text-left hover:text-white"
+              >
+                Switch to {nextLocale === "am" ? "Amharic" : "English"}
+              </button>
+              <ProtectedLink href={localize("/book")} onClick={() => setMenuOpen(false)} className="inline-block rounded-full bg-ms-red px-5 py-2 text-center text-sm font-bold text-white">
                 Book Appointment
               </ProtectedLink>
             </nav>

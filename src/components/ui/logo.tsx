@@ -7,6 +7,7 @@ interface LogoProps {
   size?: "sm" | "md" | "lg"
   /** Set to true when logo sits on a light/white background */
   dark?: boolean
+  href?: string
 }
 
 const dimensions = {
@@ -15,12 +16,12 @@ const dimensions = {
   lg: { width: 350, height: 110 },
 }
 
-export function Logo({ className, size = "md", dark = false }: LogoProps) {
+export function Logo({ className, size = "md", dark = false, href = "/" }: LogoProps) {
   const { width, height } = dimensions[size]
 
   return (
     <Link
-      href="/"
+      href={href}
       aria-label="Medstar Specialty Clinic — home"
       className={cn("inline-flex shrink-0 items-center", className)}
     >

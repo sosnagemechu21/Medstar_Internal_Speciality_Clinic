@@ -31,12 +31,33 @@ export class AppointmentRepository {
   }
 
   async update(id: string, data: Partial<AppointmentEntity>) {
-    return await prisma.appointment.update({
-      where: { id },
-      data: {
-        ...(data.status && { status: data.status }),
-        ...(data.cancellationReason !== undefined && { cancellationReason: data.cancellationReason }),
-      },
+    return await prisma.$transaction(async (tx) => {
+      const updated = await tx.appointment.update({
+        where: { id },
+        data: {
+          ...(data.status && { status: data.status }),
+          ...(data.cancellationReason !== undefined && { cancellationReason: data.cancellationReason }),
+        },
+      });
+
+      if (data.status === 'cancelled') {
+        await tx.timeSlot.updateMany({
+          where: { appointmentId: id },
+          data: {
+            status: 'released',
+            appointmentId: null,
+          },
+        });
+      } else if (data.status === 'confirmed') {
+        await tx.timeSlot.updateMany({
+          where: { appointmentId: id },
+          data: {
+            status: 'booked',
+          },
+        });
+      }
+
+      return updated;
     });
   }
 }

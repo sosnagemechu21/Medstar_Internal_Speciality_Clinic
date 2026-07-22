@@ -42,14 +42,14 @@ async function main() {
     },
   });
 
-  // 3. Create dummy User accounts and profiles for Doctors
   const doctorUser1 = await prisma.user.create({
-    data: {
-      phoneNumber: '+251911111111',
-      passwordHash: '$2b$10$UnhashedPlaceholderChangeInProduction', // Use a real hash framework later
-      role: 'doctor',
-    },
-  });
+      data: {
+        email: 'doctor1@medstar.com', // <-- Added required email field here
+        phoneNumber: '+251911111111',
+        passwordHash: '$2b$10$UnhashedPlaceholderChangeInProduction',
+        role: 'doctor',
+      },
+    });
 
   await prisma.doctor.create({
     data: {
@@ -66,9 +66,10 @@ async function main() {
 
   const doctorUser2 = await prisma.user.create({
     data: {
-      phoneNumber: '+251922222222',
-      passwordHash: '$2b$10$UnhashedPlaceholderChangeInProduction',
-      role: 'doctor',
+      email: "doctor2@medstar.com", // <-- Add this required field
+      phoneNumber: "+251922222222", // (This is now optional, but fine to keep)
+      passwordHash: "$2b$10$UnhashedPlaceholderChangeInProduction",
+      role: "doctor",
     },
   });
 

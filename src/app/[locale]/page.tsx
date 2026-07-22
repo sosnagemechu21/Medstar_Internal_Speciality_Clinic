@@ -1,126 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useDeferredValue, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { Navbar } from "@/components/ui/navbar";
 import { Container } from "@/components/ui/container";
 import { ProtectedLink } from "@/components/auth/protected-link";
+import { fetchDoctors, fetchSpecialties, type DoctorListItem, type SpecialtyListItem } from "@/lib/catalog-api";
+import { resolveLocale } from "@/lib/i18n-utils";
+import { getLocalizedPath } from "@/lib/locale-routing";
 
-/* ─── Specialty data ───────────────────────────────────────────────────── */
-const specialties = [
-  {
-    id: "cardiology",
-    name: "Cardiology",
-    doctors: 8,
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-8 h-8"
-      >
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
-    ),
-  },
-  {
-    id: "neurology",
-    name: "Neurology",
-    doctors: 5,
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-8 h-8"
-      >
-        <circle cx="12" cy="12" r="3" />
-        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-      </svg>
-    ),
-  },
-  {
-    id: "ophthalmology",
-    name: "Ophthalmology",
-    doctors: 6,
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-8 h-8"
-      >
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-        <circle cx="12" cy="12" r="3" />
-      </svg>
-    ),
-  },
-  {
-    id: "orthopedics",
-    name: "Orthopedics",
-    doctors: 7,
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-8 h-8"
-      >
-        <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.5 2.5-1 3.5L17 22H7l2-12.5C8.5 8.5 8 7.5 8 6a4 4 0 0 1 4-4z" />
-      </svg>
-    ),
-  },
-  {
-    id: "pediatrics",
-    name: "Pediatrics",
-    doctors: 9,
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-8 h-8"
-      >
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
-  },
-  {
-    id: "general",
-    name: "General Medicine",
-    doctors: 12,
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-8 h-8"
-      >
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-      </svg>
-    ),
-  },
-];
+const specialtyIcons: Record<string, string> = {
+  cardiology: "❤️",
+  dermatology: "✨",
+  general: "🩺",
+  neurology: "🧠",
+  ophthalmology: "👁️",
+  orthopedics: "🦴",
+  pediatrics: "👶",
+};
+
+function getSpecialtyIcon(name: string): string {
+  const key = name.toLowerCase().split(/\s+/)[0];
+  return specialtyIcons[key] || "🩺";
+}
 
 /* ─── Stat strip ───────────────────────────────────────────────────────── */
 const heroStats = [
@@ -435,7 +338,7 @@ function HeroSection() {
    Specialty card with magnetic hover: translates toward the cursor inside
    the card bounds.
    ══════════════════════════════════════════════════════════════════════════ */
-function SpecialtyCard({ sp }: { sp: (typeof specialties)[0] }) {
+function SpecialtyCard({ sp, locale }: { sp: SpecialtyListItem; locale: "en" | "am" }) {
   const cardRef = useRef<HTMLAnchorElement>(null);
 
   const handleMouseMove = useCallback(
@@ -462,7 +365,7 @@ function SpecialtyCard({ sp }: { sp: (typeof specialties)[0] }) {
     <Link
       ref={cardRef}
       key={sp.id}
-      href={`/departments/${sp.id}`}
+      href={getLocalizedPath(locale, `/departments/${sp.id}`)}
       id={`specialty-${sp.id}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -476,13 +379,39 @@ function SpecialtyCard({ sp }: { sp: (typeof specialties)[0] }) {
       }}
     >
       <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-50 text-ms-blue/60 group-hover:bg-ms-blue group-hover:text-white transition-all duration-300">
-        {sp.icon}
+        <span className="text-2xl leading-none">{getSpecialtyIcon(sp.name)}</span>
       </div>
       <div>
         <p className="text-sm font-bold text-ms-blue">{sp.name}</p>
-        <p className="text-xs text-slate-400 mt-0.5">{sp.doctors} doctors</p>
+        <p className="text-xs text-slate-400 mt-0.5">{sp.doctorCount} doctors</p>
       </div>
     </Link>
+  );
+}
+
+function HomeDoctorCard({ doctor, locale }: { doctor: DoctorListItem; locale: "en" | "am" }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:border-ms-blue/40 hover:shadow-lg">
+      <div className="flex items-start gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ms-blue/10 text-lg">👨‍⚕️</div>
+        <div className="min-w-0 flex-1">
+          <p className="font-bold text-ms-blue">{doctor.name}</p>
+          <p className="mt-0.5 text-xs font-semibold uppercase tracking-[0.18em] text-ms-red/80">{doctor.title}</p>
+          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-500">
+            {doctor.bio || doctor.specialty.description}
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+        <span className="text-xs text-slate-400">{doctor.specialty.name}</span>
+        <ProtectedLink
+          href={getLocalizedPath(locale, "/book")}
+          className="rounded-full bg-ms-blue px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-ms-blue-mid"
+        >
+          Book
+        </ProtectedLink>
+      </div>
+    </div>
   );
 }
 
@@ -545,11 +474,56 @@ function FeatureCard({ f }: { f: (typeof features)[0] }) {
    Home Page
    ══════════════════════════════════════════════════════════════════════════ */
 export default function HomePage() {
+  const params = useParams<{ locale?: string }>();
+  const locale = resolveLocale(typeof params.locale === "string" ? params.locale : undefined);
   const [tab, setTab] = useState<"specialities" | "doctors">("specialities");
   const [search, setSearch] = useState("");
+  const [specialties, setSpecialties] = useState<SpecialtyListItem[]>([]);
+  const [doctors, setDoctors] = useState<DoctorListItem[]>([]);
+  const [catalogLoading, setCatalogLoading] = useState(true);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+  const deferredSearch = useDeferredValue(search);
 
-  const filtered = specialties.filter((s) =>
-    s.name.toLowerCase().includes(search.toLowerCase()),
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadCatalog() {
+      try {
+        setCatalogLoading(true);
+        setCatalogError(null);
+
+        const [nextSpecialties, nextDoctors] = await Promise.all([
+          fetchSpecialties(locale, controller.signal),
+          fetchDoctors(locale, { signal: controller.signal }),
+        ]);
+
+        setSpecialties(nextSpecialties);
+        setDoctors(nextDoctors);
+      } catch (error) {
+        if ((error as Error).name === "AbortError") {
+          return;
+        }
+
+        setCatalogError("Unable to load doctor and specialty listings right now.");
+      } finally {
+        if (!controller.signal.aborted) {
+          setCatalogLoading(false);
+        }
+      }
+    }
+
+    loadCatalog();
+
+    return () => controller.abort();
+  }, [locale]);
+
+  const normalizedSearch = deferredSearch.trim().toLowerCase();
+
+  const filteredSpecialties = specialties.filter((specialty) =>
+    `${specialty.name} ${specialty.description}`.toLowerCase().includes(normalizedSearch),
+  );
+  const filteredDoctors = doctors.filter((doctor) =>
+    `${doctor.name} ${doctor.title} ${doctor.specialty.name} ${doctor.bio}`.toLowerCase().includes(normalizedSearch),
   );
 
   return (
@@ -607,7 +581,7 @@ export default function HomePage() {
                 <input
                   id="search-speciality"
                   type="search"
-                  placeholder="Search speciality…"
+                  placeholder={tab === "specialities" ? "Search speciality…" : "Search doctor or speciality…"}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full rounded-full border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-ms-blue/25 focus:border-ms-blue/40 transition-shadow"
@@ -618,10 +592,20 @@ export default function HomePage() {
             {/* Cards */}
             {tab === "specialities" && (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                {filtered.map((sp) => (
-                  <SpecialtyCard key={sp.id} sp={sp} />
+                {catalogLoading && (
+                  <div className="col-span-6 rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400 shadow-sm">
+                    Loading specialties…
+                  </div>
+                )}
+                {!catalogLoading && catalogError && (
+                  <div className="col-span-6 rounded-2xl border border-red-100 bg-red-50 p-12 text-center text-sm text-red-600 shadow-sm">
+                    {catalogError}
+                  </div>
+                )}
+                {!catalogLoading && !catalogError && filteredSpecialties.map((sp) => (
+                  <SpecialtyCard key={sp.id} sp={sp} locale={locale} />
                 ))}
-                {filtered.length === 0 && (
+                {!catalogLoading && !catalogError && filteredSpecialties.length === 0 && (
                   <p className="col-span-6 py-12 text-center text-sm text-slate-400">
                     No speciality matches "{search}".
                   </p>
@@ -630,8 +614,25 @@ export default function HomePage() {
             )}
 
             {tab === "doctors" && (
-              <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-slate-400 text-sm shadow-sm">
-                Doctor search coming soon — connect via API.
+              <div className="grid gap-4 lg:grid-cols-2">
+                {catalogLoading && (
+                  <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400 shadow-sm lg:col-span-2">
+                    Loading doctors…
+                  </div>
+                )}
+                {!catalogLoading && catalogError && (
+                  <div className="rounded-2xl border border-red-100 bg-red-50 p-12 text-center text-sm text-red-600 shadow-sm lg:col-span-2">
+                    {catalogError}
+                  </div>
+                )}
+                {!catalogLoading && !catalogError && filteredDoctors.map((doctor) => (
+                  <HomeDoctorCard key={doctor.id} doctor={doctor} locale={locale} />
+                ))}
+                {!catalogLoading && !catalogError && filteredDoctors.length === 0 && (
+                  <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400 shadow-sm lg:col-span-2">
+                    No doctors match "{search}".
+                  </div>
+                )}
               </div>
             )}
           </Container>
@@ -651,7 +652,7 @@ export default function HomePage() {
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {features.map((f) => (
-                <FeatureCard key={f.id} f={f} />
+                <FeatureCard key={f.id} f={{ ...f, href: getLocalizedPath(locale, f.href) }} />
               ))}
             </div>
           </Container>
@@ -708,7 +709,7 @@ export default function HomePage() {
 
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <ProtectedLink
-                  href="/book"
+                  href={getLocalizedPath(locale, "/book")}
                   id="cta-book-btn"
                   className="group flex items-center gap-2 rounded-full bg-ms-red px-8 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:bg-ms-red-dark hover:scale-[1.04] hover:shadow-ms-red/40 hover:shadow-xl active:scale-100"
                 >
@@ -728,7 +729,7 @@ export default function HomePage() {
                   Book Appointment
                 </ProtectedLink>
                 <ProtectedLink
-                  href="/portal"
+                  href={getLocalizedPath(locale, "/portal")}
                   id="cta-portal-btn"
                   className="group flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
                 >
@@ -758,7 +759,7 @@ export default function HomePage() {
                 {["Privacy", "Terms", "Contact"].map((l) => (
                   <Link
                     key={l}
-                    href={`/${l.toLowerCase()}`}
+                    href={getLocalizedPath(locale, `/${l.toLowerCase()}`)}
                     className="hover:text-white/80 transition-colors"
                   >
                     {l}

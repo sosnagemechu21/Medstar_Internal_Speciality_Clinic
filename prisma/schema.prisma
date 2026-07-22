@@ -8,13 +8,13 @@ generator client {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  phoneNumber  String    @unique
-  email        String?   @unique
+  id           String   @id @default(uuid())
+  email        String   @unique                  // Required for Email Auth
+  phoneNumber  String?  @unique                  // Optional profile phone number
   passwordHash String
-  role         String    // patient, doctor, admin, staff
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  role         String   @default("patient")      // patient, doctor, admin, staff
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   patient      Patient?
   doctor       Doctor?
 }
@@ -61,6 +61,7 @@ model Doctor {
 
   schedules       DoctorSchedule[]
   appointments    Appointment[]
+  timeSlots       TimeSlot[]
 }
 
 model DoctorSchedule {
@@ -87,10 +88,28 @@ model Appointment {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   payment            Payment?
+  timeSlot           TimeSlot?
 
   @@index([doctorId])
   @@index([patientId])
   @@index([appointmentDate])
+}
+
+model TimeSlot {
+  id              String       @id @default(uuid())
+  doctorId        String
+  doctor          Doctor       @relation(fields: [doctorId], references: [id])
+  appointmentDate DateTime
+  startTime       String
+  endTime         String
+  status          String       @default("locked") // locked, booked, released
+  appointmentId   String?      @unique
+  appointment     Appointment? @relation(fields: [appointmentId], references: [id])
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@unique([doctorId, appointmentDate, startTime])
+  @@index([doctorId, appointmentDate])
 }
 
 model Payment {
