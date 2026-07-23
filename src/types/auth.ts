@@ -5,4 +5,5 @@ export interface AuthUser {
   displayName: string;
   fullName: string | null;
   patientId: string | null;
+  doctorId: string | null;
 }

@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/container";
 import { ProtectedLink } from "@/components/auth/protected-link";
 import { resolveLocale } from "@/lib/i18n-utils";
 import { getLocalizedPath, swapLocaleInPathname } from "@/lib/locale-routing";
+import { isStaffRole } from "@/lib/portal-routing";
 import { useAuth } from "@/providers/auth-provider";
 
 export function Navbar() {
@@ -19,6 +20,8 @@ export function Navbar() {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const locale = resolveLocale(typeof params.locale === "string" ? params.locale : undefined);
   const nextLocale = locale === "en" ? "am" : "en";
+  const portalLabel = !loading && isStaffRole(user?.role) ? "Doctor Portal" : "My Portal";
+  const isAdmin = !loading && user?.role?.toLowerCase() === "admin";
 
   const localize = (href: string) => getLocalizedPath(locale, href);
 
@@ -45,9 +48,14 @@ export function Navbar() {
             <Link href={localize("/departments")} className="hover:text-white transition-colors">
               Departments
             </Link>
-            <ProtectedLink href={localize("/portal")} className="hover:text-white transition-colors">
-              My Portal
+            <ProtectedLink href={localize("/dashboard")} className="hover:text-white transition-colors">
+              {portalLabel}
             </ProtectedLink>
+            {isAdmin && (
+              <ProtectedLink href={localize("/dashboard/admin/doctors")} className="hover:text-white transition-colors">
+                Admin Panel
+              </ProtectedLink>
+            )}
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -76,11 +84,11 @@ export function Navbar() {
                 {profileOpen && (
                   <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white shadow-xl py-1 text-sm z-50">
                     <Link
-                      href={localize("/portal")}
+                      href={localize("/dashboard")}
                       className="block px-4 py-2.5 text-slate-700 hover:bg-slate-50"
                       onClick={() => setProfileOpen(false)}
                     >
-                      My Portal
+                      {portalLabel}
                     </Link>
                     <Link
                       href={localize("/book")}
@@ -145,7 +153,12 @@ export function Navbar() {
             <nav className="flex flex-col gap-3 text-sm font-medium text-white/80">
               <Link href={localize("/doctors")} onClick={() => setMenuOpen(false)} className="hover:text-white">Find a Doctor</Link>
               <Link href={localize("/departments")} onClick={() => setMenuOpen(false)} className="hover:text-white">Departments</Link>
-              <ProtectedLink href={localize("/portal")} onClick={() => setMenuOpen(false)} className="hover:text-white">My Portal</ProtectedLink>
+              <ProtectedLink href={localize("/dashboard")} onClick={() => setMenuOpen(false)} className="hover:text-white">{portalLabel}</ProtectedLink>
+              {isAdmin && (
+                <ProtectedLink href={localize("/dashboard/admin/doctors")} onClick={() => setMenuOpen(false)} className="hover:text-white">
+                  Admin Panel
+                </ProtectedLink>
+              )}
               <hr className="border-white/10 my-1" />
               {!loading && isAuthenticated ? (
                 <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="text-left hover:text-white">

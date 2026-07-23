@@ -2,10 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Navbar } from "@/components/ui/navbar";
 import { Container } from "@/components/ui/container";
 import { useAuth } from "@/providers/auth-provider";
 import { useRequireAuth } from "@/hooks/use-require-auth";
+import { resolveLocale } from "@/lib/i18n-utils";
+import { getLocalizedPath } from "@/lib/locale-routing";
+import { isStaffRole } from "@/lib/portal-routing";
 
 interface Appointment {
   id: string;
@@ -17,13 +21,23 @@ interface Appointment {
 
 export default function PortalPage() {
   const { user } = useAuth();
+  const router = useRouter();
+  const params = useParams<{ locale?: string }>();
+  const locale = resolveLocale(typeof params.locale === "string" ? params.locale : undefined);
+  const localizedDashboardHref = getLocalizedPath(locale, "/dashboard");
+  const localizedBookHref = getLocalizedPath(locale, "/book");
   const { loading } = useRequireAuth("/portal");
   const [upcoming, setUpcoming] = useState<Appointment[]>([]);
   const [history, setHistory] = useState<Appointment[]>([]);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || !user) return;
+    if (isStaffRole(user.role)) {
+      router.replace(localizedDashboardHref);
+      return;
+    }
+
     fetch("/api/patient/appointments", { credentials: "include" })
       .then((r) => r.json())
       .then((data) => {
@@ -32,9 +46,9 @@ export default function PortalPage() {
       })
       .catch(() => {})
       .finally(() => setFetching(false));
-  }, [loading]);
+  }, [loading, localizedDashboardHref, router, user]);
 
-  if (loading) {
+  if (loading || !user || isStaffRole(user.role)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4F6FB]">
         <p className="text-slate-500 text-sm">Loading…</p>
@@ -56,7 +70,7 @@ export default function PortalPage() {
 
           <div className="flex gap-3 mb-8">
             <Link
-              href="/book"
+              href={localizedBookHref}
               className="rounded-full bg-ms-red px-6 py-2.5 text-sm font-bold text-white hover:bg-ms-red-dark transition-colors"
             >
               Book Appointment

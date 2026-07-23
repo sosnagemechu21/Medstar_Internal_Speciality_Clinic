@@ -158,7 +158,7 @@ export default function BookPage() {
   const locale = resolveLocale(typeof params.locale === "string" ? params.locale : undefined);
   const localizedBookHref = getLocalizedPath(locale, "/book");
   const localizedHomeHref = getLocalizedPath(locale, "/");
-  const localizedPortalHref = getLocalizedPath(locale, "/portal");
+  const localizedPortalHref = getLocalizedPath(locale, "/dashboard");
   const { user, refresh } = useAuth();
   const { loading } = useRequireAuth(localizedBookHref);
   const [step, setStep] = useState(1);

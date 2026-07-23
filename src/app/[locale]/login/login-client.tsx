@@ -7,7 +7,6 @@ import { Logo } from "@/components/ui/logo";
 import { useAuth } from "@/providers/auth-provider";
 
 type AuthTab = "signin" | "register";
-type RoleTab = "patient" | "doctor";
 
 const stats = [
   { value: "80+", label: "Specialists" },
@@ -25,7 +24,6 @@ export default function LoginPage() {
   const { login, register, isAuthenticated, loading: authLoading } = useAuth();
 
   const [tab, setTab] = useState<AuthTab>("signin");
-  const [role, setRole] = useState<RoleTab>("patient");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -51,11 +49,6 @@ export default function LoginPage() {
 
     if (tab === "register" && password !== confirmPassword) {
       setError("Passwords do not match.");
-      return;
-    }
-
-    if (role === "doctor") {
-      setError("Doctor registration is coming soon. Please sign in as a patient.");
       return;
     }
 
@@ -89,18 +82,18 @@ export default function LoginPage() {
           aria-hidden="true"
         />
 
-        <div className="relative z-10">
-          <Logo size="sm" />
+        <div className="relative z-10 flex justify-center lg:justify-center">
+          <Logo size="lg" />
         </div>
 
-        <div className="relative z-10 my-10 lg:my-0">
+        <div className="relative z-10 my-10 text-center lg:my-0">
           <h1
-            className="text-3xl lg:text-4xl font-bold leading-tight mb-4"
+            className="text-2xl lg:text-3xl font-bold leading-tight mb-3"
             style={{ fontFamily: "Merriweather, Georgia, serif" }}
           >
             Your health journey starts with a single step.
           </h1>
-          <p className="text-white/65 text-sm leading-relaxed max-w-md">
+          <p className="mx-auto text-white/65 text-base leading-relaxed max-w-xl">
             Access world-class specialists, manage your appointments, and review your medical history — all from one secure portal.
           </p>
 
@@ -144,23 +137,6 @@ export default function LoginPage() {
                   }`}
                 >
                   {t === "signin" ? "Sign In" : "Create Account"}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex gap-2 mb-8">
-              {(["patient", "doctor"] as RoleTab[]).map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setRole(r)}
-                  className={`flex-1 rounded-full border py-2 text-xs font-semibold transition-colors ${
-                    role === r
-                      ? "border-ms-blue bg-ms-blue/5 text-ms-blue"
-                      : "border-slate-200 text-slate-400 hover:border-slate-300"
-                  }`}
-                >
-                  {r === "patient" ? "I Am A Patient" : "I Am A Doctor"}
                 </button>
               ))}
             </div>

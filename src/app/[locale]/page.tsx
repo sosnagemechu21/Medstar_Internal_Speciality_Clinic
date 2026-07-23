@@ -63,7 +63,7 @@ const features = [
     title: "Patient Portal",
     body: "View upcoming appointments, access medical records, and manage your health journey.",
     cta: "Go to Portal",
-    href: "/portal",
+    href: "/dashboard",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -283,7 +283,7 @@ function HeroSection() {
             Book Appointment
           </ProtectedLink>
           <ProtectedLink
-            href="/portal"
+            href="/dashboard"
             id="hero-portal-btn"
             className="group flex items-center gap-2 rounded-full border border-white/40 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
           >
@@ -729,7 +729,7 @@ export default function HomePage() {
                   Book Appointment
                 </ProtectedLink>
                 <ProtectedLink
-                  href={getLocalizedPath(locale, "/portal")}
+                  href={getLocalizedPath(locale, "/dashboard")}
                   id="cta-portal-btn"
                   className="group flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
                 >

@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
         : dbUser.email?.split('@')[0] ?? 'User';
 
     return NextResponse.json({
+      success: true,
       user: {
         id: dbUser.id,
         email: dbUser.email,
@@ -35,8 +36,11 @@ export async function GET(request: NextRequest) {
         displayName,
         fullName: dbUser.patient
           ? `${dbUser.patient.firstNameEn} ${dbUser.patient.lastNameEn}`
-          : null,
+          : dbUser.doctor
+            ? `${dbUser.doctor.firstNameEn} ${dbUser.doctor.lastNameEn}`
+            : null,
         patientId: dbUser.patient?.id ?? null,
+        doctorId: dbUser.doctor?.id ?? null,
       },
     });
   } catch {

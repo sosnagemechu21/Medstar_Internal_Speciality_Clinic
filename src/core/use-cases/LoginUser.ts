@@ -43,6 +43,7 @@ export class LoginUser {
         role: user.role,
         displayName,
         patientId: user.patient?.id ?? null,
+        doctorId: user.doctor?.id ?? null,
       },
     };
   }
