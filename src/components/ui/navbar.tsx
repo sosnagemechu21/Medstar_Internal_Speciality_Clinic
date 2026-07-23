@@ -42,11 +42,14 @@ export function Navbar() {
           <Logo size="md" href={localize("/")} />
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
-            <Link href={localize("/doctors")} className="hover:text-white transition-colors">
-              Find a Doctor
+            <Link href={localize("/")} className="hover:text-white transition-colors">
+              Home
             </Link>
             <Link href={localize("/departments")} className="hover:text-white transition-colors">
-              Departments
+              Speciality
+            </Link>
+            <Link href={localize("/doctors")} className="hover:text-white transition-colors">
+              Doctors
             </Link>
             <ProtectedLink href={localize("/dashboard")} className="hover:text-white transition-colors">
               {portalLabel}
@@ -151,8 +154,9 @@ export function Navbar() {
         <div className="md:hidden bg-[#0B1F6B] border-t border-white/10 py-4">
           <Container>
             <nav className="flex flex-col gap-3 text-sm font-medium text-white/80">
-              <Link href={localize("/doctors")} onClick={() => setMenuOpen(false)} className="hover:text-white">Find a Doctor</Link>
-              <Link href={localize("/departments")} onClick={() => setMenuOpen(false)} className="hover:text-white">Departments</Link>
+              <Link href={localize("/")} onClick={() => setMenuOpen(false)} className="hover:text-white">Home</Link>
+              <Link href={localize("/departments")} onClick={() => setMenuOpen(false)} className="hover:text-white">Speciality</Link>
+              <Link href={localize("/doctors")} onClick={() => setMenuOpen(false)} className="hover:text-white">Directory</Link>
               <ProtectedLink href={localize("/dashboard")} onClick={() => setMenuOpen(false)} className="hover:text-white">{portalLabel}</ProtectedLink>
               {isAdmin && (
                 <ProtectedLink href={localize("/dashboard/admin/doctors")} onClick={() => setMenuOpen(false)} className="hover:text-white">

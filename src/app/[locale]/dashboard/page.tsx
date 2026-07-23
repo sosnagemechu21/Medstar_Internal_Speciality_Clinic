@@ -256,24 +256,25 @@ function DoctorDashboardView({
 
   const handleAddAvailability = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!doctorId) {
-      alert('Doctor ID not found in session.');
-      return;
-    }
+    setMessage('');
 
     try {
+      // doctorId is resolved on the server from session User → Doctor.userId (never User.id)
       const res = await fetch('/api/doctor/availability', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          ...slotData,
+          appointmentDate: slotData.appointmentDate,
+          startTime: slotData.startTime,
+          endTime: slotData.endTime,
         }),
       });
       const data = await res.json();
 
       if (res.ok && data.success) {
         setMessage('Availability slot opened successfully!');
+        if (data.doctorId) setDoctorId(data.doctorId);
         loadDashboardData();
         setSlotData({ appointmentDate: '', startTime: '09:00', endTime: '10:00' });
       } else {

@@ -485,6 +485,23 @@ export default function HomePage() {
   const deferredSearch = useDeferredValue(search);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get("tab");
+    if (tabParam === "doctors" || tabParam === "specialities") {
+      setTab(tabParam);
+      // Wait for rendering to complete, then scroll smoothly
+      const timer = setTimeout(() => {
+        const element = document.getElementById("directory");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  useEffect(() => {
     const controller = new AbortController();
 
     async function loadCatalog() {
@@ -535,7 +552,7 @@ export default function HomePage() {
         <HeroSection />
 
         {/* ── 2. Find the Right Care ───────────────────────────────────── */}
-        <section className="bg-[#F4F6FB] py-20">
+        <section id="directory" className="bg-[#F4F6FB] py-20">
           <Container>
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-bold text-ms-blue md:text-4xl">

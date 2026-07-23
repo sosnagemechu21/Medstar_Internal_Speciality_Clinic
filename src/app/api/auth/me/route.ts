@@ -21,10 +21,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ user: null });
     }
 
+    // Prefer relation; fall back to explicit Doctor.userId lookup (never use User.id as doctorId)
+    let doctor = dbUser.doctor;
+    if (!doctor) {
+      doctor = await prisma.doctor.findUnique({ where: { userId: dbUser.id } });
+    }
+
     const displayName = dbUser.patient
       ? dbUser.patient.firstNameEn
-      : dbUser.doctor
-        ? dbUser.doctor.firstNameEn
+      : doctor
+        ? doctor.firstNameEn
         : dbUser.email?.split('@')[0] ?? 'User';
 
     return NextResponse.json({
@@ -36,11 +42,11 @@ export async function GET(request: NextRequest) {
         displayName,
         fullName: dbUser.patient
           ? `${dbUser.patient.firstNameEn} ${dbUser.patient.lastNameEn}`
-          : dbUser.doctor
-            ? `${dbUser.doctor.firstNameEn} ${dbUser.doctor.lastNameEn}`
+          : doctor
+            ? `${doctor.firstNameEn} ${doctor.lastNameEn}`
             : null,
         patientId: dbUser.patient?.id ?? null,
-        doctorId: dbUser.doctor?.id ?? null,
+        doctorId: doctor?.id ?? null,
       },
     });
   } catch {

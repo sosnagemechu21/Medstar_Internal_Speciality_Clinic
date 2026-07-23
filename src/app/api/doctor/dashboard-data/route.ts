@@ -1,54 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 import { prisma } from '@/lib/prisma';
+import { resolveSessionDoctor } from '@/lib/doctor-session';
 
 export async function GET(request: NextRequest) {
   try {
-    const sessionCookie = request.cookies.get('medstar_session')?.value;
-    if (!sessionCookie) {
-      return NextResponse.json({ error: 'Unauthorized access token' }, { status: 401 });
+    const session = await resolveSessionDoctor(request);
+    if (!session.ok) {
+      return NextResponse.json({ success: false, error: session.error }, { status: session.status });
     }
 
-    const jwtSecret = process.env.JWT_SECRET || 'fallback_secret_key_change_this';
-    const decoded = jwt.verify(sessionCookie, jwtSecret) as { userId: string };
-
-    const dbUser = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      include: { doctor: true },
-    });
-
-    if (!dbUser || !['doctor', 'admin'].includes(dbUser.role.toLowerCase())) {
-      return NextResponse.json({ error: 'Doctor portal access denied' }, { status: 403 });
-    }
-
-    const doctorId = dbUser.doctor?.id ?? null;
+    const { doctorId, userId, role } = session.ctx;
 
     if (!doctorId) {
-      return NextResponse.json({ success: true, doctorId: null, appointments: [], schedules: [] });
+      return NextResponse.json({
+        success: true,
+        doctorId: null,
+        userId,
+        role,
+        appointments: [],
+        schedules: [],
+        message:
+          'No doctor profile is linked to this user account. Link User → Doctor.userId before managing slots.',
+      });
     }
 
-    // Fetch appointments assigned to this doctor with patient details
-    const appointments = await prisma.appointment.findMany({
-      where: { doctorId },
-      include: {
-        patient: true,
-      },
-      orderBy: { appointmentDate: 'desc' },
-    });
-
-    // Fetch availability slots set by this doctor
-    const schedules = await prisma.timeSlot.findMany({
-      where: { doctorId },
-      orderBy: { appointmentDate: 'asc' }, // <-- Change 'date' to 'appointmentDate' (or 'slotDate') matching your schema
-    });
+    const [appointments, schedules] = await Promise.all([
+      prisma.appointment.findMany({
+        where: { doctorId },
+        include: {
+          patient: true,
+        },
+        orderBy: { appointmentDate: 'desc' },
+      }),
+      prisma.timeSlot.findMany({
+        where: { doctorId },
+        orderBy: [{ appointmentDate: 'asc' }, { startTime: 'asc' }],
+      }),
+    ]);
 
     return NextResponse.json({
       success: true,
       doctorId,
+      userId,
+      role,
       appointments,
       schedules,
     });
   } catch (error: any) {
+    console.error('Doctor dashboard-data error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
