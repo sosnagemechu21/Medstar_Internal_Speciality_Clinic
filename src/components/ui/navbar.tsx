@@ -18,9 +18,12 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAuthenticated, loading, logout } = useAuth();
-  const locale = resolveLocale(typeof params.locale === "string" ? params.locale : undefined);
+  const locale = resolveLocale(
+    typeof params.locale === "string" ? params.locale : undefined,
+  );
   const nextLocale = locale === "en" ? "am" : "en";
-  const portalLabel = !loading && isStaffRole(user?.role) ? "Doctor Portal" : "My Portal";
+  const portalLabel =
+    !loading && isStaffRole(user?.role) ? "Doctor Portal" : "My Portal";
   const isAdmin = !loading && user?.role?.toLowerCase() === "admin";
 
   const localize = (href: string) => getLocalizedPath(locale, href);
@@ -42,20 +45,35 @@ export function Navbar() {
           <Logo size="md" href={localize("/")} />
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
-            <Link href={localize("/")} className="hover:text-white transition-colors">
+            <Link
+              href={localize("/")}
+              className="hover:text-white transition-colors"
+            >
               Home
             </Link>
-            <Link href={localize("/departments")} className="hover:text-white transition-colors">
+            <Link
+              href={localize("/departments")}
+              className="hover:text-white transition-colors"
+            >
               Speciality
             </Link>
-            <Link href={localize("/doctors")} className="hover:text-white transition-colors">
+            <Link
+              href={localize("/doctors")}
+              className="hover:text-white transition-colors"
+            >
               Doctors
             </Link>
-            <ProtectedLink href={localize("/dashboard")} className="hover:text-white transition-colors">
+            <ProtectedLink
+              href={localize("/dashboard")}
+              className="hover:text-white transition-colors"
+            >
               {portalLabel}
             </ProtectedLink>
             {isAdmin && (
-              <ProtectedLink href={localize("/dashboard/admin/doctors")} className="hover:text-white transition-colors">
+              <ProtectedLink
+                href={localize("/dashboard/admin/doctors")}
+                className="hover:text-white transition-colors"
+              >
                 Admin Panel
               </ProtectedLink>
             )}
@@ -67,7 +85,9 @@ export function Navbar() {
               onClick={handleLocaleToggle}
               className="flex items-center gap-1.5 rounded-full border border-white/30 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/10 transition-colors"
             >
-              {locale === "en" ? "EN" : "አማ"}&nbsp;<span className="text-white/40">|</span>&nbsp;{locale === "en" ? "አማ" : "EN"}
+              {locale === "en" ? "EN" : "አማ"}&nbsp;
+              <span className="text-white/40">|</span>&nbsp;
+              {locale === "en" ? "አማ" : "EN"}
             </button>
 
             {!loading && isAuthenticated && user ? (
@@ -80,8 +100,16 @@ export function Navbar() {
                     {user.displayName.charAt(0).toUpperCase()}
                   </span>
                   {user.displayName}
-                  <svg className="w-3 h-3 opacity-60" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  <svg
+                    className="w-3 h-3 opacity-60"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
                 {profileOpen && (
@@ -132,7 +160,15 @@ export function Navbar() {
             className="md:hidden text-white"
             onClick={() => setMenuOpen((v) => !v)}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               {menuOpen ? (
                 <>
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -154,31 +190,78 @@ export function Navbar() {
         <div className="md:hidden bg-[#0B1F6B] border-t border-white/10 py-4">
           <Container>
             <nav className="flex flex-col gap-3 text-sm font-medium text-white/80">
-              <Link href={localize("/")} onClick={() => setMenuOpen(false)} className="hover:text-white">Home</Link>
-              <Link href={localize("/departments")} onClick={() => setMenuOpen(false)} className="hover:text-white">Speciality</Link>
-              <Link href={localize("/doctors")} onClick={() => setMenuOpen(false)} className="hover:text-white">Directory</Link>
-              <ProtectedLink href={localize("/dashboard")} onClick={() => setMenuOpen(false)} className="hover:text-white">{portalLabel}</ProtectedLink>
+              <Link
+                href={localize("/")}
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
+                Home
+              </Link>
+              <Link
+                href={localize("/departments")}
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
+                Speciality
+              </Link>
+              <Link
+                href={localize("/doctors")}
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
+                Doctors
+              </Link>
+              <ProtectedLink
+                href={localize("/dashboard")}
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
+                {portalLabel}
+              </ProtectedLink>
               {isAdmin && (
-                <ProtectedLink href={localize("/dashboard/admin/doctors")} onClick={() => setMenuOpen(false)} className="hover:text-white">
+                <ProtectedLink
+                  href={localize("/dashboard/admin/doctors")}
+                  onClick={() => setMenuOpen(false)}
+                  className="hover:text-white"
+                >
                   Admin Panel
                 </ProtectedLink>
               )}
               <hr className="border-white/10 my-1" />
               {!loading && isAuthenticated ? (
-                <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="text-left hover:text-white">
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMenuOpen(false);
+                  }}
+                  className="text-left hover:text-white"
+                >
                   Sign Out ({user?.displayName})
                 </button>
               ) : (
-                <Link href={localize("/login")} onClick={() => setMenuOpen(false)} className="hover:text-white">Login</Link>
+                <Link
+                  href={localize("/login")}
+                  onClick={() => setMenuOpen(false)}
+                  className="hover:text-white"
+                >
+                  Login
+                </Link>
               )}
               <button
                 type="button"
-                onClick={() => { handleLocaleToggle(); setMenuOpen(false); }}
+                onClick={() => {
+                  handleLocaleToggle();
+                  setMenuOpen(false);
+                }}
                 className="text-left hover:text-white"
               >
                 Switch to {nextLocale === "am" ? "Amharic" : "English"}
               </button>
-              <ProtectedLink href={localize("/book")} onClick={() => setMenuOpen(false)} className="inline-block rounded-full bg-ms-red px-5 py-2 text-center text-sm font-bold text-white">
+              <ProtectedLink
+                href={localize("/book")}
+                onClick={() => setMenuOpen(false)}
+                className="inline-block rounded-full bg-ms-red px-5 py-2 text-center text-sm font-bold text-white"
+              >
                 Book Appointment
               </ProtectedLink>
             </nav>
