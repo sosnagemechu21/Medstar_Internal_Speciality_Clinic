@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
   try {
@@ -8,26 +8,40 @@ export async function POST(request: Request) {
     const {
       email,
       password,
+      phoneNumber,
       firstNameEn,
       lastNameEn,
       firstNameAm,
       lastNameAm,
       specialtyName,
+      experienceYears,
       bioEn,
       bioAm,
+      photoDataUrl,
     } = body;
 
     const normalizedSpecialtyName = typeof specialtyName === 'string' ? specialtyName.trim() : '';
+    const normalizedPhone =
+      typeof phoneNumber === 'string' && phoneNumber.trim()
+        ? phoneNumber.trim()
+        : `+999${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
     // Validate required fields
     if (!email || !password || !normalizedSpecialtyName || !firstNameEn || !lastNameEn) {
-      return NextResponse.json({ error: 'Missing required doctor fields' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'Missing required doctor fields' }, { status: 400 });
     }
 
-    // Check if user already exists
+    // Check if user already exists by email
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return NextResponse.json({ error: 'User with this email already exists' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'User with this email already exists' }, { status: 400 });
+    }
+
+    if (phoneNumber && phoneNumber.trim()) {
+      const existingPhone = await prisma.user.findUnique({ where: { phoneNumber: normalizedPhone } });
+      if (existingPhone) {
+        return NextResponse.json({ success: false, error: 'User with this phone number already exists' }, { status: 400 });
+      }
     }
 
     // Hash password securely
@@ -56,8 +70,9 @@ export async function POST(request: Request) {
       const user = await tx.user.create({
         data: {
           email,
+          phoneNumber: normalizedPhone,
           passwordHash,
-          role: 'doctor', // assigned doctor role
+          role: 'doctor',
         },
       });
 
@@ -69,6 +84,8 @@ export async function POST(request: Request) {
           lastNameEn,
           firstNameAm: firstNameAm || firstNameEn,
           lastNameAm: lastNameAm || lastNameEn,
+          experienceYears: Number(experienceYears) || 1,
+          photoUrl: photoDataUrl || null,
           bioEn: bioEn || '',
           bioAm: bioAm || '',
           isActive: true,
@@ -80,6 +97,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, data: result }, { status: 201 });
   } catch (error: any) {
+    console.error('Doctor creation error:', error);
     return NextResponse.json({ success: false, error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
