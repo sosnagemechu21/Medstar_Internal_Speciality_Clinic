@@ -42,14 +42,14 @@ async function main() {
     },
   });
 
-  const doctorUser1 = await prisma.user.create({
-      data: {
-        email: 'doctor1@medstar.com', // <-- Added required email field here
-        phoneNumber: '+251911111111',
-        passwordHash: '$2b$10$UnhashedPlaceholderChangeInProduction',
-        role: 'doctor',
-      },
-    });
+ const doctorUser1 = await prisma.user.create({
+    data: {
+      email: 'doctor1@medstar.com', // <-- Added required email field here
+      phoneNumber: '+251911111111',
+      passwordHash: '$2b$10$UnhashedPlaceholderChangeInProduction',
+      role: 'doctor',
+    },
+  });
 
   await prisma.doctor.create({
     data: {

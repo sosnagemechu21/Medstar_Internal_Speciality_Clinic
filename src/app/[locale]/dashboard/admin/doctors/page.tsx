@@ -17,9 +17,9 @@ export default function AdminDoctorsPage() {
   const locale = resolveLocale(typeof params.locale === 'string' ? params.locale : undefined);
   const localize = (href: string) => getLocalizedPath(locale, href);
   const { loading: authLoading } = useRequireAuth(localize('/dashboard/admin/doctors'));
-  const [specialties, setSpecialties] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [photoPreview, setPhotoPreview] = useState('');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -29,11 +29,11 @@ export default function AdminDoctorsPage() {
     lastNameEn: '',
     firstNameAm: '',
     lastNameAm: '',
-    specialtyId: '',
+    specialtyName: '',
     experienceYears: 1,
     bioEn: '',
     bioAm: '',
-    photoUrl: '',
+    photoDataUrl: '',
   });
 
   useEffect(() => {
@@ -43,20 +43,25 @@ export default function AdminDoctorsPage() {
     }
   }, [authLoading, localize, router, user]);
 
-  useEffect(() => {
-    // Fetch available specialties for dropdown selection
-    fetch('/api/specialties')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success || Array.isArray(data)) {
-          setSpecialties(Array.isArray(data) ? data : data.specialties);
-        }
-      })
-      .catch((err) => console.error('Failed to load specialties', err));
-  }, []);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setPhotoPreview('');
+      setFormData((prev) => ({ ...prev, photoDataUrl: '' }));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = typeof reader.result === 'string' ? reader.result : '';
+      setPhotoPreview(dataUrl);
+      setFormData((prev) => ({ ...prev, photoDataUrl: dataUrl }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,12 +87,13 @@ export default function AdminDoctorsPage() {
           lastNameEn: '',
           firstNameAm: '',
           lastNameAm: '',
-          specialtyId: '',
+          specialtyName: '',
           experienceYears: 1,
           bioEn: '',
           bioAm: '',
-          photoUrl: '',
+          photoDataUrl: '',
         });
+        setPhotoPreview('');
       } else {
         setMessage(`Error: ${data.error || 'Failed to create doctor'}`);
       }
@@ -232,20 +238,15 @@ export default function AdminDoctorsPage() {
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <Field label="Specialty">
-                    <select
-                      name="specialtyId"
+                    <input
+                      type="text"
+                      name="specialtyName"
                       required
-                      value={formData.specialtyId}
+                      value={formData.specialtyName}
                       onChange={handleChange}
+                      placeholder="e.g. Cardiology"
                       className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm shadow-sm outline-none transition focus:border-ms-blue/40"
-                    >
-                      <option value="">Select Specialty</option>
-                      {specialties.map((spec: any) => (
-                        <option key={spec.id} value={spec.id}>
-                          {spec.nameEn || spec.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </Field>
                   <Field label="Experience (Years)">
                     <input
@@ -259,15 +260,23 @@ export default function AdminDoctorsPage() {
                   </Field>
                 </div>
 
-                <Field label="Photo URL">
+                <Field label="Doctor Photo (Optional)">
                   <input
-                    type="text"
-                    name="photoUrl"
-                    placeholder="https://example.com/doctor.jpg"
-                    value={formData.photoUrl}
-                    onChange={handleChange}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
                     className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm shadow-sm outline-none transition focus:border-ms-blue/40"
                   />
+                  <p className="mt-2 text-xs text-slate-500">
+                    Upload from your device. JPG, PNG, or WEBP recommended.
+                  </p>
+                  {photoPreview && (
+                    <img
+                      src={photoPreview}
+                      alt="Doctor preview"
+                      className="mt-3 h-24 w-24 rounded-xl border border-slate-200 object-cover"
+                    />
+                  )}
                 </Field>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

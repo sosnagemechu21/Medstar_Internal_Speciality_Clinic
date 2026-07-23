@@ -5,22 +5,22 @@ import bcrypt from 'bcrypt';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { 
-      email, 
-      password, 
-      firstNameEn, 
-      lastNameEn, 
-      firstNameAm, 
-      lastNameAm, 
-      specialtyId, 
-      bioEn, 
-      bioAm, 
-      experienceYears,
-      photoUrl 
+    const {
+      email,
+      password,
+      firstNameEn,
+      lastNameEn,
+      firstNameAm,
+      lastNameAm,
+      specialtyName,
+      bioEn,
+      bioAm,
     } = body;
 
+    const normalizedSpecialtyName = typeof specialtyName === 'string' ? specialtyName.trim() : '';
+
     // Validate required fields
-    if (!email || !password || !specialtyId || !firstNameEn || !lastNameEn) {
+    if (!email || !password || !normalizedSpecialtyName || !firstNameEn || !lastNameEn) {
       return NextResponse.json({ error: 'Missing required doctor fields' }, { status: 400 });
     }
 
@@ -35,6 +35,24 @@ export async function POST(request: Request) {
 
     // Run transaction to create User and Doctor profile together
     const result = await prisma.$transaction(async (tx) => {
+      let specialty = await tx.specialty.findFirst({
+        where: {
+          nameEn: {
+            equals: normalizedSpecialtyName,
+            mode: 'insensitive',
+          },
+        },
+      });
+
+      if (!specialty) {
+        specialty = await tx.specialty.create({
+          data: {
+            nameEn: normalizedSpecialtyName,
+            nameAm: normalizedSpecialtyName,
+          },
+        });
+      }
+
       const user = await tx.user.create({
         data: {
           email,
@@ -46,7 +64,7 @@ export async function POST(request: Request) {
       const doctor = await tx.doctor.create({
         data: {
           userId: user.id,
-          specialtyId,
+          specialtyId: specialty.id,
           firstNameEn,
           lastNameEn,
           firstNameAm: firstNameAm || firstNameEn,
