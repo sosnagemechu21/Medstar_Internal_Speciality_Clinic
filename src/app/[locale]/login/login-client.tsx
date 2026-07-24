@@ -70,7 +70,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       <div
-        className="relative flex flex-col justify-between px-8 py-10 lg:w-[45%] lg:px-14 lg:py-12 text-white overflow-hidden"
+        className="relative hidden lg:flex flex-col justify-between px-8 py-10 lg:w-[45%] lg:px-14 lg:py-12 text-white overflow-hidden"
         style={{ background: "linear-gradient(160deg, #0B1F6B 0%, #1134A6 60%, #1E3A8A 100%)" }}
       >
         <div
