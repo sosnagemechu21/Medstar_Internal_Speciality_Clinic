@@ -28,7 +28,15 @@ export async function GET(request: NextRequest) {
       prisma.appointment.findMany({
         where: { doctorId },
         include: {
-          patient: true,
+          patient: {
+            include: {
+              user: {
+                select: {
+                  email: true,
+                },
+              },
+            },
+          },
         },
         orderBy: { appointmentDate: 'desc' },
       }),

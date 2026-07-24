@@ -120,6 +120,9 @@ interface DoctorAppointment {
     firstNameEn?: string;
     lastNameEn?: string;
     email?: string;
+    user?: {
+      email?: string;
+    };
   };
 }
 
@@ -613,7 +616,7 @@ function DoctorDashboardView({
                         <p className="text-xs text-slate-500">
                           {L.date}: {new Date(apt.appointmentDate).toLocaleDateString()} | {L.time}: {apt.startTime} - {apt.endTime}
                         </p>
-                        <p className="text-xs text-slate-400">{L.email}: {apt.patient?.email || 'N/A'}</p>
+                        <p className="text-xs text-slate-400">{L.email}: {apt.patient?.user?.email || apt.patient?.email || 'N/A'}</p>
                       </div>
 
                       <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">

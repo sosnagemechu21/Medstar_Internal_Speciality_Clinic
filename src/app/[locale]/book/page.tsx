@@ -343,6 +343,27 @@ export default function BookPage() {
       setSubmitting(true);
       setSubmitError(null);
 
+      // 1. Create appointment in database so it renders in the patient portal
+      const apptResponse = await fetch("/api/appointments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          doctorId: booking.doctor.id,
+          appointmentDate: toDateParam(booking.date),
+          startTime: selectedSlot.startTime,
+          endTime: selectedSlot.endTime,
+        }),
+      });
+
+      const apptData = await apptResponse.json();
+      if (!apptResponse.ok) {
+        throw new Error(apptData.error ?? "Unable to create appointment.");
+      }
+
+      // 2. Initialize Chapa payment redirect
       const response = await fetch("/api/payments/chapa", {
         method: "POST",
         headers: {

@@ -20,7 +20,7 @@ export default function LoginPage() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const locale = pathname.split("/")[1] ?? "en";
-  const redirect = searchParams.get("redirect") ?? `/${locale}/book`;
+  const redirect = searchParams.get("redirect") ?? `/${locale}`;
   const { login, register, isAuthenticated, loading: authLoading } = useAuth();
 
   const [tab, setTab] = useState<AuthTab>("signin");
