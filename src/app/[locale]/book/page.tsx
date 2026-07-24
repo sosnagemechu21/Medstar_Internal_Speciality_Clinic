@@ -145,6 +145,10 @@ function formatTime(time: string, locale: "en" | "am") {
   }).format(new Date(2026, 0, 1, hour, minute));
 }
 
+function formatTimeRange(startTime: string, endTime: string, locale: "en" | "am") {
+  return `${formatTime(startTime, locale)} - ${formatTime(endTime, locale)}`;
+}
+
 function toDateParam(date: Date): string {
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, "0");
@@ -344,7 +348,7 @@ export default function BookPage() {
                 ["Speciality", booking.specialty.name],
                 ["Doctor", booking.doctor.name],
                 ["Date", formatDate(booking.date, locale)],
-                ["Time", formatTime(booking.time, locale)],
+                ["Time", selectedSlot ? formatTimeRange(selectedSlot.startTime, selectedSlot.endTime, locale) : formatTime(booking.time, locale)],
                 ["Fee", "ETB 800"],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between border-b border-slate-100 pb-2">
@@ -491,7 +495,7 @@ export default function BookPage() {
                       No available slots remain for this date.
                     </div>
                   ) : (
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {availableSlots.map((slot) => {
                         const selected = booking.time === slot.startTime;
                         return (
@@ -499,13 +503,13 @@ export default function BookPage() {
                             key={slot.startTime}
                             type="button"
                             onClick={() => { setSubmitError(null); setBooking((b) => ({ ...b, time: slot.startTime })); }}
-                            className={`rounded-lg py-2.5 text-xs font-semibold transition-colors ${
+                            className={`rounded-lg py-2.5 px-3 text-xs font-semibold transition-colors ${
                               selected
                                 ? "bg-ms-red text-white"
                                 : "border border-slate-200 hover:border-ms-blue text-slate-700"
                             }`}
                           >
-                            {formatTime(slot.startTime, locale)}
+                            {formatTimeRange(slot.startTime, slot.endTime, locale)}
                           </button>
                         );
                       })}

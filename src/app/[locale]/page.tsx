@@ -9,6 +9,104 @@ import { ProtectedLink } from "@/components/auth/protected-link";
 import { fetchDoctors, fetchSpecialties, type DoctorListItem, type SpecialtyListItem } from "@/lib/catalog-api";
 import { resolveLocale } from "@/lib/i18n-utils";
 import { getLocalizedPath } from "@/lib/locale-routing";
+import type { Locale } from "../../../i18n.config";
+
+const t = {
+  en: {
+    hero: {
+      origin: "Addis Ababa · Ethiopia · Est. 2018",
+      headline1: "Your Health,",
+      headline2: "Our Speciality",
+      sub: "World-class specialists. Compassionate care. A clinic built entirely around you.",
+      bookAppointment: "Book Appointment",
+      patientPortal: "Patient Portal",
+      scroll: "scroll"
+    },
+    directory: {
+      title: "Find the Right Care",
+      sub: "Browse specialities or search for a specific doctor.",
+      tabSpecialities: "Specialities",
+      tabDoctors: "Doctors",
+      searchSpeciality: "Search speciality…",
+      searchBoth: "Search doctor or speciality…",
+      loadingSpecialities: "Loading specialties…",
+      loadingDoctors: "Loading doctors…",
+      error: "Unable to load doctor and specialty listings right now.",
+      noSpeciality: 'No speciality matches',
+      noDoctors: 'No doctors match',
+      doctorsCount: "doctors",
+      book: "Book"
+    },
+    whyChooseUs: {
+      title: "Why Choose MedStar",
+      sub: "We combine international medical standards with Ethiopian hospitality.",
+    },
+    everything: {
+      title: "Everything You Need, In One Place",
+      sub: "From booking to billing — Medstar's digital platform handles it all, securely and simply.",
+    },
+    cta: {
+      badge: "Appointments available today",
+      title: "Ready to take charge of your health?",
+      sub: "Book with a specialist in under 2 minutes. No waiting rooms, no paperwork — just care.",
+      book: "Book Appointment",
+      signIn: "Sign In",
+    },
+    footer: {
+      copyright: "© 2026 Medstar Specialty Clinic. All rights reserved.",
+      privacy: "Privacy",
+      terms: "Terms",
+      contact: "Contact",
+    }
+  },
+  am: {
+    hero: {
+      origin: "አዲስ አበባ · ኢትዮጵያ · ከ 2010 ዓ.ም ጀምሮ",
+      headline1: "ጤናዎ፣",
+      headline2: "የእኛ ልዩ ሙያ",
+      sub: "አለም አቀፍ ደረጃቸውን የጠበቁ ስፔሻሊስቶች። ሩህሩህ እንክብካቤ። ሙሉ በሙሉ በእርስዎ ዙሪያ የተገነባ ክሊኒክ።",
+      bookAppointment: "ቀጠሮ ይያዙ",
+      patientPortal: "የታካሚ ፖርታል",
+      scroll: "ወደ ታች"
+    },
+    directory: {
+      title: "ትክክለኛውን እንክብካቤ ያግኙ",
+      sub: "ስፔሻሊቲዎችን ያስሱ ወይም የተወሰነ ዶክተር ይፈልጉ።",
+      tabSpecialities: "ስፔሻሊቲዎች",
+      tabDoctors: "ዶክተሮች",
+      searchSpeciality: "ስፔሻሊቲ ይፈልጉ…",
+      searchBoth: "ዶክተር ወይም ስፔሻሊቲ ይፈልጉ…",
+      loadingSpecialities: "ስፔሻሊቲዎችን በመጫን ላይ…",
+      loadingDoctors: "ዶክተሮችን በመጫን ላይ…",
+      error: "በአሁኑ ጊዜ የዶክተር እና የስፔሻሊቲ ዝርዝሮችን መጫን አልተቻለም።",
+      noSpeciality: 'ምንም ስፔሻሊቲ አይገኝም ለ',
+      noDoctors: 'ምንም ዶክተር አይገኝም ለ',
+      doctorsCount: "ዶክተሮች",
+      book: "ይያዙ"
+    },
+    whyChooseUs: {
+      title: "ለምን ሜድስታርን ይመርጣሉ",
+      sub: "ዓለም አቀፍ የሕክምና ደረጃዎችን ከኢትዮጵያዊ መስተንግዶ ጋር እናጣምራለን።",
+    },
+    everything: {
+      title: "የሚፈልጉት ሁሉ በአንድ ቦታ",
+      sub: "ከቀጠሮ እስከ ክፍያ — የሜድስታር ዲጂታል መድረክ ሁሉንም በደህንነት እና በቀላል ያስተናግዳል።",
+    },
+    cta: {
+      badge: "ለዛሬ ቀጠሮዎች አሉ።",
+      title: "የጤናዎን ሃላፊነት ለመውሰድ ዝግጁ ነዎት?",
+      sub: "ከ 2 ደቂቃ ባነሰ ጊዜ ውስጥ ከስፔሻሊስት ጋር ቀጠሮ ይያዙ። ምንም የጥበቃ ክፍሎች የሉም፣ ምንም ወረቀት የለም — እንክብካቤ ብቻ።",
+      book: "ቀጠሮ ይያዙ",
+      signIn: "ግባ",
+    },
+    footer: {
+      copyright: "© 2026 የሜድስታር ስፔሻሊቲ ክሊኒክ። መብቱ በህግ የተጠበቀ ነው።",
+      privacy: "ግላዊነት",
+      terms: "ውሎች",
+      contact: "አግኙን",
+    }
+  }
+} as const;
 
 const specialtyIcons: Record<string, string> = {
   cardiology: "❤️",
@@ -26,7 +124,12 @@ function getSpecialtyIcon(name: string): string {
 }
 
 /* ─── Stat strip ───────────────────────────────────────────────────────── */
-const heroStats = [
+const getHeroStats = (locale: Locale) => locale === "am" ? [
+  { value: "80+", label: "ስፔሻሊስቶች" },
+  { value: "24", label: "ክፍሎች" },
+  { value: "45K+", label: "ታካሚዎች / በዓመት" },
+  { value: "98%", label: "እርካታ" },
+] : [
   { value: "80+", label: "SPECIALISTS" },
   { value: "24", label: "DEPARTMENTS" },
   { value: "45K+", label: "PATIENTS / YR" },
@@ -34,74 +137,82 @@ const heroStats = [
 ];
 
 /* ─── Features ─────────────────────────────────────────────────────────── */
-const features = [
-  {
-    id: "booking",
-    title: "Instant Booking",
-    body: "Choose your specialist, pick a date from our live calendar, and confirm in under 2 minutes.",
-    cta: "Book Now",
-    href: "/book",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-6 h-6"
-      >
-        <rect x="3" y="4" width="18" height="18" rx="2" />
-        <line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8" y1="2" x2="8" y2="6" />
-        <line x1="3" y1="10" x2="21" y2="10" />
-      </svg>
-    ),
-  },
-  {
-    id: "portal",
-    title: "Patient Portal",
-    body: "View upcoming appointments, access medical records, and manage your health journey.",
-    cta: "Go to Portal",
-    href: "/dashboard",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-6 h-6"
-      >
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
-  },
-  {
-    id: "payments",
-    title: "Secure Payments",
-    body: "Pay via Chapa or Telebirr in ETB. Instant receipts and full payment history.",
-    cta: "Learn More",
-    href: "/payments",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-6 h-6"
-      >
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-      </svg>
-    ),
-  },
-];
+const getFeatures = (locale: Locale) => {
+  const isAm = locale === "am";
+  return [
+    {
+      id: "booking",
+      title: isAm ? "ፈጣን ቀጠሮ ማረጋገጫ" : "Instant Booking",
+      body: isAm ? "ስፔሻሊስትዎን ይምረጡ፣ ከቀን መቁጠሪያችን ቀን ይምረጡ እና ከ 2 ደቂቃ ባነሰ ጊዜ ውስጥ ያረጋግጡ።" : "Choose your specialist, pick a date from our live calendar, and confirm in under 2 minutes.",
+      cta: isAm ? "አሁን ቀጠሮ ይያዙ" : "Book Now",
+      href: "/book",
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="w-6 h-6"
+        >
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      ),
+    },
+    {
+      id: "portal",
+      title: isAm ? "የታካሚ ፖርታል" : "Patient Portal",
+      body: isAm ? "የሚመጡ ቀጠሮዎችን ይመልከቱ፣ የህክምና መዝገቦችን ይድረሱ እና የጤና ጉዞዎን ያስተዳድሩ።" : "View upcoming appointments, access medical records, and manage your health journey.",
+      cta: isAm ? "ወደ ፖርታል ይሂዱ" : "Go to Portal",
+      href: "/dashboard",
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="w-6 h-6"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      ),
+    },
+    {
+      id: "payments",
+      title: isAm ? "ደህንነቱ የተጠበቀ ክፍያ" : "Secure Payments",
+      body: isAm ? "በቻፓ ወይም በቴሌብር በብር ይክፈሉ። ፈጣን ደረሰኞች እና ሙሉ የክፍያ ታሪክ።" : "Pay via Chapa or Telebirr in ETB. Instant receipts and full payment history.",
+      cta: isAm ? "ተጨማሪ ይወቁ" : "Learn More",
+      href: "/payments",
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="w-6 h-6"
+        >
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+      ),
+    },
+  ];
+};
 
 /* ─── Metrics ──────────────────────────────────────────────────────────── */
-const metrics = [
+const getMetrics = (locale: Locale) => locale === "am" ? [
+  { value: "80+", label: "ስፔሻሊስት ዶክተሮች", sub: "በ 24 ክፍሎች" },
+  { value: "45K+", label: "ታካሚዎች በዓመት", sub: "ከ 2010 ዓ.ም ጀምሮ" },
+  { value: "98%", label: "የእርካታ መጠን", sub: "የተረጋገጡ ግምገማዎች" },
+  { value: "24/7", label: "የድንገተኛ አደጋ እንክብካቤ", sub: "ሁልጊዜ ለእርስዎ እዚህ ነን" },
+] : [
   { value: "80+", label: "Specialist Doctors", sub: "Across 24 departments" },
   { value: "45K+", label: "Patients Annually", sub: "Since 2018" },
   { value: "98%", label: "Satisfaction Rate", sub: "Verified reviews" },
@@ -113,7 +224,9 @@ const metrics = [
    gradient "torch" that partially reveals the photo layer beneath the
    blue overlay, matching the effect visible in the reference mockup.
    ══════════════════════════════════════════════════════════════════════════ */
-function HeroSection() {
+function HeroSection({ locale }: { locale: Locale }) {
+  const L = t[locale as keyof typeof t].hero;
+  const stats = getHeroStats(locale);
   const heroRef = useRef<HTMLElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -152,7 +265,7 @@ function HeroSection() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('../medstarbg.jpg')",
+          backgroundImage: "url('/medstarbg.jpg')",
           opacity: 0.90,
           mixBlendMode: "luminosity",
         }}
@@ -234,14 +347,14 @@ function HeroSection() {
         <div className="mb-7 inline-flex">
           <span className="flex items-center gap-2 rounded-full border border-ms-red/60 bg-ms-red/10 px-4 py-1.5 text-[11px] font-bold text-ms-red uppercase tracking-[0.18em]">
             <span className="h-1.5 w-1.5 rounded-full bg-ms-red animate-pulse" />
-            Addis Ababa · Ethiopia · Est. 2018
+            {L.origin}
           </span>
         </div>
 
         {/* Headline */}
         <h1 className="max-w-[520px] leading-[1.1] text-white">
           <span className="block text-5xl font-black md:text-6xl lg:text-[68px]">
-            Your Health,
+            {L.headline1}
           </span>
           <em
             className="block text-5xl md:text-6xl lg:text-[68px] font-bold not-italic text-white"
@@ -250,14 +363,13 @@ function HeroSection() {
               fontStyle: "italic",
             }}
           >
-            Our Speciality
+            {L.headline2}
           </em>
         </h1>
 
         {/* Sub */}
         <p className="mt-6 max-w-sm text-white/65 text-base leading-relaxed">
-          World-class specialists. Compassionate care. A clinic built entirely
-          around you.
+          {L.sub}
         </p>
 
         {/* CTA buttons */}
@@ -280,14 +392,14 @@ function HeroSection() {
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
-            Book Appointment
+            {L.bookAppointment}
           </ProtectedLink>
           <ProtectedLink
             href="/dashboard"
             id="hero-portal-btn"
             className="group flex items-center gap-2 rounded-full border border-white/40 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
           >
-            Patient Portal
+            {L.patientPortal}
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -306,7 +418,7 @@ function HeroSection() {
       <div className="relative z-20 border-t border-white/10 bg-black/25 backdrop-blur-md">
         <Container>
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
-            {heroStats.map((s) => (
+            {stats.map((s) => (
               <div
                 key={s.label}
                 className="group py-5 px-6 text-white transition-colors hover:bg-white/5 cursor-default"
@@ -328,7 +440,7 @@ function HeroSection() {
         className="pointer-events-none absolute bottom-24 right-8 hidden md:flex flex-col items-center gap-2 text-white/25 text-[10px] tracking-[0.3em] uppercase rotate-90"
         aria-hidden="true"
       >
-        scroll
+        {L.scroll}
       </div>
     </section>
   );
@@ -338,7 +450,7 @@ function HeroSection() {
    Specialty card with magnetic hover: translates toward the cursor inside
    the card bounds.
    ══════════════════════════════════════════════════════════════════════════ */
-function SpecialtyCard({ sp, locale }: { sp: SpecialtyListItem; locale: "en" | "am" }) {
+function SpecialtyCard({ sp, locale }: { sp: SpecialtyListItem; locale: Locale }) {
   const cardRef = useRef<HTMLAnchorElement>(null);
 
   const handleMouseMove = useCallback(
@@ -383,13 +495,13 @@ function SpecialtyCard({ sp, locale }: { sp: SpecialtyListItem; locale: "en" | "
       </div>
       <div>
         <p className="text-sm font-bold text-ms-blue">{sp.name}</p>
-        <p className="text-xs text-slate-400 mt-0.5">{sp.doctorCount} doctors</p>
+        <p className="text-xs text-slate-400 mt-0.5">{sp.doctorCount} {t[locale as keyof typeof t].directory.doctorsCount}</p>
       </div>
     </Link>
   );
 }
 
-function HomeDoctorCard({ doctor, locale }: { doctor: DoctorListItem; locale: "en" | "am" }) {
+function HomeDoctorCard({ doctor, locale }: { doctor: DoctorListItem; locale: Locale }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:border-ms-blue/40 hover:shadow-lg">
       <div className="flex items-start gap-4">
@@ -408,7 +520,7 @@ function HomeDoctorCard({ doctor, locale }: { doctor: DoctorListItem; locale: "e
           href={getLocalizedPath(locale, "/book")}
           className="rounded-full bg-ms-blue px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-ms-blue-mid"
         >
-          Book
+          {t[locale as keyof typeof t].directory.book}
         </ProtectedLink>
       </div>
     </div>
@@ -418,7 +530,7 @@ function HomeDoctorCard({ doctor, locale }: { doctor: DoctorListItem; locale: "e
 /* ══════════════════════════════════════════════════════════════════════════
    Feature card with subtle tilt-on-hover (CSS perspective)
    ══════════════════════════════════════════════════════════════════════════ */
-function FeatureCard({ f }: { f: (typeof features)[0] }) {
+function FeatureCard({ f }: { f: ReturnType<typeof getFeatures>[0] }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -535,6 +647,7 @@ export default function HomePage() {
   }, [locale]);
 
   const normalizedSearch = deferredSearch.trim().toLowerCase();
+  const L = t[locale as keyof typeof t].directory;
 
   const filteredSpecialties = specialties.filter((specialty) =>
     `${specialty.name} ${specialty.description}`.toLowerCase().includes(normalizedSearch),
@@ -549,35 +662,35 @@ export default function HomePage() {
 
       <main className="pt-16">
         {/* ── 1. Hero ───────────────────────────────────────────────────── */}
-        <HeroSection />
+        <HeroSection locale={locale} />
 
         {/* ── 2. Find the Right Care ───────────────────────────────────── */}
         <section id="directory" className="bg-[#F4F6FB] py-20">
           <Container>
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-bold text-ms-blue md:text-4xl">
-                Find the Right Care
+                {t[locale as keyof typeof t].whyChooseUs.title}
               </h2>
-              <p className="mt-2 text-sm text-slate-500">
-                Browse specialities or search for a specific doctor.
+              <p className="mt-3 text-slate-500">
+                {t[locale as keyof typeof t].whyChooseUs.sub}
               </p>
             </div>
 
             {/* Tabs + Search */}
             <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-                {(["specialities", "doctors"] as const).map((t) => (
+                {(["specialities", "doctors"] as const).map((tId) => (
                   <button
-                    key={t}
-                    id={`tab-${t}`}
-                    onClick={() => setTab(t)}
+                    key={tId}
+                    id={`tab-${tId}`}
+                    onClick={() => setTab(tId)}
                     className={`px-6 py-2.5 text-sm font-semibold capitalize transition-colors duration-150 ${
-                      tab === t
+                      tab === tId
                         ? "bg-ms-blue text-white shadow-inner"
                         : "bg-white text-slate-500 hover:bg-slate-50"
                     }`}
                   >
-                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                    {tId === "specialities" ? L.tabSpecialities : L.tabDoctors}
                   </button>
                 ))}
               </div>
@@ -598,7 +711,7 @@ export default function HomePage() {
                 <input
                   id="search-speciality"
                   type="search"
-                  placeholder={tab === "specialities" ? "Search speciality…" : "Search doctor or speciality…"}
+                  placeholder={tab === "specialities" ? L.searchSpeciality : L.searchBoth}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full rounded-full border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-ms-blue/25 focus:border-ms-blue/40 transition-shadow"
@@ -611,12 +724,12 @@ export default function HomePage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 {catalogLoading && (
                   <div className="col-span-6 rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400 shadow-sm">
-                    Loading specialties…
+                    {L.loadingSpecialities}
                   </div>
                 )}
                 {!catalogLoading && catalogError && (
                   <div className="col-span-6 rounded-2xl border border-red-100 bg-red-50 p-12 text-center text-sm text-red-600 shadow-sm">
-                    {catalogError}
+                    {L.error}
                   </div>
                 )}
                 {!catalogLoading && !catalogError && filteredSpecialties.map((sp) => (
@@ -624,7 +737,7 @@ export default function HomePage() {
                 ))}
                 {!catalogLoading && !catalogError && filteredSpecialties.length === 0 && (
                   <p className="col-span-6 py-12 text-center text-sm text-slate-400">
-                    No speciality matches "{search}".
+                    {L.noSpeciality} "{search}".
                   </p>
                 )}
               </div>
@@ -634,12 +747,12 @@ export default function HomePage() {
               <div className="grid gap-4 lg:grid-cols-2">
                 {catalogLoading && (
                   <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400 shadow-sm lg:col-span-2">
-                    Loading doctors…
+                    {L.loadingDoctors}
                   </div>
                 )}
                 {!catalogLoading && catalogError && (
                   <div className="rounded-2xl border border-red-100 bg-red-50 p-12 text-center text-sm text-red-600 shadow-sm lg:col-span-2">
-                    {catalogError}
+                    {L.error}
                   </div>
                 )}
                 {!catalogLoading && !catalogError && filteredDoctors.map((doctor) => (
@@ -647,7 +760,7 @@ export default function HomePage() {
                 ))}
                 {!catalogLoading && !catalogError && filteredDoctors.length === 0 && (
                   <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400 shadow-sm lg:col-span-2">
-                    No doctors match "{search}".
+                    {L.noDoctors} "{search}".
                   </div>
                 )}
               </div>
@@ -660,15 +773,14 @@ export default function HomePage() {
           <Container>
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-bold text-white md:text-4xl">
-                Everything You Need, In One Place
+                {t[locale as keyof typeof t].everything.title}
               </h2>
               <p className="mt-3 mx-auto max-w-lg text-sm text-white/55 leading-relaxed">
-                From booking to billing — Medstar's digital platform handles it
-                all, securely and simply.
+                {t[locale as keyof typeof t].everything.sub}
               </p>
             </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {features.map((f) => (
+            <div className="grid gap-6 md:grid-cols-3">
+              {getFeatures(locale).map((f) => (
                 <FeatureCard key={f.id} f={{ ...f, href: getLocalizedPath(locale, f.href) }} />
               ))}
             </div>
@@ -679,7 +791,7 @@ export default function HomePage() {
         <section className="bg-[#F4F6FB] py-16">
           <Container>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {metrics.map((m) => (
+              {getMetrics(locale).map((m) => (
                 <div
                   key={m.label}
                   className="group rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm hover:shadow-md hover:border-ms-blue/30 transition-all duration-300"
@@ -713,15 +825,14 @@ export default function HomePage() {
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
-                Appointments available today
+                {t[locale as keyof typeof t].cta.badge}
               </div>
 
               <h2 className="mx-auto max-w-xl text-4xl font-bold leading-tight text-white md:text-5xl">
-                Ready to take charge of your health?
+                {t[locale as keyof typeof t].cta.title}
               </h2>
               <p className="mx-auto mt-4 max-w-md text-sm text-white/45 leading-relaxed">
-                Book with a specialist in under 2 minutes. No waiting rooms, no
-                paperwork — just care.
+                {t[locale as keyof typeof t].cta.sub}
               </p>
 
               <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -743,14 +854,14 @@ export default function HomePage() {
                     <line x1="8" y1="2" x2="8" y2="6" />
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
-                  Book Appointment
+                  {t[locale as keyof typeof t].cta.book}
                 </ProtectedLink>
                 <ProtectedLink
                   href={getLocalizedPath(locale, "/dashboard")}
                   id="cta-portal-btn"
                   className="group flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
                 >
-                  Sign In
+                  {t[locale as keyof typeof t].cta.signIn}
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -771,17 +882,26 @@ export default function HomePage() {
         <footer className="border-t border-white/10 bg-ms-blue py-10">
           <Container>
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/40">
-              <p>© 2026 Medstar Specialty Clinic. All rights reserved.</p>
+              <p>{t[locale as keyof typeof t].footer.copyright}</p>
               <div className="flex gap-6">
-                {["Privacy", "Terms", "Contact"].map((l) => (
-                  <Link
-                    key={l}
-                    href={getLocalizedPath(locale, `/${l.toLowerCase()}`)}
-                    className="hover:text-white/80 transition-colors"
-                  >
-                    {l}
-                  </Link>
-                ))}
+                <Link
+                  href={getLocalizedPath(locale, `/privacy`)}
+                  className="hover:text-white/80 transition-colors"
+                >
+                  {t[locale as keyof typeof t].footer.privacy}
+                </Link>
+                <Link
+                  href={getLocalizedPath(locale, `/terms`)}
+                  className="hover:text-white/80 transition-colors"
+                >
+                  {t[locale as keyof typeof t].footer.terms}
+                </Link>
+                <Link
+                  href={getLocalizedPath(locale, `/contact`)}
+                  className="hover:text-white/80 transition-colors"
+                >
+                  {t[locale as keyof typeof t].footer.contact}
+                </Link>
               </div>
             </div>
           </Container>

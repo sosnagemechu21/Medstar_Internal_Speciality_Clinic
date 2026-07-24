@@ -11,6 +11,35 @@ import { getLocalizedPath, swapLocaleInPathname } from "@/lib/locale-routing";
 import { isStaffRole } from "@/lib/portal-routing";
 import { useAuth } from "@/providers/auth-provider";
 
+const t = {
+  en: {
+    home: "Home",
+    speciality: "Speciality",
+    doctors: "Doctors",
+    doctorPortal: "Doctor Portal",
+    myPortal: "My Portal",
+    adminPanel: "Admin Panel",
+    bookAppointment: "Book Appointment",
+    signOut: "Sign Out",
+    login: "Login",
+    switchToAmharic: "Switch to Amharic",
+    switchToEnglish: "Switch to English",
+  },
+  am: {
+    home: "መነሻ",
+    speciality: "ስፔሻሊቲ",
+    doctors: "ዶክተሮች",
+    doctorPortal: "የዶክተር ፖርታል",
+    myPortal: "የእኔ ፖርታል",
+    adminPanel: "አስተዳዳሪ",
+    bookAppointment: "ቀጠሮ ይያዙ",
+    signOut: "ውጣ",
+    login: "ግባ",
+    switchToAmharic: "ወደ አማርኛ ቀይር",
+    switchToEnglish: "ወደ እንግሊዝኛ ቀይር",
+  }
+} as const;
+
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -21,9 +50,10 @@ export function Navbar() {
   const locale = resolveLocale(
     typeof params.locale === "string" ? params.locale : undefined,
   );
+  const L = t[locale];
   const nextLocale = locale === "en" ? "am" : "en";
   const portalLabel =
-    !loading && isStaffRole(user?.role) ? "Doctor Portal" : "My Portal";
+    !loading && isStaffRole(user?.role) ? L.doctorPortal : L.myPortal;
   const isAdmin = !loading && user?.role?.toLowerCase() === "admin";
 
   const localize = (href: string) => getLocalizedPath(locale, href);
@@ -49,19 +79,19 @@ export function Navbar() {
               href={localize("/")}
               className="hover:text-white transition-colors"
             >
-              Home
+              {L.home}
             </Link>
             <Link
               href={localize("/departments")}
               className="hover:text-white transition-colors"
             >
-              Speciality
+              {L.speciality}
             </Link>
             <Link
               href={localize("/doctors")}
               className="hover:text-white transition-colors"
             >
-              Doctors
+              {L.doctors}
             </Link>
             <ProtectedLink
               href={localize("/dashboard")}
@@ -74,7 +104,7 @@ export function Navbar() {
                 href={localize("/dashboard/admin/doctors")}
                 className="hover:text-white transition-colors"
               >
-                Admin Panel
+                {L.adminPanel}
               </ProtectedLink>
             )}
           </nav>
@@ -126,14 +156,14 @@ export function Navbar() {
                       className="block px-4 py-2.5 text-slate-700 hover:bg-slate-50"
                       onClick={() => setProfileOpen(false)}
                     >
-                      Book Appointment
+                      {L.bookAppointment}
                     </Link>
                     <hr className="my-1 border-slate-100" />
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2.5 text-red-600 hover:bg-red-50"
                     >
-                      Sign Out
+                      {L.signOut}
                     </button>
                   </div>
                 )}
@@ -143,7 +173,7 @@ export function Navbar() {
                 href={localize("/login")}
                 className="flex items-center gap-1.5 rounded-full border border-white/30 px-4 py-1.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
               >
-                Login
+                {L.login}
               </Link>
             )}
 
@@ -151,7 +181,7 @@ export function Navbar() {
               href={localize("/book")}
               className="rounded-full bg-ms-red px-5 py-2 text-sm font-bold text-white shadow-md hover:bg-ms-red-dark transition-colors"
             >
-              Book Appointment
+              {L.bookAppointment}
             </ProtectedLink>
           </div>
 
@@ -195,21 +225,21 @@ export function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="hover:text-white"
               >
-                Home
+                {L.home}
               </Link>
               <Link
                 href={localize("/departments")}
                 onClick={() => setMenuOpen(false)}
                 className="hover:text-white"
               >
-                Speciality
+                {L.speciality}
               </Link>
               <Link
                 href={localize("/doctors")}
                 onClick={() => setMenuOpen(false)}
                 className="hover:text-white"
               >
-                Doctors
+                {L.doctors}
               </Link>
               <ProtectedLink
                 href={localize("/dashboard")}
@@ -224,7 +254,7 @@ export function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className="hover:text-white"
                 >
-                  Admin Panel
+                  {L.adminPanel}
                 </ProtectedLink>
               )}
               <hr className="border-white/10 my-1" />
@@ -236,7 +266,7 @@ export function Navbar() {
                   }}
                   className="text-left hover:text-white"
                 >
-                  Sign Out ({user?.displayName})
+                  {L.signOut} ({user?.displayName})
                 </button>
               ) : (
                 <Link
@@ -244,7 +274,7 @@ export function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className="hover:text-white"
                 >
-                  Login
+                  {L.login}
                 </Link>
               )}
               <button
@@ -255,14 +285,14 @@ export function Navbar() {
                 }}
                 className="text-left hover:text-white"
               >
-                Switch to {nextLocale === "am" ? "Amharic" : "English"}
+                {nextLocale === "am" ? L.switchToAmharic : L.switchToEnglish}
               </button>
               <ProtectedLink
                 href={localize("/book")}
                 onClick={() => setMenuOpen(false)}
                 className="inline-block rounded-full bg-ms-red px-5 py-2 text-center text-sm font-bold text-white"
               >
-                Book Appointment
+                {L.bookAppointment}
               </ProtectedLink>
             </nav>
           </Container>

@@ -1,55 +1,78 @@
 import { TimeSlot } from '../entities/Schedule';
 import { DoctorRepository } from '@/infrastructure/repositories/DoctorRepository';
+import { parseAppointmentDate } from '@/lib/doctor-session';
 
 export class CalculateAvailability {
   constructor(private doctorRepo: DoctorRepository) {}
 
-  // Replace the top lines of execute() with this:
- async execute(doctorId: string, dateParam: string): Promise<TimeSlot[]> {
-    // Split '2026-07-13' safely into year, month, day components
+  async execute(doctorId: string, dateParam: string): Promise<TimeSlot[]> {
     const [year, month, day] = dateParam.split('-').map(Number);
-    // Create the date object using local time numbers (months are 0-indexed in JS)
-    const targetDate = new Date(year, month - 1, day); 
-    const dayOfWeek = targetDate.getDay(); 
+    if (!year || !month || !day) return [];
 
-    const template = await this.doctorRepo.getScheduleTemplate(doctorId, dayOfWeek);
-    if (!template) return []; // <--- If no template matches this dayOfWeek, it returns []
+    const dayStart = parseAppointmentDate(dateParam);
+    const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
+    const dayOfWeek = dayStart.getUTCDay();
 
-    const dayStart = new Date(targetDate.setHours(0, 0, 0, 0));
-    const dayEnd = new Date(targetDate.setHours(23, 59, 59, 999));
-    const bookedTimesList = await this.doctorRepo.getActiveBookedTimes(doctorId, dayStart, dayEnd);
-    const bookedTimes = new Set(bookedTimesList);
+    const [releasedSlots, unavailableSlotList, bookedTimesList, template] = await Promise.all([
+      this.doctorRepo.getReleasedTimeSlots(doctorId, dayStart, dayEnd),
+      this.doctorRepo.getUnavailableTimeSlots(doctorId, dayStart, dayEnd),
+      this.doctorRepo.getActiveBookedTimes(doctorId, dayStart, dayEnd),
+      this.doctorRepo.getScheduleTemplate(doctorId, dayOfWeek),
+    ]);
 
-    const slots: TimeSlot[] = [];
-    let currentMins = this.timeToMinutes(template.startTime);
-    const endMins = this.timeToMinutes(template.endTime);
+    const unavailableTimes = new Set([...unavailableSlotList, ...bookedTimesList]);
+    const availableMap = new Map<string, TimeSlot>();
 
-    const now = new Date();
-    const isToday = new Date().toISOString().split('T')[0] === dateParam;
-
-    while (currentMins + template.slotDurationMinutes <= endMins) {
-      const timeString = this.minutesToTime(currentMins);
-      const isAlreadyBooked = bookedTimes.has(timeString);
-      
-      let isPastTime = false;
-      if (isToday) {
-        const [hours, mins] = timeString.split(':').map(Number);
-        const slotDateTime = new Date();
-        slotDateTime.setHours(hours, mins, 0, 0);
-        isPastTime = slotDateTime <= now;
-      }
-
-      if (!isAlreadyBooked && !isPastTime) {
-        slots.push({
-          startTime: timeString,
-          endTime: this.minutesToTime(currentMins + template.slotDurationMinutes),
+    // 1. Include explicit released slots created by doctor in portal
+    for (const slot of releasedSlots) {
+      if (!unavailableTimes.has(slot.startTime)) {
+        availableMap.set(slot.startTime, {
+          startTime: slot.startTime,
+          endTime: slot.endTime,
         });
       }
-
-      currentMins += template.slotDurationMinutes;
     }
 
-    return slots;
+    // 2. Include template-generated slots if template exists
+    if (template) {
+      let currentMins = this.timeToMinutes(template.startTime);
+      const endMins = this.timeToMinutes(template.endTime);
+
+      while (currentMins + template.slotDurationMinutes <= endMins) {
+        const timeString = this.minutesToTime(currentMins);
+        const endTimeString = this.minutesToTime(currentMins + template.slotDurationMinutes);
+
+        if (!unavailableTimes.has(timeString) && !availableMap.has(timeString)) {
+          availableMap.set(timeString, {
+            startTime: timeString,
+            endTime: endTimeString,
+          });
+        }
+
+        currentMins += template.slotDurationMinutes;
+      }
+    }
+
+    // 3. Filter past slots if dateParam is today
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const isToday = dateParam === todayStr;
+
+    let result = Array.from(availableMap.values());
+
+    if (isToday) {
+      result = result.filter((slot) => {
+        const [hours, mins] = slot.startTime.split(':').map(Number);
+        const slotTime = new Date();
+        slotTime.setHours(hours, mins, 0, 0);
+        return slotTime > now;
+      });
+    }
+
+    // Sort by startTime
+    result.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+    return result;
   }
 
   private timeToMinutes(timeStr: string): number {

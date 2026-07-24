@@ -154,3 +154,44 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await resolveSessionDoctor(request);
+    if (!session.ok) {
+      return NextResponse.json({ success: false, error: session.error }, { status: session.status });
+    }
+
+    const { doctorId, role } = session.ctx;
+    const { searchParams } = new URL(request.url);
+    const slotId = searchParams.get('id');
+
+    if (!slotId) {
+      return NextResponse.json({ success: false, error: 'Slot ID parameter is required' }, { status: 400 });
+    }
+
+    const slot = await prisma.timeSlot.findUnique({
+      where: { id: slotId },
+    });
+
+    if (!slot) {
+      return NextResponse.json({ success: false, error: 'Time slot not found' }, { status: 404 });
+    }
+
+    if (role !== 'admin' && slot.doctorId !== doctorId) {
+      return NextResponse.json({ success: false, error: 'Forbidden. Slot belongs to another doctor.' }, { status: 403 });
+    }
+
+    await prisma.timeSlot.delete({
+      where: { id: slotId },
+    });
+
+    return NextResponse.json({ success: true, message: 'Time slot erased successfully' });
+  } catch (error: any) {
+    console.error('Doctor availability DELETE error:', error);
+    return NextResponse.json(
+      { success: false, error: error.message || 'Internal Server Error' },
+      { status: 500 }
+    );
+  }
+}

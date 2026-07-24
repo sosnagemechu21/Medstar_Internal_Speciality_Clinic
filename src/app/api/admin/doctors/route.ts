@@ -101,3 +101,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    const doctors = await prisma.doctor.findMany({
+      include: {
+        specialty: true,
+        user: { select: { email: true, phoneNumber: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return NextResponse.json({ success: true, doctors });
+  } catch (error: any) {
+    console.error('Admin doctors GET error:', error);
+    return NextResponse.json({ success: false, error: error.message || 'Internal Server Error' }, { status: 500 });
+  }
+}

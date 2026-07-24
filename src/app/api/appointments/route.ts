@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 
 import { prisma } from '@/lib/prisma';
+import { parseAppointmentDate } from '@/lib/doctor-session';
 
 type BookingPayload = {
   doctorId?: string;
@@ -10,15 +11,6 @@ type BookingPayload = {
   startTime?: string;
   endTime?: string;
 };
-
-function parseLocalDate(dateInput: string): Date | null {
-  const [year, month, day] = dateInput.split('-').map(Number);
-  if (!year || !month || !day) {
-    return null;
-  }
-
-  return new Date(year, month - 1, day);
-}
 
 function splitDisplayName(value: string | null | undefined) {
   const fallback = 'Patient';
@@ -69,12 +61,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required request payload attributes' }, { status: 400 });
     }
 
-    const targetDate = parseLocalDate(appointmentDate);
-    if (!targetDate) {
+    let targetDate: Date;
+    try {
+      targetDate = parseAppointmentDate(appointmentDate);
+    } catch {
       return NextResponse.json({ error: 'Invalid appointment date' }, { status: 400 });
     }
 
-    const dayOfWeek = targetDate.getDay();
+    const dayOfWeek = targetDate.getUTCDay();
 
     const doctor = await prisma.doctor.findUnique({
       where: { id: doctorId },
@@ -97,9 +91,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Selected doctor is unavailable' }, { status: 404 });
     }
 
+    const existingTimeSlot = await prisma.timeSlot.findUnique({
+      where: {
+        doctorId_appointmentDate_startTime: {
+          doctorId,
+          appointmentDate: targetDate,
+          startTime,
+        },
+      },
+    });
+
+    const isExplicitlyReleased = existingTimeSlot?.status === 'released';
     const schedule = doctor.schedules[0];
-    if (!schedule || !isSlotInsideSchedule(schedule, startTime, endTime)) {
-      return NextResponse.json({ error: 'Selected time slot is invalid' }, { status: 400 });
+    const isTemplateValid = schedule && isSlotInsideSchedule(schedule, startTime, endTime) && (!existingTimeSlot || existingTimeSlot.status === 'released');
+
+    if (!isExplicitlyReleased && !isTemplateValid) {
+      return NextResponse.json({ error: 'Selected time slot is invalid or unavailable' }, { status: 400 });
     }
 
     const booking = await prisma.$transaction(async (tx) => {
