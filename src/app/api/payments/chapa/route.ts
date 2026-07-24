@@ -3,8 +3,19 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    let { amount, email, firstName, lastName, txRef, callbackUrl, returnUrl } =
-      body;
+    let {
+      amount,
+      email,
+      firstName,
+      lastName,
+      txRef,
+      callbackUrl,
+      returnUrl,
+      locale,
+    } = body;
+
+    // Detect and validate user locale (defaults to English 'en')
+    const userLocale = locale === "am" ? "am" : "en";
 
     // Trim email if it is a string, and fallback if empty or missing
     if (typeof email === "string") {
@@ -17,6 +28,10 @@ export async function POST(request: Request) {
       txRef = `medstar-tx-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     }
 
+    // Use the request origin to dynamically support both localhost and Vercel without hardcoding
+    const clientOrigin = request.headers.get("origin");
+    const baseUrl = clientOrigin || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
     const payload = {
       amount: amount.toString(),
       currency: "ETB",
@@ -24,12 +39,9 @@ export async function POST(request: Request) {
       first_name: firstName || "Valued",
       last_name: lastName || "Patient",
       tx_ref: txRef,
-      callback_url:
-        callbackUrl ||
-        `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/payments/verify`,
+      callback_url: callbackUrl || `${baseUrl}/api/payments/verify`,
       return_url:
-        returnUrl ||
-        `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/en/book/success`,
+        returnUrl || `${baseUrl}/${userLocale}/book/success?tx_ref=${txRef}`,
     };
 
     console.log("Sending payload to Chapa:", payload);

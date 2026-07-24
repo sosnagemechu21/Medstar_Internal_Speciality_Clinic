@@ -412,35 +412,47 @@ function HeroSection({ locale }: { locale: Locale }) {
             </svg>
           </ProtectedLink>
         </div>
-      </Container>
 
-      {/* ── Stats strip ── */}
-      <div className="relative z-20 border-t border-white/10 bg-black/25 backdrop-blur-md">
-        <Container>
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
+        {/* ── Stats strip ── */}
+        <div className="mt-12 md:mt-16 pt-10 border-t border-white/10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             {stats.map((s) => (
               <div
                 key={s.label}
-                className="group py-5 px-6 text-white transition-colors hover:bg-white/5 cursor-default"
+                className="group text-white transition-colors cursor-default"
               >
-                <p className="text-3xl font-black tracking-tight group-hover:text-ms-red transition-colors duration-200">
+                <p
+                  className="text-4xl md:text-5xl font-bold tracking-tight group-hover:text-ms-red transition-colors duration-200"
+                  style={{ fontFamily: "Merriweather, Georgia, serif" }}
+                >
                   {s.value}
                 </p>
-                <p className="mt-0.5 text-[10px] font-semibold tracking-widest text-white/45 uppercase">
+                <p className="mt-2 text-xs font-semibold tracking-[0.15em] text-white/60 uppercase">
                   {s.label}
                 </p>
               </div>
             ))}
           </div>
-        </Container>
-      </div>
+        </div>
+      </Container>
 
       {/* Scroll hint */}
       <div
-        className="pointer-events-none absolute bottom-24 right-8 hidden md:flex flex-col items-center gap-2 text-white/25 text-[10px] tracking-[0.3em] uppercase rotate-90"
+        className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-white/50 text-[11px] tracking-[0.2em] font-mono"
         aria-hidden="true"
       >
-        {L.scroll}
+        <span>scroll</span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="w-4 h-4 animate-bounce mt-1"
+        >
+          <path d="M12 5v14M19 12l-7 7-7-7" />
+        </svg>
       </div>
     </section>
   );

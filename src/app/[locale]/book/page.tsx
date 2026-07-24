@@ -369,7 +369,10 @@ export default function BookPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: "100" }),
+        body: JSON.stringify({
+          amount: "100",
+          locale,
+        }),
       });
 
       const data = await response.json();
@@ -428,7 +431,7 @@ export default function BookPage() {
                       )
                     : formatTime(booking.time, locale),
                 ],
-                ["Fee", "ETB 800"],
+                ["Fee", "ETB 100"],
               ].map(([k, v]) => (
                 <div
                   key={k}
@@ -746,7 +749,7 @@ export default function BookPage() {
                     ],
                     ["Date", formatDate(booking.date, locale)],
                     ["Time", formatTime(booking.time, locale)],
-                    ["Location", "Bole Road, Addis Ababa"],
+                    ["Location", "22 near Tabot maderia, Addis Ababa"],
                   ].map(([k, v]) => (
                     <div
                       key={k}

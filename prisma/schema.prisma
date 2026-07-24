@@ -1,6 +1,7 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")      // Pooled database connection string (port 6543)
+  directUrl = env("DIRECT_URL")      // Direct database connection string (port 5432)
 }
 
 generator client {
