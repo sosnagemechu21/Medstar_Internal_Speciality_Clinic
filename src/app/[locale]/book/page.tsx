@@ -5,7 +5,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Navbar } from "@/components/ui/navbar";
 import { Container } from "@/components/ui/container";
-import { fetchDoctors, fetchSpecialties, type DoctorListItem, type SpecialtyListItem } from "@/lib/catalog-api";
+import {
+  fetchDoctors,
+  fetchSpecialties,
+  type DoctorListItem,
+  type SpecialtyListItem,
+} from "@/lib/catalog-api";
 import { resolveLocale } from "@/lib/i18n-utils";
 import { getLocalizedPath } from "@/lib/locale-routing";
 import { useAuth } from "@/providers/auth-provider";
@@ -61,19 +66,29 @@ function StepIndicator({ current }: { current: number }) {
                 }`}
               >
                 {done ? (
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 ) : (
                   step
                 )}
               </div>
-              <span className={`text-[10px] font-semibold whitespace-nowrap ${active ? "text-ms-red" : "text-slate-400"}`}>
+              <span
+                className={`text-[10px] font-semibold whitespace-nowrap ${active ? "text-ms-red" : "text-slate-400"}`}
+              >
                 {label}
               </span>
             </div>
             {i < STEPS.length - 1 && (
-              <div className={`h-0.5 w-12 sm:w-20 mx-2 mb-5 ${done ? "bg-green-400" : "bg-slate-200"}`} />
+              <div
+                className={`h-0.5 w-12 sm:w-20 mx-2 mb-5 ${done ? "bg-green-400" : "bg-slate-200"}`}
+              />
             )}
           </div>
         );
@@ -82,14 +97,25 @@ function StepIndicator({ current }: { current: number }) {
   );
 }
 
-function Calendar({ selected, onSelect, locale }: { selected: Date | null; onSelect: (d: Date) => void; locale: "en" | "am" }) {
+function Calendar({
+  selected,
+  onSelect,
+  locale,
+}: {
+  selected: Date | null;
+  onSelect: (d: Date) => void;
+  locale: "en" | "am";
+}) {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
   const localeTag = locale === "am" ? "am-ET" : "en-US";
-  const monthName = today.toLocaleString(localeTag, { month: "long", year: "numeric" });
+  const monthName = today.toLocaleString(localeTag, {
+    month: "long",
+    year: "numeric",
+  });
 
   const days: (number | null)[] = Array(firstDay).fill(null);
   for (let d = 1; d <= daysInMonth; d++) days.push(d);
@@ -99,15 +125,20 @@ function Calendar({ selected, onSelect, locale }: { selected: Date | null; onSel
       <p className="text-sm font-bold text-ms-blue mb-4">{monthName}</p>
       <div className="grid grid-cols-7 gap-1 text-center text-xs mb-2">
         {["SU", "MO", "TU", "WE", "TH", "FR", "SA"].map((d) => (
-          <span key={d} className="font-semibold text-slate-400 py-1">{d}</span>
+          <span key={d} className="font-semibold text-slate-400 py-1">
+            {d}
+          </span>
         ))}
       </div>
       <div className="grid grid-cols-7 gap-1">
         {days.map((day, i) => {
           if (!day) return <div key={`empty-${i}`} />;
           const date = new Date(year, month, day);
-          const isSelected = selected?.getDate() === day && selected?.getMonth() === month;
-          const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+          const isSelected =
+            selected?.getDate() === day && selected?.getMonth() === month;
+          const isPast =
+            date <
+            new Date(today.getFullYear(), today.getMonth(), today.getDate());
           return (
             <button
               key={day}
@@ -133,7 +164,12 @@ function Calendar({ selected, onSelect, locale }: { selected: Date | null; onSel
 
 function formatDate(date: Date, locale: "en" | "am") {
   const localeTag = locale === "am" ? "am-ET" : "en-US";
-  return date.toLocaleDateString(localeTag, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  return date.toLocaleDateString(localeTag, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function formatTime(time: string, locale: "en" | "am") {
@@ -145,7 +181,11 @@ function formatTime(time: string, locale: "en" | "am") {
   }).format(new Date(2026, 0, 1, hour, minute));
 }
 
-function formatTimeRange(startTime: string, endTime: string, locale: "en" | "am") {
+function formatTimeRange(
+  startTime: string,
+  endTime: string,
+  locale: "en" | "am",
+) {
   return `${formatTime(startTime, locale)} - ${formatTime(endTime, locale)}`;
 }
 
@@ -159,7 +199,9 @@ function toDateParam(date: Date): string {
 
 export default function BookPage() {
   const params = useParams<{ locale?: string }>();
-  const locale = resolveLocale(typeof params.locale === "string" ? params.locale : undefined);
+  const locale = resolveLocale(
+    typeof params.locale === "string" ? params.locale : undefined,
+  );
   const localizedBookHref = getLocalizedPath(locale, "/book");
   const localizedHomeHref = getLocalizedPath(locale, "/");
   const localizedPortalHref = getLocalizedPath(locale, "/dashboard");
@@ -174,7 +216,9 @@ export default function BookPage() {
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [availableSlots, setAvailableSlots] = useState<AvailabilitySlot[]>([]);
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
-  const [availabilityError, setAvailabilityError] = useState<string | null>(null);
+  const [availabilityError, setAvailabilityError] = useState<string | null>(
+    null,
+  );
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [booking, setBooking] = useState<BookingState>({
@@ -242,10 +286,13 @@ export default function BookPage() {
           {
             cache: "no-store",
             signal: controller.signal,
-          }
+          },
         );
 
-        const data = (await response.json()) as { error?: string; slots?: AvailabilitySlot[] };
+        const data = (await response.json()) as {
+          error?: string;
+          slots?: AvailabilitySlot[];
+        };
         if (!response.ok) {
           throw new Error(data.error ?? "Unable to load available slots.");
         }
@@ -257,7 +304,9 @@ export default function BookPage() {
         }
 
         setAvailableSlots([]);
-        setAvailabilityError((error as Error).message || "Unable to load available slots.");
+        setAvailabilityError(
+          (error as Error).message || "Unable to load available slots.",
+        );
       } finally {
         if (!controller.signal.aborted) {
           setAvailabilityLoading(false);
@@ -273,7 +322,8 @@ export default function BookPage() {
   const availableDoctors = booking.specialty
     ? doctors.filter((doctor) => doctor.specialtyId === booking.specialty?.id)
     : [];
-  const selectedSlot = availableSlots.find((slot) => slot.startTime === booking.time) ?? null;
+  const selectedSlot =
+    availableSlots.find((slot) => slot.startTime === booking.time) ?? null;
 
   if (loading) {
     return (
@@ -293,41 +343,34 @@ export default function BookPage() {
       setSubmitting(true);
       setSubmitError(null);
 
-      const response = await fetch("/api/appointments", {
+      const response = await fetch("/api/payments/chapa", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
-        body: JSON.stringify({
-          doctorId: booking.doctor.id,
-          appointmentDate: toDateParam(booking.date),
-          startTime: selectedSlot.startTime,
-          endTime: selectedSlot.endTime,
-        }),
+        body: JSON.stringify({ amount: "100" }),
       });
 
-      const data = (await response.json()) as {
-        error?: string;
-        appointment?: { id: string };
-        patientId?: string;
-      };
+      const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error ?? "Unable to create appointment.");
+      if (!response.ok || !data.checkoutUrl) {
+        throw new Error(data.error ?? "Failed to initialize payment.");
       }
 
-      await refresh();
-      setRef(data.appointment?.id ? `MSC-${data.appointment.id.slice(0, 8).toUpperCase()}` : `MSC-${Math.floor(100000 + Math.random() * 900000)}`);
-      setConfirmed(true);
+      window.location.href = data.checkoutUrl;
     } catch (error) {
-      setSubmitError((error as Error).message || "Unable to create appointment.");
-    } finally {
+      setSubmitError((error as Error).message || "Unable to process payment.");
       setSubmitting(false);
     }
   };
 
-  if (confirmed && booking.doctor && booking.specialty && booking.date && booking.time) {
+  if (
+    confirmed &&
+    booking.doctor &&
+    booking.specialty &&
+    booking.date &&
+    booking.time
+  ) {
     return (
       <>
         <Navbar />
@@ -335,7 +378,13 @@ export default function BookPage() {
           <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-xl bg-white">
             <div className="bg-gradient-to-br from-ms-blue to-ms-blue-mid px-8 py-10 text-center text-white">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500">
-                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg
+                  className="w-8 h-8"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
@@ -348,21 +397,49 @@ export default function BookPage() {
                 ["Speciality", booking.specialty.name],
                 ["Doctor", booking.doctor.name],
                 ["Date", formatDate(booking.date, locale)],
-                ["Time", selectedSlot ? formatTimeRange(selectedSlot.startTime, selectedSlot.endTime, locale) : formatTime(booking.time, locale)],
+                [
+                  "Time",
+                  selectedSlot
+                    ? formatTimeRange(
+                        selectedSlot.startTime,
+                        selectedSlot.endTime,
+                        locale,
+                      )
+                    : formatTime(booking.time, locale),
+                ],
                 ["Fee", "ETB 800"],
               ].map(([k, v]) => (
-                <div key={k} className="flex justify-between border-b border-slate-100 pb-2">
+                <div
+                  key={k}
+                  className="flex justify-between border-b border-slate-100 pb-2"
+                >
                   <span className="text-slate-400">{k}</span>
                   <span className="font-semibold text-ms-blue">{v}</span>
                 </div>
               ))}
             </div>
             <div className="px-8 pb-8 space-y-3">
-              <Link href={localizedPortalHref} className="block w-full rounded-xl bg-ms-blue py-3 text-center text-sm font-bold text-white hover:bg-ms-blue-mid transition-colors">
+              <Link
+                href={localizedPortalHref}
+                className="block w-full rounded-xl bg-ms-blue py-3 text-center text-sm font-bold text-white hover:bg-ms-blue-mid transition-colors"
+              >
                 View in Portal
               </Link>
-              <button type="button" onClick={() => { setConfirmed(false); setStep(1); setBooking({ specialty: null, doctor: null, date: null, time: null, paymentMethod: "Chapa" }); }}
-                className="block w-full rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmed(false);
+                  setStep(1);
+                  setBooking({
+                    specialty: null,
+                    doctor: null,
+                    date: null,
+                    time: null,
+                    paymentMethod: "Chapa",
+                  });
+                }}
+                className="block w-full rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+              >
                 Book Another
               </button>
             </div>
@@ -377,12 +454,26 @@ export default function BookPage() {
       <Navbar />
       <main className="pt-16 min-h-screen bg-[#F4F6FB]">
         <Container className="py-10">
-          <Link href={localizedHomeHref} className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-ms-blue mb-6 transition-colors">
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
+          <Link
+            href={localizedHomeHref}
+            className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-ms-blue mb-6 transition-colors"
+          >
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
             Back to home
           </Link>
 
-          <h1 className="text-3xl font-bold text-ms-blue" style={{ fontFamily: "Merriweather, Georgia, serif" }}>
+          <h1
+            className="text-3xl font-bold text-ms-blue"
+            style={{ fontFamily: "Merriweather, Georgia, serif" }}
+          >
             Book an Appointment
           </h1>
           <p className="text-slate-500 text-sm mt-1 mb-8">
@@ -394,7 +485,9 @@ export default function BookPage() {
           {/* Step 1 — Speciality */}
           {step === 1 && (
             <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
-              <h2 className="text-lg font-bold text-ms-blue mb-6">Choose a Speciality</h2>
+              <h2 className="text-lg font-bold text-ms-blue mb-6">
+                Choose a Speciality
+              </h2>
               {catalogLoading && (
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center text-sm text-slate-400">
                   Loading specialties…
@@ -407,20 +500,35 @@ export default function BookPage() {
               )}
               {!catalogLoading && !catalogError && (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {specialties.map((sp) => (
-                  <button
-                    key={sp.id}
-                    type="button"
-                    onClick={() => { setBooking((b) => ({ ...b, specialty: sp, doctor: null, date: null, time: null })); setStep(2); }}
-                    className="group flex flex-col items-start gap-3 rounded-xl border border-slate-200 p-5 text-left hover:border-ms-blue/40 hover:shadow-md transition-all"
-                  >
-                    <span className="text-2xl">{getSpecialtyIcon(sp.name)}</span>
-                    <div>
-                      <p className="font-bold text-ms-blue group-hover:text-ms-red transition-colors">{sp.name}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{sp.description}</p>
-                    </div>
-                  </button>
-                ))}
+                  {specialties.map((sp) => (
+                    <button
+                      key={sp.id}
+                      type="button"
+                      onClick={() => {
+                        setBooking((b) => ({
+                          ...b,
+                          specialty: sp,
+                          doctor: null,
+                          date: null,
+                          time: null,
+                        }));
+                        setStep(2);
+                      }}
+                      className="group flex flex-col items-start gap-3 rounded-xl border border-slate-200 p-5 text-left hover:border-ms-blue/40 hover:shadow-md transition-all"
+                    >
+                      <span className="text-2xl">
+                        {getSpecialtyIcon(sp.name)}
+                      </span>
+                      <div>
+                        <p className="font-bold text-ms-blue group-hover:text-ms-red transition-colors">
+                          {sp.name}
+                        </p>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {sp.description}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
@@ -431,10 +539,20 @@ export default function BookPage() {
             <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-lg font-bold text-ms-blue">Select Your Doctor</h2>
-                  <p className="text-xs text-slate-400 mt-0.5">Available {booking.specialty.name} specialists</p>
+                  <h2 className="text-lg font-bold text-ms-blue">
+                    Select Your Doctor
+                  </h2>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Available {booking.specialty.name} specialists
+                  </p>
                 </div>
-                <button type="button" onClick={() => setStep(1)} className="text-sm text-slate-400 hover:text-ms-blue">← Back</button>
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-sm text-slate-400 hover:text-ms-blue"
+                >
+                  ← Back
+                </button>
               </div>
               <div className="space-y-3">
                 {catalogLoading && (
@@ -447,14 +565,31 @@ export default function BookPage() {
                     {catalogError}
                   </div>
                 )}
-                {!catalogLoading && !catalogError && availableDoctors.length === 0 && (
-                  <div className="rounded-xl border-2 border-dashed border-slate-200 p-8 text-center text-sm text-slate-400">
-                    No doctors are available for this specialty yet.
-                  </div>
-                )}
-                {!catalogLoading && !catalogError && availableDoctors.map((doc) => (
-                  <DoctorCard key={doc.id} doc={doc} onSelect={() => { setSubmitError(null); setBooking((b) => ({ ...b, doctor: doc, date: null, time: null })); setStep(3); }} />
-                ))}
+                {!catalogLoading &&
+                  !catalogError &&
+                  availableDoctors.length === 0 && (
+                    <div className="rounded-xl border-2 border-dashed border-slate-200 p-8 text-center text-sm text-slate-400">
+                      No doctors are available for this specialty yet.
+                    </div>
+                  )}
+                {!catalogLoading &&
+                  !catalogError &&
+                  availableDoctors.map((doc) => (
+                    <DoctorCard
+                      key={doc.id}
+                      doc={doc}
+                      onSelect={() => {
+                        setSubmitError(null);
+                        setBooking((b) => ({
+                          ...b,
+                          doctor: doc,
+                          date: null,
+                          time: null,
+                        }));
+                        setStep(3);
+                      }}
+                    />
+                  ))}
               </div>
             </div>
           )}
@@ -463,14 +598,24 @@ export default function BookPage() {
           {step === 3 && (
             <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-ms-blue">Pick a Date & Time</h2>
-                <button type="button" onClick={() => setStep(2)} className="text-sm text-slate-400 hover:text-ms-blue">← Back</button>
+                <h2 className="text-lg font-bold text-ms-blue">
+                  Pick a Date & Time
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="text-sm text-slate-400 hover:text-ms-blue"
+                >
+                  ← Back
+                </button>
               </div>
               <div className="grid md:grid-cols-2 gap-8">
                 <Calendar
                   selected={booking.date}
                   locale={locale}
-                  onSelect={(d) => setBooking((b) => ({ ...b, date: d, time: null }))}
+                  onSelect={(d) =>
+                    setBooking((b) => ({ ...b, date: d, time: null }))
+                  }
                 />
                 <div>
                   <p className="text-sm font-bold text-ms-blue mb-4">
@@ -502,14 +647,24 @@ export default function BookPage() {
                           <button
                             key={slot.startTime}
                             type="button"
-                            onClick={() => { setSubmitError(null); setBooking((b) => ({ ...b, time: slot.startTime })); }}
+                            onClick={() => {
+                              setSubmitError(null);
+                              setBooking((b) => ({
+                                ...b,
+                                time: slot.startTime,
+                              }));
+                            }}
                             className={`rounded-lg py-2.5 px-3 text-xs font-semibold transition-colors ${
                               selected
                                 ? "bg-ms-red text-white"
                                 : "border border-slate-200 hover:border-ms-blue text-slate-700"
                             }`}
                           >
-                            {formatTimeRange(slot.startTime, slot.endTime, locale)}
+                            {formatTimeRange(
+                              slot.startTime,
+                              slot.endTime,
+                              locale,
+                            )}
                           </button>
                         );
                       })}
@@ -530,89 +685,150 @@ export default function BookPage() {
           )}
 
           {/* Step 4 — Confirm & Pay */}
-          {step === 4 && booking.doctor && booking.specialty && booking.date && booking.time && (
-            <div className="grid lg:grid-cols-5 gap-6">
-              <div className="lg:col-span-3 rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-bold text-ms-blue">Confirm Appointment</h2>
-                  <button type="button" onClick={() => setStep(3)} className="text-sm text-slate-400 hover:text-ms-blue">← Back</button>
-                </div>
-                <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4 mb-6">
-                  <div className="h-14 w-14 rounded-full bg-ms-blue/10 flex items-center justify-center text-xl">👨‍⚕️</div>
-                  <div>
-                    <p className="font-bold text-ms-blue">{booking.doctor.name}</p>
-                    <p className="text-xs text-slate-400">{booking.doctor.title}</p>
-                  </div>
-                </div>
-                {[
-                  ["Patient", user?.fullName ?? user?.displayName ?? "—"],
-                  ["Patient ID", `MSC-${Math.floor(10000 + Math.random() * 90000)}`],
-                  ["Date", formatDate(booking.date, locale)],
-                  ["Time", formatTime(booking.time, locale)],
-                  ["Location", "Bole Road, Addis Ababa"],
-                ].map(([k, v]) => (
-                  <div key={k} className="flex justify-between py-2.5 border-b border-slate-100 text-sm">
-                    <span className="text-slate-400">{k}</span>
-                    <span className="font-semibold text-ms-blue">{v}</span>
-                  </div>
-                ))}
-                <p className="mt-4 flex items-center gap-1.5 text-xs text-green-600">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                  Your appointment data is encrypted and secure
-                </p>
-              </div>
-
-              <div className="lg:col-span-2 rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
-                <h2 className="text-lg font-bold text-ms-blue mb-6">Payment</h2>
-                <div className="space-y-2 text-sm mb-6">
-                  <div className="flex justify-between text-slate-500"><span>Consultation fee</span><span>ETB 800</span></div>
-                  <div className="flex justify-between text-slate-500"><span>Service fee</span><span>ETB 40</span></div>
-                  <div className="flex justify-between font-bold text-ms-blue pt-2 border-t"><span>Total</span><span>ETB 840</span></div>
-                </div>
-                <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-3">Pay With</p>
-                <div className="grid grid-cols-2 gap-2 mb-6">
-                  {["Chapa", "Telebirr", "CBE Birr", "Bank"].map((m) => (
+          {step === 4 &&
+            booking.doctor &&
+            booking.specialty &&
+            booking.date &&
+            booking.time && (
+              <div className="grid lg:grid-cols-5 gap-6">
+                <div className="lg:col-span-3 rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-lg font-bold text-ms-blue">
+                      Confirm Appointment
+                    </h2>
                     <button
-                      key={m}
                       type="button"
-                      onClick={() => setBooking((b) => ({ ...b, paymentMethod: m }))}
-                      className={`rounded-lg border py-2 text-xs font-semibold transition-colors ${
-                        booking.paymentMethod === m
-                          ? "border-ms-blue bg-ms-blue/5 text-ms-blue"
-                          : "border-slate-200 text-slate-500 hover:border-slate-300"
-                      }`}
+                      onClick={() => setStep(3)}
+                      className="text-sm text-slate-400 hover:text-ms-blue"
                     >
-                      {m}
+                      ← Back
                     </button>
+                  </div>
+                  <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4 mb-6">
+                    <div className="h-14 w-14 rounded-full bg-ms-blue/10 flex items-center justify-center text-xl">
+                      👨‍⚕️
+                    </div>
+                    <div>
+                      <p className="font-bold text-ms-blue">
+                        {booking.doctor.name}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        {booking.doctor.title}
+                      </p>
+                    </div>
+                  </div>
+                  {[
+                    ["Patient", user?.fullName ?? user?.displayName ?? "—"],
+                    [
+                      "Patient ID",
+                      `MSC-${Math.floor(10000 + Math.random() * 90000)}`,
+                    ],
+                    ["Date", formatDate(booking.date, locale)],
+                    ["Time", formatTime(booking.time, locale)],
+                    ["Location", "Bole Road, Addis Ababa"],
+                  ].map(([k, v]) => (
+                    <div
+                      key={k}
+                      className="flex justify-between py-2.5 border-b border-slate-100 text-sm"
+                    >
+                      <span className="text-slate-400">{k}</span>
+                      <span className="font-semibold text-ms-blue">{v}</span>
+                    </div>
                   ))}
-                </div>
-                {submitError && (
-                  <p className="mb-4 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-xs text-red-600">
-                    {submitError}
+                  <p className="mt-4 flex items-center gap-1.5 text-xs text-green-600">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    Your appointment data is encrypted and secure
                   </p>
-                )}
-                <button
-                  type="button"
-                  onClick={handleConfirm}
-                  disabled={submitting}
-                  className="w-full rounded-xl bg-ms-red py-3.5 text-sm font-bold text-white hover:bg-ms-red-dark transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {submitting ? "Locking Slot..." : "Pay ETB 840 & Confirm →"}
-                </button>
-                <p className="mt-4 flex items-center justify-center gap-1.5 text-[10px] text-green-600">
-                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                  PCI-DSS Level 1 secured
-                </p>
+                </div>
+
+                <div className="lg:col-span-2 rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
+                  <h2 className="text-lg font-bold text-ms-blue mb-6">
+                    Payment
+                  </h2>
+                  <div className="space-y-2 text-sm mb-6">
+                    <div className="flex justify-between text-slate-500">
+                      <span>Appointment fee</span>
+                      <span>ETB 90</span>
+                    </div>
+                    <div className="flex justify-between text-slate-500">
+                      <span>Service fee</span>
+                      <span>ETB 10</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-ms-blue pt-2 border-t">
+                      <span>Total</span>
+                      <span>ETB 100</span>
+                    </div>
+                  </div>
+                  <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-3">
+                    Pay With
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 mb-6">
+                    {["Chapa", "Telebirr", "CBE Birr", "Bank"].map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() =>
+                          setBooking((b) => ({ ...b, paymentMethod: m }))
+                        }
+                        className={`rounded-lg border py-2 text-xs font-semibold transition-colors ${
+                          booking.paymentMethod === m
+                            ? "border-ms-blue bg-ms-blue/5 text-ms-blue"
+                            : "border-slate-200 text-slate-500 hover:border-slate-300"
+                        }`}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                  {submitError && (
+                    <p className="mb-4 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-xs text-red-600">
+                      {submitError}
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleConfirm}
+                    disabled={submitting}
+                    className="w-full rounded-xl bg-ms-red py-3.5 text-sm font-bold text-white hover:bg-ms-red-dark transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {submitting ? "Locking Slot..." : "Pay ETB 100 & Confirm →"}
+                  </button>
+                  <p className="mt-4 flex items-center justify-center gap-1.5 text-[10px] text-green-600">
+                    <svg
+                      className="w-3 h-3"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    PCI-DSS Level 1 secured
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </Container>
       </main>
     </>
   );
 }
 
-function DoctorCard({ doc, onSelect }: { doc: DoctorListItem; onSelect: () => void }) {
+function DoctorCard({
+  doc,
+  onSelect,
+}: {
+  doc: DoctorListItem;
+  onSelect: () => void;
+}) {
   return (
     <button
       type="button"
@@ -620,11 +836,15 @@ function DoctorCard({ doc, onSelect }: { doc: DoctorListItem; onSelect: () => vo
       className="w-full flex items-center justify-between rounded-xl border border-slate-200 p-5 hover:border-ms-blue/40 hover:shadow-md transition-all text-left"
     >
       <div className="flex items-center gap-4">
-        <div className="h-12 w-12 rounded-full bg-ms-blue/10 flex items-center justify-center text-lg">👨‍⚕️</div>
+        <div className="h-12 w-12 rounded-full bg-ms-blue/10 flex items-center justify-center text-lg">
+          👨‍⚕️
+        </div>
         <div>
           <p className="font-bold text-ms-blue">{doc.name}</p>
           <p className="text-xs text-slate-400">{doc.title}</p>
-          <p className="text-xs text-slate-500 mt-0.5">{doc.bio || doc.specialty.description}</p>
+          <p className="text-xs text-slate-500 mt-0.5">
+            {doc.bio || doc.specialty.description}
+          </p>
         </div>
       </div>
       <span className="rounded-full bg-green-50 border border-green-200 px-3 py-1 text-[10px] font-bold text-green-600 uppercase">
