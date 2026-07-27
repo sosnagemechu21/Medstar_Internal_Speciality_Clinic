@@ -136,3 +136,16 @@
     @apply font-sans;
   }
 }
+
+@keyframes scroll-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-scroll-progress {
+  animation: scroll-progress linear;
+}

@@ -22,6 +22,11 @@ const t = {
       patientPortal: "Patient Portal",
       scroll: "scroll"
     },
+    introMissionVision: {
+      introductionTitle: "Introduction",
+      missionTitle: "Mission",
+      visionTitle: "Vision",
+    },
     directory: {
       title: "Find the Right Care",
       sub: "Browse specialities or search for a specific doctor.",
@@ -68,6 +73,11 @@ const t = {
       bookAppointment: "ቀጠሮ ይያዙ",
       patientPortal: "የታካሚ ፖርታል",
       scroll: "ወደ ታች"
+    },
+    introMissionVision: {
+      introductionTitle: "መግቢያ",
+      missionTitle: "ተልዕኮ",
+      visionTitle: "ራዕይ",
     },
     directory: {
       title: "ትክክለኛውን እንክብካቤ ያግኙ",
@@ -540,6 +550,110 @@ function HomeDoctorCard({ doctor, locale }: { doctor: DoctorListItem; locale: Lo
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   Intro / Mission / Vision — auto-scrolling carousel (10s per slide)
+   ══════════════════════════════════════════════════════════════════════════ */
+function IntroMissionVisionSection({ locale }: { locale: Locale }) {
+  const L = t[locale as keyof typeof t].introMissionVision;
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const slides = [
+    {
+      title: L.introductionTitle,
+      icon: "🏥",
+      gradient: "from-[#0B1F6B] to-[#1E3A8A]",
+      text:
+        locale === "am"
+          ? "ስሙ እንደሚያመለክተው የውስጥ ህክምና ስፔሻላይዝድ ክሊኒክ ነው። ከውሃ እና መስኖ ሚኒስቴር (ውሃ ልማት) ፊት ለፊት ይገኛል። ክሊኒኩ በባለቤትነት የተያዘ እና ከ15 አመት በላይ ህክምናን በመለማመድ የታወቀ ሀኪም የሚመራ ሲሆን በከፍተኛ ብቃት እና በሚገባ የሰለጠኑ የተለያዩ የትምህርት ዘርፎች ዶክተሮች፣ ነርሶች፣ የላቦራቶሪ ቴክኖሎጂስቶች እና ራዲዮሎጂስቶች እና የራዲዮሎጂ ቴክኒሻኖች የተደገፈ ነው።"
+          : "As the name indicates it's an Internal Medicine Specialized clinic. It is located in front of Water & irrigation Ministry (Wuha Lemat). The Clinic is owned and led by a highly reputed physician who has been practicing medicine for more than 15years and supported by highly qualified and well-trained doctors of different disciplines, nurses, Laboratory Technologists and Radiologist and Radiology Technicians. The medical set up is equipped with advanced technology, state of the art medical equipment and furniture imported from aboard and compliant with international standards, to address the growing demands of standard based medical practice.",
+    },
+    {
+      title: L.missionTitle,
+      icon: "🎯",
+      gradient: "from-[#CC2936] to-[#a81f2a]",
+      text:
+        locale === "am"
+          ? "ከፍተኛ ጥራት ያለው በታካሚ ላይ ያተኮረ፣ በቀላሉ ተደራሽ፣ ወጪ ቆጣቢ እና የምናገለግለውን ማህበረሰብ ፍላጎት የሚያሟላ የጤና እንክብካቤ አቅራቢ መሆን።"
+          : "To be a provider of high quality patient-focused health care that is readily accessible, cost effective and meets the needs of the community we serve.",
+    },
+    {
+      title: L.visionTitle,
+      icon: "👁️",
+      gradient: "from-[#0B1F6B] to-[#CC2936]",
+      text:
+        locale === "am"
+          ? "ለልህቀት ባለው ቁርጠኝነት፣ የታካሚዎችን የሚጠበቀውን በማለፍ፣ ጥራት ያለው የህክምና አገልግሎት በማስፋፋት እና ለተለዋዋጭ የደንበኞች ፍላጎት በምላሽ የማህበረሰባችን የጤና እንክብካቤ መሪ በመሆን ተለይተን እንድንታወቅ።"
+          : "To be distinguished as our community's health care leader for its commitment to excellence, exceeding patient expectations through the advancement of quality medical services and its response to changing customer needs.",
+    },
+  ];
+
+  // Auto-scroll every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % slides.length);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [slides.length]);
+
+  const current = slides[activeIndex];
+
+  return (
+    <section className="relative overflow-hidden bg-[#F4F6FB] py-16 md:py-20">
+      <Container>
+        <div className="relative mx-auto max-w-4xl">
+          {/* Slide indicator dots */}
+          <div className="flex justify-center gap-2 mb-8">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveIndex(idx)}
+                className={`h-2 rounded-full transition-all duration-500 ${
+                  idx === activeIndex ? "w-8 bg-[#0B1F6B]" : "w-2 bg-slate-300"
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Active slide */}
+          <div className="overflow-hidden rounded-3xl shadow-xl">
+            <div
+              className={`bg-gradient-to-br ${current.gradient} p-8 md:p-12`}
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <span className="text-4xl md:text-5xl">{current.icon}</span>
+                <h2 className="text-2xl md:text-3xl font-bold text-white">
+                  {current.title}
+                </h2>
+              </div>
+              <p className="text-sm md:text-base text-white/85 leading-relaxed">
+                {current.text}
+              </p>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="mt-6 flex items-center gap-3">
+            <div className="flex-1 h-1 rounded-full bg-slate-200 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[#CC2936] animate-scroll-progress"
+                style={{
+                  animationDuration: "10s",
+                  animationFillMode: "forwards",
+                }}
+                key={activeIndex}
+              />
+            </div>
+            <span className="text-xs font-medium text-slate-400 tabular-nums">
+              {activeIndex + 1} / {slides.length}
+            </span>
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
    Feature card with subtle tilt-on-hover (CSS perspective)
    ══════════════════════════════════════════════════════════════════════════ */
 function FeatureCard({ f }: { f: ReturnType<typeof getFeatures>[0] }) {
@@ -676,7 +790,10 @@ export default function HomePage() {
         {/* ── 1. Hero ───────────────────────────────────────────────────── */}
         <HeroSection locale={locale} />
 
-        {/* ── 2. Find the Right Care ───────────────────────────────────── */}
+        {/* ── 2. Introduction / Mission / Vision ────────────────────────── */}
+        <IntroMissionVisionSection locale={locale} />
+
+        {/* ── 3. Find the Right Care ───────────────────────────────────── */}
         <section id="directory" className="bg-[#F4F6FB] py-20">
           <Container>
             <div className="mb-10 text-center">
@@ -780,7 +897,7 @@ export default function HomePage() {
           </Container>
         </section>
 
-        {/* ── 3. Everything In One Place ────────────────────────────────── */}
+        {/* ── 4. Everything In One Place ────────────────────────────────── */}
         <section className="bg-ms-blue py-20">
           <Container>
             <div className="mb-12 text-center">
@@ -799,7 +916,7 @@ export default function HomePage() {
           </Container>
         </section>
 
-        {/* ── 4. Metrics ───────────────────────────────────────────────── */}
+{/* ── 5. Metrics ───────────────────────────────────────────────── */}
         <section className="bg-[#F4F6FB] py-16">
           <Container>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

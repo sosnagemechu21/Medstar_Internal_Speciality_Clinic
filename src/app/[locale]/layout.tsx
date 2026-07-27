@@ -1,5 +1,6 @@
 import "../../app/globals.css"
 import { AuthProvider } from "@/providers/auth-provider"
+import { AIAssistantProvider } from "@/components/ai-assistant/ai-assistant-provider"
 
 export default async function LocaleLayout({
   children,
@@ -21,7 +22,10 @@ export default async function LocaleLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className="font-sans bg-background text-foreground antialiased">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          <AIAssistantProvider />
+        </AuthProvider>
       </body>
     </html>
   )

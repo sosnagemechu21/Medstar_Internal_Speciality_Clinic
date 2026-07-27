@@ -81,11 +81,17 @@ export function Navbar() {
             >
               {L.home}
             </Link>
-            <Link
+          <Link
               href={localize("/departments")}
               className="hover:text-white transition-colors"
             >
               {L.speciality}
+            </Link>
+            <Link
+              href={localize("/brochure")}
+              className="hover:text-white transition-colors"
+            >
+              Brochure
             </Link>
             <Link
               href={localize("/doctors")}
@@ -233,6 +239,13 @@ export function Navbar() {
                 className="hover:text-white"
               >
                 {L.speciality}
+              </Link>
+              <Link
+                href={localize("/brochure")}
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
+                Brochure
               </Link>
               <Link
                 href={localize("/doctors")}
