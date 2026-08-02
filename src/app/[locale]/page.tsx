@@ -19,7 +19,6 @@ const t = {
       sub: "World-class specialists. Compassionate care. A clinic built entirely around you.",
       bookAppointment: "Book Appointment",
       patientPortal: "Patient Portal",
-      scroll: "scroll"
     },
     introMissionVision: {
       introductionTitle: "Introduction",
@@ -61,7 +60,7 @@ const t = {
       privacy: "Privacy",
       terms: "Terms",
       contact: "Contact",
-    }
+    },
   },
   am: {
     hero: {
@@ -71,7 +70,6 @@ const t = {
       sub: "አለም አቀፍ ደረጃቸውን የጠበቁ ስፔሻሊስቶች። ሩህሩህ እንክብካቤ። ሙሉ በሙሉ በእርስዎ ዙሪያ የተገነባ ክሊኒክ።",
       bookAppointment: "ቀጠሮ ይያዙ",
       patientPortal: "የታካሚ ፖርታል",
-      scroll: "ወደ ታች"
     },
     introMissionVision: {
       introductionTitle: "መግቢያ",
@@ -113,31 +111,34 @@ const t = {
       privacy: "ግላዊነት",
       terms: "ውሎች",
       contact: "አግኙን",
-    }
-  }
+    },
+  },
 } as const;
 
-/* ─── Stat strip ───────────────────────────────────────────────────────── */
-const getHeroStats = (locale: Locale) => locale === "am" ? [
-  { value: "80+", label: "ስፔሻሊስቶች" },
-  { value: "24", label: "ክፍሎች" },
-  { value: "45K+", label: "ታካሚዎች / በዓመት" },
-  { value: "98%", label: "እርካታ" },
-] : [
-  { value: "80+", label: "SPECIALISTS" },
-  { value: "24", label: "DEPARTMENTS" },
-  { value: "45K+", label: "PATIENTS / YR" },
-  { value: "98%", label: "SATISFACTION" },
-];
+const getHeroStats = (locale: Locale) =>
+  locale === "am"
+    ? [
+        { value: "80+", label: "ስፔሻሊስቶች" },
+        { value: "24", label: "ክፍሎች" },
+        { value: "45K+", label: "ታካሚዎች / በዓመት" },
+        { value: "98%", label: "እርካታ" },
+      ]
+    : [
+        { value: "80+", label: "SPECIALISTS" },
+        { value: "24", label: "DEPARTMENTS" },
+        { value: "45K+", label: "PATIENTS / YR" },
+        { value: "98%", label: "SATISFACTION" },
+      ];
 
-/* ─── Features ─────────────────────────────────────────────────────────── */
 const getFeatures = (locale: Locale) => {
   const isAm = locale === "am";
   return [
     {
       id: "booking",
       title: isAm ? "ፈጣን ቀጠሮ ማረጋገጫ" : "Instant Booking",
-      body: isAm ? "ስፔሻሊስትዎን ይምረጡ፣ ከቀን መቁጠሪያችን ቀን ይምረጡ እና ከ 2 ደቂቃ ባነሰ ጊዜ ውስጥ ያረጋግጡ።" : "Choose your specialist, pick a date from our live calendar, and confirm in under 2 minutes.",
+      body: isAm
+        ? "ስፔሻሊስትዎን ይምረጡ፣ ከቀን መቁጠሪያችን ቀን ይምረጡ እና ከ 2 ደቂቃ ባነሰ ጊዜ ውስጥ ያረጋግጡ።"
+        : "Choose your specialist, pick a date from our live calendar, and confirm in under 2 minutes.",
       cta: isAm ? "አሁን ቀጠሮ ይያዙ" : "Book Now",
       href: "/book",
       icon: (
@@ -152,7 +153,9 @@ const getFeatures = (locale: Locale) => {
     {
       id: "portal",
       title: isAm ? "የታካሚ ፖርታል" : "Patient Portal",
-      body: isAm ? "የሚመጡ ቀጠሮዎችን ይመልከቱ፣ የህክምና መዝገቦችን ይድረሱ እና የጤና ጉዞዎን ያስተዳድሩ።" : "View upcoming appointments, access medical records, and manage your health journey.",
+      body: isAm
+        ? "የሚመጡ ቀጠሮዎችን ይመልከቱ፣ የህክምና መዝገቦችን ይድረሱ እና የጤና ጉዞዎን ያስተዳድሩ።"
+        : "View upcoming appointments, access medical records, and manage your health journey.",
       cta: isAm ? "ወደ ፖርታል ይሂዱ" : "Go to Portal",
       href: "/dashboard",
       icon: (
@@ -164,7 +167,9 @@ const getFeatures = (locale: Locale) => {
     {
       id: "payments",
       title: isAm ? "ደህንነቱ የተጠበቀ ክፍያ" : "Secure Payments",
-      body: isAm ? "በቻፓ ወይም በቴሌብር በብር ይክፈሉ። ፈጣን ደረሰኞች እና ሙሉ የክፍያ ታሪክ።" : "Pay via Chapa or Telebirr in ETB. Instant receipts and full payment history.",
+      body: isAm
+        ? "በቻፓ ወይም በቴሌብር በብር ይክፈሉ። ፈጣን ደረሰኞች እና ሙሉ የክፍያ ታሪክ።"
+        : "Pay via Chapa or Telebirr in ETB. Instant receipts and full payment history.",
       cta: isAm ? "ተጨማሪ ይወቁ" : "Learn More",
       href: "/payments",
       icon: (
@@ -176,220 +181,75 @@ const getFeatures = (locale: Locale) => {
   ];
 };
 
-/* ─── Metrics ──────────────────────────────────────────────────────────── */
-const getMetrics = (locale: Locale) => locale === "am" ? [
-  { value: "80+", label: "ስፔሻሊስት ዶክተሮች", sub: "በ 24 ክፍሎች" },
-  { value: "45K+", label: "ታካሚዎች በዓመት", sub: "ከ 2010 ዓ.ም ጀምሮ" },
-  { value: "98%", label: "የእርካታ መጠን", sub: "የተረጋገጡ ግምገማዎች" },
-  { value: "24/7", label: "የድንገተኛ አደጋ እንክብካቤ", sub: "ሁልጊዜ ለእርስዎ እዚህ ነን" },
-] : [
-  { value: "80+", label: "Specialist Doctors", sub: "Across 24 departments" },
-  { value: "45K+", label: "Patients Annually", sub: "Since 2018" },
-  { value: "98%", label: "Satisfaction Rate", sub: "Verified reviews" },
-  { value: "24/7", label: "Emergency Care", sub: "Always here for you" },
-];
+const getMetrics = (locale: Locale) =>
+  locale === "am"
+    ? [
+        { value: "80+", label: "ስፔሻሊስት ዶክተሮች", sub: "በ 24 ክፍሎች" },
+        { value: "45K+", label: "ታካሚዎች በዓመት", sub: "ከ 2010 ዓ.ም ጀምሮ" },
+        { value: "98%", label: "የእርካታ መጠን", sub: "የተረጋገጡ ግምገማዎች" },
+        { value: "24/7", label: "የድንገተኛ አደጋ እንክብካቤ", sub: "ሁልጊዜ ለእርስዎ እዚህ ነን" },
+      ]
+    : [
+        { value: "80+", label: "Specialist Doctors", sub: "Across 24 departments" },
+        { value: "45K+", label: "Patients Annually", sub: "Since 2018" },
+        { value: "98%", label: "Satisfaction Rate", sub: "Verified reviews" },
+        { value: "24/7", label: "Emergency Care", sub: "Always here for you" },
+      ];
 
 function HeroSection({ locale }: { locale: Locale }) {
   const L = t[locale as keyof typeof t].hero;
   const stats = getHeroStats(locale);
-  const heroRef = useRef<HTMLElement>(null);
-  const spotRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    const el = heroRef.current;
-    const spot = spotRef.current;
-    const grid = gridRef.current;
-    if (!el || !spot) return;
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    spot.style.setProperty('--mouse-x', `${x}px`);
-    spot.style.setProperty('--mouse-y', `${y}px`);
-
-    if (grid) {
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * -8;
-      const rotateY = ((x - centerX) / centerX) * 8;
-      grid.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
-    }
-  }, []);
 
   return (
-    <section
-      ref={heroRef}
-      onMouseMove={handleMouseMove}
-      className="group relative min-h-[92vh] flex flex-col justify-between overflow-hidden"
-      style={{ background: "#0B1F6B" }}
-    >
+    <section className="relative min-h-[92vh] flex flex-col justify-between overflow-hidden bg-[#0B1F6B]">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url('/medstarbg.jpg')",
-          opacity: 0.90,
-          mixBlendMode: "luminosity",
-        }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90"
+        style={{ backgroundImage: "url('/medstarbg.jpg')", mixBlendMode: "luminosity" }}
         aria-hidden="true"
       />
       <div
         className="absolute inset-0"
-        style={{
-          background: "linear-gradient(120deg, rgba(11,31,107,0.82) 50%, rgba(11,31,107,0.55) 100%)",
-        }}
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-          backgroundPosition: "40px 40px",
-        }}
-        aria-hidden="true"
-      />
-      <svg width="0" height="0" className="absolute">
-        <filter id="cloth-wave">
-          <feTurbulence type="fractalNoise" baseFrequency="0.005" numOctaves="2" result="noise">
-            <animate attributeName="baseFrequency" values="0.005;0.008;0.005" dur="12s" repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="35" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </svg>
-      <div
-        ref={spotRef}
-        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{
-          WebkitMaskImage: "radial-gradient(450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%)",
-          maskImage: "radial-gradient(450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%)",
-        }}
-        aria-hidden="true"
-      >
-        <div
-          ref={gridRef}
-          className="absolute inset-[-10%] w-[120%] h-[120%]"
-          style={{
-            backgroundImage: `
-              radial-gradient(circle at center, rgba(255,255,255,1) 2px, transparent 2px),
-              linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)
-            `,
-            backgroundSize: "80px 80px",
-            backgroundPosition: "40px 40px, 0 0, 0 0",
-            transition: "transform 0.15s ease-out",
-            filter: "url(#cloth-wave)",
-          }}
-        />
-      </div>
-      <div
-        className="pointer-events-none absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full opacity-10"
-        style={{
-          background: "radial-gradient(circle, #CC2936 0%, transparent 70%)",
-        }}
+        style={{ background: "linear-gradient(120deg, rgba(11,31,107,0.85) 40%, rgba(7,19,59,0.7) 100%)" }}
         aria-hidden="true"
       />
       <Container className="relative z-20 flex flex-col justify-center flex-1 py-20 md:py-28">
         <div className="mb-7 inline-flex">
-          <span className="flex items-center gap-2 rounded-full border border-ms-red/60 bg-ms-red/10 px-4 py-1.5 text-[11px] font-bold text-ms-red uppercase tracking-[0.18em]">
-            <span className="h-1.5 w-1.5 rounded-full bg-ms-red animate-pulse" />
+          <span className="flex items-center gap-2 rounded-full border border-ms-red/40 bg-ms-red/10 px-4 py-2 text-xs font-semibold text-ms-red uppercase tracking-wider backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-ms-red animate-pulse" />
             {L.origin}
           </span>
         </div>
-        <h1 className="max-w-[520px] leading-[1.1] text-white">
-          <span className="block text-5xl font-black md:text-6xl lg:text-[68px]">
-            {L.headline1}
-          </span>
-          <em
-            className="block text-5xl md:text-6xl lg:text-[68px] font-bold not-italic text-white"
-            style={{
-              fontFamily: "Merriweather, Georgia, serif",
-              fontStyle: "italic",
-            }}
-          >
+        <h1 className="max-w-[600px] leading-[1.08] text-white tracking-tight">
+          <span className="block text-5xl font-extrabold md:text-6xl lg:text-7xl">{L.headline1}</span>
+          <em className="block text-5xl md:text-6xl lg:text-7xl font-bold not-italic text-white mt-1" style={{ fontFamily: "Merriweather, Georgia, serif", fontStyle: "italic" }}>
             {L.headline2}
           </em>
         </h1>
-        <p className="mt-6 max-w-sm text-white/65 text-base leading-relaxed">
+        <p className="mt-6 max-w-lg text-white/75 text-base md:text-lg leading-relaxed font-light">
           {L.sub}
         </p>
-        <div className="mt-8 flex flex-wrap gap-4">
-          <ProtectedLink
-            href="/book"
-            id="hero-book-btn"
-            className="group flex items-center gap-2 rounded-full bg-ms-red px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:bg-ms-red-dark hover:scale-[1.04] hover:shadow-ms-red/40 hover:shadow-xl active:scale-100"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              className="w-4 h-4 transition-transform group-hover:rotate-6"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
+        <div className="mt-10 flex flex-wrap gap-4">
+          <ProtectedLink href="/book" className="flex items-center gap-2.5 rounded-full bg-ms-red px-8 py-4 text-sm font-bold text-white shadow-xl hover:bg-ms-red-dark hover:scale-105 transition-all duration-300">
             {L.bookAppointment}
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </ProtectedLink>
-          <ProtectedLink
-            href="/dashboard"
-            id="hero-portal-btn"
-            className="group flex items-center gap-2 rounded-full border border-white/40 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
-          >
+          <ProtectedLink href="/dashboard" className="flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-8 py-4 text-sm font-semibold text-white backdrop-blur-md hover:bg-white/20 transition-all duration-300">
             {L.patientPortal}
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              className="w-4 h-4 transition-transform group-hover:translate-x-1"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
           </ProtectedLink>
         </div>
-        <div className="mt-12 md:mt-16 pt-10 border-t border-white/10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="mt-16 md:mt-20 pt-10 border-t border-white/10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
             {stats.map((s) => (
-              <div
-                key={s.label}
-                className="group text-white transition-colors cursor-default"
-              >
-                <p
-                  className="text-4xl md:text-5xl font-bold tracking-tight group-hover:text-ms-red transition-colors duration-200"
-                  style={{ fontFamily: "Merriweather, Georgia, serif" }}
-                >
+              <div key={s.label} className="group p-5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm hover:bg-white/[0.06] transition-all">
+                <p className="text-3xl md:text-4xl font-extrabold tracking-tight text-white group-hover:text-ms-red transition-colors" style={{ fontFamily: "Merriweather, Georgia, serif" }}>
                   {s.value}
                 </p>
-                <p className="mt-2 text-xs font-semibold tracking-[0.15em] text-white/60 uppercase">
-                  {s.label}
-                </p>
+                <p className="mt-2 text-xs font-bold tracking-widest text-white/60 uppercase">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </Container>
-      <div
-        className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-white/50 text-[11px] tracking-[0.2em] font-mono"
-        aria-hidden="true"
-      >
-        <span>scroll</span>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="w-4 h-4 animate-bounce mt-1"
-        >
-          <path d="M12 5v14M19 12l-7 7-7-7" />
-        </svg>
-      </div>
     </section>
   );
 }
@@ -403,28 +263,25 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
       title: L.introductionTitle,
       icon: "🏥",
       gradient: "from-[#0B1F6B] to-[#1E3A8A]",
-      text:
-        locale === "am"
-          ? "ስሙ እንደሚያመለክተው የውስጥ ህክምና ስፔሻላይዝድ ክሊኒክ ነው። ከውሃ እና መስኖ ሚኒስቴር (ውሃ ልማት) ፊት ለፊት ይገኛል። ክሊኒኩ በባለቤትነት የተያዘ እና ከ15 አመት በላይ ህክምናን በመለማመድ የታወቀ ሀኪም የሚመራ ሲሆን በከፍተኛ ብቃት እና በሚገባ የሰለጠኑ የተለያዩ የትምህርት ዘርፎች ዶክተሮች፣ ነርሶች፣ የላቦራቶሪ ቴክኖሎጂስቶች እና ራዲዮሎጂስቶች እና የራዲዮሎጂ ቴክኒሻኖች የተደገፈ ነው።"
-          : "As the name indicates it's an Internal Medicine Specialized clinic. It is located in front of Water & irrigation Ministry (Wuha Lemat). The Clinic is owned and led by a highly reputed physician who has been practicing medicine for more than 15years and supported by highly qualified and well-trained doctors of different disciplines, nurses, Laboratory Technologists and Radiologist and Radiology Technicians. The medical set up is equipped with advanced technology, state of the art medical equipment and furniture imported from aboard and compliant with international standards, to address the growing demands of standard based medical practice.",
+      text: locale === "am"
+        ? "ስሙ እንደሚያመለክተው የውስጥ ህክምና ስፔሻላይዝድ ክሊኒክ ነው። ከውሃ እና መስኖ ሚኒስቴር (ውሃ ልማት) ፊት ለፊት ይገኛል።"
+        : "As the name indicates it's an Internal Medicine Specialized clinic located in front of Water & irrigation Ministry, equipped with advanced international-standard medical devices.",
     },
     {
       title: L.missionTitle,
       icon: "🎯",
       gradient: "from-[#CC2936] to-[#a81f2a]",
-      text:
-        locale === "am"
-          ? "ከፍተኛ ጥራት ያለው በታካሚ ላይ ያተኮረ፣ በቀላሉ ተደራሽ፣ ወጪ ቆጣቢ እና የምናገለግለውን ማህበረሰብ ፍላጎት የሚያሟላ የጤና እንክብካቤ አቅራቢ መሆን።"
-          : "To be a provider of high quality patient-focused health care that is readily accessible, cost effective and meets the needs of the community we serve.",
+      text: locale === "am"
+        ? "ከፍተኛ ጥራት ያለው በታካሚ ላይ ያተኮረ፣ በቀላሉ ተደራሽ፣ ወጪ ቆጣቢ እና የምናገለግለውን ማህበረሰብ ፍላጎት የሚያሟላ የጤና እንክብካቤ አቅራቢ መሆን።"
+        : "To be a provider of high quality patient-focused health care that is readily accessible, cost effective and meets the needs of the community we serve.",
     },
     {
       title: L.visionTitle,
       icon: "👁️",
       gradient: "from-[#0B1F6B] to-[#CC2936]",
-      text:
-        locale === "am"
-          ? "ለልህቀት ባለው ቁርጠኝነት፣ የታካሚዎችን የሚጠበቀውን በማለፍ፣ ጥራት ያለው የህክምና አገልግሎት በማስፋፋት እና ለተለዋዋጭ የደንበኞች ፍላጎት በምላሽ የማህበረሰባችን የጤና እንክብካቤ መሪ በመሆን ተለይተን እንድንታወቅ።"
-          : "To be distinguished as our community's health care leader for its commitment to excellence, exceeding patient expectations through the advancement of quality medical services and its response to changing customer needs.",
+      text: locale === "am"
+        ? "ለልህቀት ባለው ቁርጠኝነት፣ የታካሚዎችን የሚጠበቀውን በማለፍ፣ ጥራት ያለው የህክምና አገልግሎት በማስፋፋት የህብረተሰባችን የጤና እንክብካቤ መሪ መሆን።"
+        : "To be distinguished as our community's health care leader for its commitment to excellence, exceeding patient expectations through quality services.",
     },
   ];
 
@@ -438,50 +295,33 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
   const current = slides[activeIndex];
 
   return (
-    <section className="relative overflow-hidden bg-[#F4F6FB] py-16 md:py-20">
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#F4F6FB] to-white py-24">
       <Container>
         <div className="relative mx-auto max-w-4xl">
-          <div className="flex justify-center gap-2 mb-8">
-            {slides.map((_, idx) => (
+          <div className="flex justify-center gap-3 mb-10">
+            {slides.map((s, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`h-2 rounded-full transition-all duration-500 ${
-                  idx === activeIndex ? "w-8 bg-[#0B1F6B]" : "w-2 bg-slate-300"
+                className={`px-5 py-2.5 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
+                  idx === activeIndex
+                    ? "bg-[#0B1F6B] text-white shadow-md scale-105"
+                    : "bg-slate-200/70 text-slate-600 hover:bg-slate-300"
                 }`}
-                aria-label={`Go to slide ${idx + 1}`}
-              />
+              >
+                {s.title}
+              </button>
             ))}
           </div>
-
-          <div className="overflow-hidden rounded-3xl shadow-xl">
-            <div className={`bg-gradient-to-br ${current.gradient} p-8 md:p-12`}>
+          <div className="overflow-hidden rounded-3xl shadow-2xl border border-slate-100">
+            <div className={`bg-gradient-to-br ${current.gradient} p-10 md:p-14 text-white relative`}>
+              <div className="absolute top-6 right-8 text-7xl opacity-10">{current.icon}</div>
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-4xl md:text-5xl">{current.icon}</span>
-                <h2 className="text-2xl md:text-3xl font-bold text-white">
-                  {current.title}
-                </h2>
+                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">{current.title}</h2>
               </div>
-              <p className="text-sm md:text-base text-white/85 leading-relaxed">
-                {current.text}
-              </p>
+              <p className="text-base md:text-lg text-white/90 leading-relaxed font-light max-w-3xl">{current.text}</p>
             </div>
-          </div>
-
-          <div className="mt-6 flex items-center gap-3">
-            <div className="flex-1 h-1 rounded-full bg-slate-200 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-[#CC2936] animate-scroll-progress"
-                style={{
-                  animationDuration: "10s",
-                  animationFillMode: "forwards",
-                }}
-                key={activeIndex}
-              />
-            </div>
-            <span className="text-xs font-medium text-slate-400 tabular-nums">
-              {activeIndex + 1} / {slides.length}
-            </span>
           </div>
         </div>
       </Container>
@@ -490,52 +330,15 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
 }
 
 function FeatureCard({ f }: { f: ReturnType<typeof getFeatures>[0] }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -14;
-    el.style.transform = `perspective(600px) rotateX(${y}deg) rotateY(${x}deg) scale(1.02)`;
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (ref.current)
-      ref.current.style.transform =
-        "perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)";
-  }, []);
-
   return (
-    <div
-      ref={ref}
-      id={`feature-${f.id}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="group rounded-2xl border border-white/10 bg-white/5 p-8 cursor-default"
-      style={{ willChange: "transform", transition: "transform 0.12s ease" }}
-    >
-      <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-ms-red/20 text-ms-red group-hover:bg-ms-red group-hover:text-white transition-all duration-300">
+    <div className="group rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-md hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg">
+      <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-ms-red text-white shadow-md group-hover:scale-110 transition-transform duration-300">
         {f.icon}
       </div>
-      <h3 className="text-lg font-bold text-white mb-2">{f.title}</h3>
-      <p className="text-sm text-white/55 leading-relaxed mb-5">{f.body}</p>
-      <ProtectedLink
-        href={f.href}
-        className="group/link inline-flex items-center gap-1.5 text-sm font-semibold text-ms-red hover:underline underline-offset-4"
-      >
-        {f.cta}
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1"
-        >
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
+      <h3 className="text-xl font-bold text-white mb-3">{f.title}</h3>
+      <p className="text-sm text-white/70 leading-relaxed mb-6 font-light">{f.body}</p>
+      <ProtectedLink href={f.href} className="inline-flex items-center gap-2 text-sm font-semibold text-ms-red hover:text-white transition-colors">
+        {f.cta} <span className="group-hover:translate-x-1 transition-transform">→</span>
       </ProtectedLink>
     </div>
   );
@@ -547,58 +350,45 @@ function VisitClinicSection({ locale }: { locale: Locale }) {
   const mapUrl = "https://www.google.com/maps/place/Medstar+Speciality+Clinic/@9.0180391,38.789169,966m/data=!3m1!1e3!4m6!3m5!1s0x164b85026ee08e67:0x7da1cd1ed14d5d28!8m2!3d9.0180391!4d38.789169!16s%2Fg%2F11k46nf7kx!5m1!1e1?hl=en&entry=ttu";
 
   return (
-    <section className="bg-[#F4F6FB] py-20">
+    <section className="bg-slate-50 py-24 border-t border-slate-200/60">
       <Container>
-        <h2 className="text-3xl font-bold text-ms-blue md:text-4xl mb-10">
-          {V.title}
-        </h2>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Side: Info Cards */}
-          <div className="lg:col-span-5 space-y-4">
-            {/* Address Card */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-ms-red/10 text-ms-red flex items-center justify-center shrink-0">
-                📍
-              </div>
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B1F6B] tracking-tight">{V.title}</h2>
+          <p className="mt-3 text-slate-600 text-sm md:text-base font-light">
+            {isAm ? "በቀላሉ ይጎብኙን ወይም በዲጂታል መድረኮቻችን ያግኙን።" : "Find us easily in Addis Ababa or reach out through our official channels."}
+          </p>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          <div className="lg:col-span-5 space-y-5 flex flex-col justify-between">
+            <div className="bg-white rounded-3xl p-7 shadow-sm border border-slate-200/70 hover:shadow-md transition-shadow flex items-start gap-5">
+              <div className="h-12 w-12 rounded-2xl bg-ms-red/10 text-ms-red flex items-center justify-center shrink-0 text-xl">📍</div>
               <div>
-                <h4 className="text-sm font-bold text-slate-900 mb-1">{V.addressLabel}</h4>
-                <p className="text-sm text-slate-500 whitespace-pre-line leading-relaxed">
-                  {V.addressVal}
-                </p>
+                <h4 className="text-sm font-bold text-slate-900 tracking-wider uppercase mb-1">{V.addressLabel}</h4>
+                <p className="text-sm text-slate-600 whitespace-pre-line leading-relaxed font-light">{V.addressVal}</p>
               </div>
             </div>
-
-            {/* Phone Card */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-ms-blue/10 text-ms-blue flex items-center justify-center shrink-0">
-                📞
-              </div>
+            <div className="bg-white rounded-3xl p-7 shadow-sm border border-slate-200/70 hover:shadow-md transition-shadow flex items-start gap-5">
+              <div className="h-12 w-12 rounded-2xl bg-[#0B1F6B]/10 text-[#0B1F6B] flex items-center justify-center shrink-0 text-xl">📞</div>
               <div>
-                <h4 className="text-sm font-bold text-slate-900 mb-1">{V.phoneLabel}</h4>
-                <p className="text-sm text-slate-600 font-medium">0975704070</p>
-                <p className="text-sm text-slate-600 font-medium">0116354280</p>
+                <h4 className="text-sm font-bold text-slate-900 tracking-wider uppercase mb-1">{V.phoneLabel}</h4>
+                <p className="text-sm text-slate-700 font-semibold">0975704070</p>
+                <p className="text-sm text-slate-700 font-semibold">0116354280</p>
               </div>
             </div>
-
-            {/* Telegram Card */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0">
-                ✈️
-              </div>
+            <div className="bg-white rounded-3xl p-7 shadow-sm border border-slate-200/70 hover:shadow-md transition-shadow flex items-start gap-5">
+              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0 text-xl">✈️</div>
               <div>
-                <h4 className="text-sm font-bold text-slate-900 mb-1">{V.telegramLabel}</h4>
-                <a href="https://t.me/medstarinternalclinic" target="_blank" rel="noreferrer" className="text-sm text-ms-blue hover:underline font-medium">
+                <h4 className="text-sm font-bold text-slate-900 tracking-wider uppercase mb-1">{V.telegramLabel}</h4>
+                <a href="https://t.me/medstarinternalclinic" target="_blank" rel="noreferrer" className="text-sm text-ms-blue hover:underline font-semibold">
                   @medstarinternalclinic
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Right Side: Map Preview & Button */}
-          <div className="lg:col-span-7 space-y-4">
-            <div className="bg-white rounded-3xl p-3 shadow-sm border border-slate-100 overflow-hidden">
-              <div className="relative w-full h-[320px] rounded-2xl overflow-hidden bg-slate-100">
+          <div className="lg:col-span-7 flex flex-col justify-between gap-5">
+            <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200/70 flex-1 overflow-hidden">
+              <div className="relative w-full h-[340px] rounded-2xl overflow-hidden bg-slate-100">
                 <iframe
                   title="Medstar Map Location"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.579548485238!2d38.789169!3d9.0180391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b85026ee08e67%3A0x7da1cd1ed14d5d28!2sMedstar%20Speciality%20Clinic!5e0!3m2!1sen!2set!4v1700000000000!5m2!1sen!2set"
@@ -607,24 +397,17 @@ function VisitClinicSection({ locale }: { locale: Locale }) {
                   style={{ border: 0 }}
                   allowFullScreen={false}
                   loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
             </div>
-
             <a
               href={mapUrl}
               target="_blank"
               rel="noreferrer"
-              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#0B1F6B] py-4 text-sm font-bold text-white shadow-lg transition-all hover:bg-[#1E3A8A]"
+              className="w-full flex items-center justify-center gap-3 rounded-2xl bg-[#0B1F6B] py-4 text-sm font-bold text-white shadow-lg hover:bg-[#1E3A8A] transition-all duration-300"
             >
-              <span>📍</span>
+              <span>🗺️</span>
               {V.openMap}
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
             </a>
           </div>
         </div>
@@ -636,35 +419,16 @@ function VisitClinicSection({ locale }: { locale: Locale }) {
 export default function HomePage() {
   const params = useParams<{ locale?: string }>();
   const locale = resolveLocale(typeof params.locale === "string" ? params.locale : undefined);
-
   const isAm = locale === "am";
   const ft = t[locale as keyof typeof t].footer;
 
   const summaryText = isAm
-    ? "ሜድስታር ስፔሻሊቲ ክሊኒክ ከውሃ እና መስኖ ሚኒስቴር (ውሃ ልማት) ፊት ለፊት የሚገኝ የውስጥ ህክምና ስፔሻላይዝድ ክሊኒክ ነው። ክሊኒኩ ከ15 አመት በላይ ህክምናን በመለማመድ የታወቀ ሀኪም የሚመራ ሲሆን በከፍተኛ ብቃት የሰለጠኑ ዶክተሮች፣ ነርሶች፣ የላቦራቶሪ ቴክኖሎጂስቶች እና ራዲዮሎጂስቶች የተደገፈ ነው። የህክምና አደረጃጀቱ ከውጭ በሚገቡ ዘመናዊ ቴክኖሎጂዎች፣ ከፍተኛ ደረጃ የህክምና መሳሪያዎች እና የቤት እቃዎች የታጠቀ ሲሆን ከአለም አቀፍ ደረጃዎች ጋር የተጣጣመ ነው።"
-    : "MedStar Specialty Clinic is an Internal Medicine Specialized clinic located in front of the Water & Irrigation Ministry (Wuha Lemat). The clinic is owned and led by a highly reputed physician with over 15 years of medical practice, supported by highly qualified doctors, nurses, laboratory technologists, and radiologists. Our facility is equipped with advanced technology, state-of-the-art medical equipment, and furniture imported from abroad, compliant with international standards to address the growing demands of standard-based medical practice.";
+    ? "ሜድስታር ስፔሻሊቲ ክሊኒክ ከውሃ እና መስኖ ሚኒስቴር (ውሃ ልማት) ፊት ለፊት የሚገኝ የውስጥ ህክምና ስፔሻላይዝድ ክሊኒክ ነው።"
+    : "MedStar Specialty Clinic is an Internal Medicine Specialized clinic located in front of the Water & Irrigation Ministry (Wuha Lemat).";
 
   const services = isAm
-    ? [
-        "የልብ ህክምና (Cardiology)",
-        "የነርቭ ህክምና (Neurology)",
-        "የኩላሊት ህክምና (Nephrology)",
-        "የሳንባ ህክምና (Pulmonology)",
-        "የሆርሞን ህክምና (Endocrinology)",
-        "የምግብ መፈጨት ህክምና (Gastroenterology)",
-        "የቆዳ ህክምና (Dermatology)",
-        "የሴቶች ህክምና (Gynecology)",
-      ]
-    : [
-        "Cardiology",
-        "Neurology",
-        "Nephrology",
-        "Pulmonology",
-        "Endocrinology",
-        "Gastroenterology",
-        "Dermatology",
-        "Gynecology",
-      ];
+    ? ["የልብ ህክምና", "የነርቭ ህክምና", "የኩላሊት ህክምና", "የሳንባ ህክምና", "የሆርሞን ህክምና", "የምግብ መፈጨት", "የቆዳ ህክምና", "የሴቶች ህክምና"]
+    : ["Cardiology", "Neurology", "Nephrology", "Pulmonology", "Endocrinology", "Gastroenterology", "Dermatology", "Gynecology"];
 
   const specialtiesList = isAm
     ? ["የልብ ህክምና", "የነርቭ ህክምና", "ህፃናት ህክምና", "የአጥንት ህክምና", "የዓይን ህክምና"]
@@ -673,52 +437,27 @@ export default function HomePage() {
   return (
     <>
       <Navbar />
-
       <main className="pt-16">
-        {/* ── 1. Hero ───────────────────────────────────────────────────── */}
         <HeroSection locale={locale} />
-
-        {/* ── 2. Introduction / Mission / Vision ────────────────────────── */}
         <IntroMissionVisionSection locale={locale} />
 
-        {/* ── 3. Why Choose MedStar — Clinic Summary ────────────────────── */}
-        <section id="directory" className="bg-[#F4F6FB] py-20">
+        <section id="directory" className="bg-white py-24">
           <Container>
-            <div className="mb-10 text-center">
-              <h2 className="text-3xl font-bold text-ms-blue md:text-4xl">
-                {t[locale as keyof typeof t].whyChooseUs.title}
-              </h2>
-              <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
-                {t[locale as keyof typeof t].whyChooseUs.sub}
-              </p>
+            <div className="mb-14 text-center max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B1F6B] tracking-tight">{t[locale as keyof typeof t].whyChooseUs.title}</h2>
+              <p className="mt-3 text-slate-600 text-sm md:text-base font-light">{t[locale as keyof typeof t].whyChooseUs.sub}</p>
             </div>
-
-            {/* Summary Card */}
-            <div className="mx-auto max-w-4xl rounded-3xl bg-white shadow-lg border border-slate-100 overflow-hidden">
-              <div className="bg-gradient-to-br from-[#0B1F6B] to-[#1E3A8A] p-8 md:p-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <span className="text-4xl">🏥</span>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white">
-                    {isAm ? "ስለ ሜድስታር ክሊኒክ" : "About MedStar Clinic"}
-                  </h3>
-                </div>
-                <p className="text-sm md:text-base text-white/85 leading-relaxed">
-                  {summaryText}
-                </p>
+            <div className="mx-auto max-w-4xl rounded-3xl bg-white shadow-xl border border-slate-100 overflow-hidden">
+              <div className="bg-gradient-to-br from-[#0B1F6B] to-[#1E3A8A] p-10 md:p-12 text-white">
+                <h3 className="text-2xl md:text-3xl font-extrabold mb-4">{isAm ? "ስለ ሜድስታር ክሊኒክ" : "About MedStar Clinic"}</h3>
+                <p className="text-sm md:text-base text-white/90 leading-relaxed font-light">{summaryText}</p>
               </div>
-
-              <div className="p-8 md:p-10">
-                <h4 className="text-lg font-bold text-ms-blue mb-5 flex items-center gap-2">
-                  <span>🩺</span>
-                  {isAm ? "የእኛ አገልግሎቶች" : "Our Specialties"}
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="p-10 md:p-12 bg-slate-50/50">
+                <h4 className="text-lg font-bold text-[#0B1F6B] mb-6 tracking-wide uppercase text-xs">{isAm ? "የእኛ አገልግሎቶች" : "Our Specialties"}</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {services.map((s) => (
-                    <div
-                      key={s}
-                      className="flex items-center gap-2 rounded-xl bg-slate-50 border border-slate-100 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-ms-blue/5 hover:border-ms-blue/20 transition-colors"
-                    >
-                      <span className="h-2 w-2 rounded-full bg-ms-red shrink-0" />
+                    <div key={s} className="flex items-center gap-3 rounded-2xl bg-white border border-slate-200/70 p-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-ms-blue/40 transition-all">
+                      <span className="h-2.5 w-2.5 rounded-full bg-ms-red shrink-0" />
                       {s}
                     </div>
                   ))}
@@ -728,18 +467,13 @@ export default function HomePage() {
           </Container>
         </section>
 
-        {/* ── 4. Everything In One Place ────────────────────────────────── */}
-        <section className="bg-ms-blue py-20">
-          <Container>
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold text-white md:text-4xl">
-                {t[locale as keyof typeof t].everything.title}
-              </h2>
-              <p className="mt-3 mx-auto max-w-lg text-sm text-white/55 leading-relaxed">
-                {t[locale as keyof typeof t].everything.sub}
-              </p>
+        <section className="bg-[#0B1F6B] py-24 text-white relative overflow-hidden">
+          <Container className="relative z-10">
+            <div className="mb-16 text-center max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">{t[locale as keyof typeof t].everything.title}</h2>
+              <p className="mt-3 text-white/70 text-sm md:text-base font-light">{t[locale as keyof typeof t].everything.sub}</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-3">
               {getFeatures(locale).map((f) => (
                 <FeatureCard key={f.id} f={{ ...f, href: getLocalizedPath(locale, f.href) }} />
               ))}
@@ -747,194 +481,82 @@ export default function HomePage() {
           </Container>
         </section>
 
-        {/* ── 5. Metrics ───────────────────────────────────────────────── */}
-        <section className="bg-[#F4F6FB] py-16">
+        <section className="bg-white py-16 border-b border-slate-100">
           <Container>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {getMetrics(locale).map((m) => (
-                <div
-                  key={m.label}
-                  className="group rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm hover:shadow-md hover:border-ms-blue/30 transition-all duration-300"
-                >
-                  <p className="text-4xl font-black text-ms-blue group-hover:text-ms-red transition-colors duration-300">
-                    {m.value}
-                  </p>
-                  <p className="mt-2 text-sm font-semibold text-slate-700">
-                    {m.label}
-                  </p>
-                  <p className="mt-0.5 text-xs text-slate-400">{m.sub}</p>
+                <div key={m.label} className="rounded-3xl border border-slate-100 bg-slate-50/50 p-8 text-center shadow-sm hover:shadow-md transition-all">
+                  <p className="text-4xl md:text-5xl font-extrabold text-[#0B1F6B]" style={{ fontFamily: "Merriweather, Georgia, serif" }}>{m.value}</p>
+                  <p className="mt-3 text-sm font-bold text-slate-800">{m.label}</p>
+                  <p className="mt-1 text-xs text-slate-500 font-light">{m.sub}</p>
                 </div>
               ))}
             </div>
           </Container>
         </section>
 
-        {/* ── 6. Visit Our Clinic (Map & Location) ─────────────────────── */}
         <VisitClinicSection locale={locale} />
 
-        {/* ── 7. CTA ───────────────────────────────────────────────────── */}
-        <section className="bg-ms-navy-dark py-20">
-          <Container>
-            <div className="text-center">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-1.5 text-xs font-semibold text-green-400 uppercase tracking-widest">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  className="w-3.5 h-3.5"
-                >
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
-                {t[locale as keyof typeof t].cta.badge}
-              </div>
-
-              <h2 className="mx-auto max-w-xl text-4xl font-bold leading-tight text-white md:text-5xl">
-                {t[locale as keyof typeof t].cta.title}
-              </h2>
-              <p className="mx-auto mt-4 max-w-md text-sm text-white/45 leading-relaxed">
-                {t[locale as keyof typeof t].cta.sub}
-              </p>
-
-              <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <ProtectedLink
-                  href={getLocalizedPath(locale, "/book")}
-                  id="cta-book-btn"
-                  className="group flex items-center gap-2 rounded-full bg-ms-red px-8 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:bg-ms-red-dark hover:scale-[1.04] hover:shadow-ms-red/40 hover:shadow-xl active:scale-100"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    className="w-4 h-4 transition-transform group-hover:rotate-6"
-                  >
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                  {t[locale as keyof typeof t].cta.book}
-                </ProtectedLink>
-                <ProtectedLink
-                  href={getLocalizedPath(locale, "/dashboard")}
-                  id="cta-portal-btn"
-                  className="group flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/15 hover:border-white/60"
-                >
-                  {t[locale as keyof typeof t].cta.signIn}
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </ProtectedLink>
-              </div>
+        <section className="bg-gradient-to-br from-[#07133b] to-[#0B1F6B] py-24 text-center text-white relative overflow-hidden">
+          <Container className="relative z-10 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-1.5 text-xs font-semibold text-green-400 uppercase tracking-widest mb-6">
+              {t[locale as keyof typeof t].cta.badge}
+            </div>
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">{t[locale as keyof typeof t].cta.title}</h2>
+            <p className="text-white/75 text-base md:text-lg font-light leading-relaxed mb-10">{t[locale as keyof typeof t].cta.sub}</p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <ProtectedLink href={getLocalizedPath(locale, "/book")} className="rounded-full bg-ms-red px-10 py-4 text-sm font-bold text-white shadow-xl hover:bg-ms-red-dark hover:scale-105 transition-all">
+                {t[locale as keyof typeof t].cta.book}
+              </ProtectedLink>
+              <ProtectedLink href={getLocalizedPath(locale, "/dashboard")} className="rounded-full border border-white/20 bg-white/10 px-10 py-4 text-sm font-semibold text-white backdrop-blur-md hover:bg-white/20 transition-all">
+                {t[locale as keyof typeof t].cta.signIn}
+              </ProtectedLink>
             </div>
           </Container>
         </section>
 
-        {/* ── 8. Multi-Column Footer ────────────────────────────────────── */}
-        <footer className="border-t border-white/10 bg-[#07133b] py-16 text-white">
+        <footer className="border-t border-white/10 bg-[#050e29] py-16 text-white">
           <Container>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-              {/* Column 1: Logo & Tagline */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <span className="font-black text-xl tracking-wider text-ms-red">MEDSTAR</span>
-                  <span className="text-xs uppercase tracking-widest text-white/60">Specialty Clinic</span>
+                  <span className="text-xs uppercase tracking-widest text-white/50">Specialty</span>
                 </div>
-                <p className="text-xs text-white/60 leading-relaxed">
-                  {ft.tagline}
-                </p>
+                <p className="text-xs text-white/60 leading-relaxed font-light">{ft.tagline}</p>
               </div>
-
-              {/* Column 2: Specialities */}
               <div>
-                <h4 className="text-sm font-bold uppercase tracking-wider mb-4 text-white">
-                  {ft.specialtiesTitle}
-                </h4>
-                <ul className="space-y-2.5 text-xs text-white/60">
+                <h4 className="text-xs font-bold uppercase tracking-widest mb-5 text-white/90">{ft.specialtiesTitle}</h4>
+                <ul className="space-y-3 text-xs text-white/60 font-light">
                   {specialtiesList.map((item, index) => (
                     <li key={index}>
-                      <Link href={getLocalizedPath(locale, "/book")} className="hover:text-white transition-colors">
-                        {item}
-                      </Link>
+                      <Link href={getLocalizedPath(locale, "/book")} className="hover:text-white transition-colors">{item}</Link>
                     </li>
                   ))}
                 </ul>
               </div>
-
-              {/* Column 3: Quick Links */}
               <div>
-                <h4 className="text-sm font-bold uppercase tracking-wider mb-4 text-white">
-                  {ft.quickLinksTitle}
-                </h4>
-                <ul className="space-y-2.5 text-xs text-white/60">
-                  <li>
-                    <Link href={getLocalizedPath(locale, "/book")} className="hover:text-white transition-colors">
-                      {isAm ? "ዶክተር ይፈልጉ" : "Find a Doctor"}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href={getLocalizedPath(locale, "/book")} className="hover:text-white transition-colors">
-                      {isAm ? "ቀጠሮ ይያዙ" : "Book Appointment"}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href={getLocalizedPath(locale, "/dashboard")} className="hover:text-white transition-colors">
-                      {isAm ? "የታካሚ ፖርታል" : "Patient Portal"}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href={getLocalizedPath(locale, "/contact")} className="hover:text-white transition-colors">
-                      {isAm ? "ስለ እኛ" : "About Us"}
-                    </Link>
-                  </li>
+                <h4 className="text-xs font-bold uppercase tracking-widest mb-5 text-white/90">{ft.quickLinksTitle}</h4>
+                <ul className="space-y-3 text-xs text-white/60 font-light">
+                  <li><Link href={getLocalizedPath(locale, "/book")} className="hover:text-white transition-colors">{isAm ? "ቀጠሮ ይያዙ" : "Book Appointment"}</Link></li>
+                  <li><Link href={getLocalizedPath(locale, "/dashboard")} className="hover:text-white transition-colors">{isAm ? "የታካሚ ፖርታል" : "Patient Portal"}</Link></li>
                 </ul>
               </div>
-
-              {/* Column 4: Contact info */}
               <div>
-                <h4 className="text-sm font-bold uppercase tracking-wider mb-4 text-white">
-                  {ft.contactTitle}
-                </h4>
-                <ul className="space-y-3 text-xs text-white/60">
-                  <li className="flex items-start gap-2">
-                    <span>📍</span>
-                    <span>{ft.address}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span>📞</span>
-                    <span>{ft.phone}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span>✉️</span>
-                    <span>{ft.email}</span>
-                  </li>
+                <h4 className="text-xs font-bold uppercase tracking-widest mb-5 text-white/90">{ft.contactTitle}</h4>
+                <ul className="space-y-3 text-xs text-white/60 font-light">
+                  <li>📍 {ft.address}</li>
+                  <li>📞 {ft.phone}</li>
+                  <li>✉️ {ft.email}</li>
                 </ul>
               </div>
             </div>
-
-            <div className="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40">
+            <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40 font-light">
               <p>{ft.copyright}</p>
               <div className="flex gap-6">
-                <Link href={getLocalizedPath(locale, `/privacy`)} className="hover:text-white/80 transition-colors">
-                  {ft.privacy}
-                </Link>
-                <Link href={getLocalizedPath(locale, `/terms`)} className="hover:text-white/80 transition-colors">
-                  {ft.terms}
-                </Link>
-                <Link href={getLocalizedPath(locale, `/contact`)} className="hover:text-white/80 transition-colors">
-                  {ft.contact}
-                </Link>
+                <Link href={getLocalizedPath(locale, `/privacy`)} className="hover:text-white/80 transition-colors">{ft.privacy}</Link>
+                <Link href={getLocalizedPath(locale, `/terms`)} className="hover:text-white/80 transition-colors">{ft.terms}</Link>
+                <Link href={getLocalizedPath(locale, `/contact`)} className="hover:text-white/80 transition-colors">{ft.contact}</Link>
               </div>
             </div>
           </Container>
