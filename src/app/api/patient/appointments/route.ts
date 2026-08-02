@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GetPatientAppointments } from '@/core/use-cases/GetPatientAppointments';
 import jwt from 'jsonwebtoken';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const sessionCookie = request.cookies.get('medstar_session')?.value;

@@ -271,9 +271,9 @@ function AppointmentList({
         <div className="space-y-3">
           {items.map((a) => (
             <div key={a.id} className="rounded-xl border border-slate-100 p-4">
-              <p className="font-semibold text-ms-blue text-sm">
-                {L.doctor} {items[0]?.doctor?.firstNameEn} {items[0]?.doctor?.lastNameEn}
-              </p>
+<p className="font-semibold text-ms-blue text-sm">
+                                {L.doctor} {a.doctor?.firstNameEn} {a.doctor?.lastNameEn}
+                              </p>
               <p className="text-xs text-slate-400 mt-0.5">
                 {new Date(a.appointmentDate).toLocaleDateString()} · {a.startTime}
               </p>

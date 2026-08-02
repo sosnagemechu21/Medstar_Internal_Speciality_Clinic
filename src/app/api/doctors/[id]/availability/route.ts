@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DoctorRepository } from '@/infrastructure/repositories/DoctorRepository';
 import { CalculateAvailability } from '@/core/use-cases/CalculateAvailability';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

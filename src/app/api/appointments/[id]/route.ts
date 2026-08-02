@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AppointmentRepository } from '@/infrastructure/repositories/AppointmentRepository';
 import { UpdateAppointment } from '@/core/use-cases/UpdateAppointment';
 
+export const dynamic = 'force-dynamic';
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

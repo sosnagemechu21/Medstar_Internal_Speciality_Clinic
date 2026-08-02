@@ -5,6 +5,8 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { parseAppointmentDate } from '@/lib/doctor-session';
 
+export const dynamic = 'force-dynamic';
+
 type BookingPayload = {
   doctorId?: string;
   appointmentDate?: string;
@@ -222,3 +224,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+

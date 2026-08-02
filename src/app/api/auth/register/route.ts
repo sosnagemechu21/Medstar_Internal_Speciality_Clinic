@@ -70,13 +70,8 @@ export async function POST(request: NextRequest) {
         { status: 409 },
       );
     }
-    // TEMPORARY: Return exact error details to the browser response
-    return NextResponse.json(
-      {
-        error: "Internal Registration Server Error",
-        details: error.message || String(error),
-        stack: error.stack,
-      },
+return NextResponse.json(
+      { error: "Internal Registration Server Error" },
       { status: 500 },
     );
   }

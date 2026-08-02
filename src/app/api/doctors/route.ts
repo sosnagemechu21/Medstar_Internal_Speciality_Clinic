@@ -4,6 +4,8 @@ import { getLocale } from 'next-intl/server';
 import { getLocalizedField, resolveLocale } from '@/lib/i18n-utils';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 function getDoctorDisplayName(doctor: Record<string, unknown>, locale: 'en' | 'am'): string {
   return [
     getLocalizedField(doctor, 'firstName', locale),

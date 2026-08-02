@@ -4,6 +4,8 @@ import { getLocale } from 'next-intl/server';
 import { getLocalizedField, resolveLocale } from '@/lib/i18n-utils';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const locale = resolveLocale(

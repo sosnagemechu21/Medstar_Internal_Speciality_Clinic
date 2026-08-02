@@ -1,4 +1,5 @@
 import createMiddleware from 'next-intl/middleware';
+import type { NextRequest } from 'next/server';
 import { locales, defaultLocale } from '../i18n.config';
 
 // next-intl's internal routing engine still works perfectly here
@@ -8,8 +9,8 @@ const intlProvider = createMiddleware({
   localePrefix: 'always'
 });
 
-// Next.js 16 expects an explicit "proxy" function export
-export function proxy(request: any) {
+// Next.js 16 middleware proxy
+export function proxy(request: NextRequest) {
   return intlProvider(request);
 }
 

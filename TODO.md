@@ -1,51 +1,25 @@
-# Implementation Progress
+# MedStar Clinic - Bug Fixes & Deployment Readiness
 
-## Steps Completed
+## Completed Fixes
 
-### Step 1: Create brochure data file ✅
-- [x] Created `src/data/brochure.ts` with all clinic content
-  - Section 1: General Services
-  - Section 2: Why MED-STAR is Different
-  - Section 3: Staff Directory
-  - Introduction, Mission, Vision texts
-  - Build knowledge base function for AI assistant
+### Critical Bugs Fixed
+- [x] **Dashboard AppointmentList bug** (`src/app/[locale]/dashboard/page.tsx`): Fixed `items[0]?.doctor` -> `a.doctor` in the map loop (was always showing first appointment's doctor)
+- [x] **next.config.ts invalid keys**: Removed invalid `eslint` and `turbopack` keys, replaced `as unknown as NextConfig` with proper typing
+- [x] **Security: Stack trace exposure** (`src/app/api/auth/register/route.ts`): Removed `details` and `stack` from error response
+- [x] **proxy.ts type safety**: Changed `request: any` to `request: NextRequest` with proper import
 
-### Step 2: Create Brochure Page ✅
-- [x] Created `src/app/[locale]/brochure/page.tsx`
-  - Displays all brochure sections with proper styling
-  - English and Amharic support
-  - Responsive table for staff directory
+### Deployment Readiness
+- [x] **Created `.env.example`** with all required environment variables documented for Vercel deployment
+- [x] **Build verified**: `npm run build` succeeds with all routes properly compiled
 
-### Step 3: Create AI Assistant Components ✅
-- [x] Created `src/components/ai-assistant/ai-assistant-button.tsx`
-  - Floating "?Any question" button with robot icon
-- [x] Created `src/components/ai-assistant/ai-assistant-chat.tsx`
-  - Full chat panel with knowledge base search
-  - Can answer questions about services, doctors, hours, location, etc.
-- [x] Created `src/components/ai-assistant/ai-assistant-provider.tsx`
-  - Dynamic import wrapper for SSR compatibility
-
-### Step 4: Add Intro/Mission/Vision auto-scrolling section to Homepage ✅
-- [x] Edited `src/app/[locale]/page.tsx`
-  - Added `IntroMissionVisionSection` component
-  - Auto-scrolls every 10 seconds between Introduction → Mission → Vision
-  - Progress bar animation
-  - English and Amharic support
-
-### Step 5: Update Navbar with Brochure link ✅
-- [x] Edited `src/components/ui/navbar.tsx`
-  - Added "Brochure" link in desktop and mobile navigation
-
-### Step 6: Update Layout to include AI assistant globally ✅
-- [x] Edited `src/app/[locale]/layout.tsx`
-  - Added `AIAssistantProvider` for global AI button
-
-### Step 7: Update CSS with animations ✅
-- [x] Edited `src/app/globals.css`
-  - Added `scroll-progress` keyframe animation
-  - Added `.animate-scroll-progress` utility class
-
-### Step 8: Update i18n dictionaries ✅
-- [x] Inline translations in page.tsx (English & Amharic)
-- [x] Inline translations in brochure/page.tsx (English & Amharic)
-
+## Vercel Deployment Steps
+1. Push code to GitHub
+2. Connect repo to Vercel
+3. Set environment variables in Vercel dashboard:
+   - `DATABASE_URL` - PostgreSQL connection string (pooled, port 6543)
+   - `DIRECT_URL` - Direct PostgreSQL connection (port 5432)
+   - `JWT_SECRET` - Secret key for JWT tokens
+   - `NEXT_PUBLIC_SITE_URL` - Your Vercel domain URL
+   - `CHAPA_SECRET_KEY` - (optional) Chapa payment gateway key
+4. Deploy with default settings (Framework: Next.js)
+5. Build command: `npm run build` (auto-detected)

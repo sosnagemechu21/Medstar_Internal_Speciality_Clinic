@@ -1,6 +1,6 @@
 import "../../app/globals.css"
 import { AuthProvider } from "@/providers/auth-provider"
-import { AIAssistantProvider } from "@/components/ai-assistant/ai-assistant-provider"
+import { AIAssistantButton } from "@/components/ai-assistant/ai-assistant-button"
 
 export default async function LocaleLayout({
   children,
@@ -24,7 +24,7 @@ export default async function LocaleLayout({
       <body className="font-sans bg-background text-foreground antialiased">
         <AuthProvider>
           {children}
-          <AIAssistantProvider />
+          <AIAssistantButton />
         </AuthProvider>
       </body>
     </html>
