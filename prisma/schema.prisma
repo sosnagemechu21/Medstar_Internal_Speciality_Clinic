@@ -1,7 +1,7 @@
 datasource db {
   provider  = "postgresql"
-  url       = env("postgresql://neondb_owner:npg_sLFBV1THaz9d@ep-divine-mode-aykxw8o3.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require")      // Pooled database connection string (port 6543)
-  directUrl = env("postgresql://neondb_owner:npg_sLFBV1THaz9d@ep-divine-mode-aykxw8o3.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require")      // Direct database connection string (port 5432)
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
 }
 
 generator client {
