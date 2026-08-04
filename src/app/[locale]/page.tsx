@@ -358,7 +358,7 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
           <div
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
-            className="group relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl shadow-2xl transition-all duration-500 hover:border-white/25 p-8 md:p-14"
+            className="group relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl shadow-2xl transition-all duration-500 hover:border-white/25"
           >
             {/* Top 5-second progress line */}
             <div className="absolute top-0 inset-x-0 h-1 bg-white/10 z-30">
@@ -371,64 +371,83 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
               />
             </div>
 
-            {/* Text side with direction motion */}
-            <div
-              key={activeIndex}
-              className={`relative flex flex-col justify-between min-h-[220px] transition-all duration-500 ${
-                direction === "next"
-                  ? "animate-[slideInRight_0.45s_cubic-bezier(0.16,1,0.3,1)]"
-                  : "animate-[slideInLeft_0.45s_cubic-bezier(0.16,1,0.3,1)]"
-              }`}
-            >
-              <div>
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="flex items-center gap-3.5">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-ms-red/20 text-2xl shadow-inner border border-ms-red/30">
-                      {current.icon}
-                    </span>
-                    <div>
-                      <span className="text-[11px] font-bold tracking-widest text-ms-red uppercase">
-                        Section {current.number}
-                      </span>
-                      <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white mt-0.5">
-                        {current.title}
-                      </h2>
-                    </div>
+            <div className="grid md:grid-cols-5 gap-0 min-h-[360px]">
+              {/* Doctor Photo side */}
+              <div className="relative md:col-span-2 flex flex-col items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent p-6 md:p-8 overflow-hidden border-b md:border-b-0 md:border-r border-white/10">
+                <div className="relative z-10 w-full h-56 sm:h-64 md:h-full max-h-[280px] rounded-2xl overflow-hidden shadow-xl border border-white/20 group-hover:scale-[1.02] transition-transform duration-500">
+                  <img
+                    src="/dr-dawit-amare.png"
+                    alt="Dr. Dawit Amare"
+                    className="w-full h-full object-cover object-top"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80" />
+                  <div className="absolute bottom-3 left-3 right-3 text-left">
+                    <p className="text-sm font-extrabold text-white">Dr. Dawit Amare</p>
+                    <p className="text-[10px] text-white/75 font-medium">Senior Cardiologist & Specialist</p>
                   </div>
-                  <span className="hidden sm:inline-block text-xs font-mono tracking-widest text-white/30 uppercase border border-white/10 rounded-full px-3 py-1">
-                    Medstar Specialty Clinic
-                  </span>
                 </div>
-
-                <p className="text-base md:text-xl text-white/85 leading-relaxed font-light max-w-4xl">
-                  {current.text}
-                </p>
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(204,41,54,0.18),transparent_70%)]" />
               </div>
 
-              <div className="mt-10 pt-6 border-t border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs text-white/40 font-medium">
-                  <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
-                  <span>{isPaused ? "Paused (Reading mode)" : "Auto-scrolling every 5s"}</span>
+              {/* Text side with direction motion */}
+              <div
+                key={activeIndex}
+                className={`relative md:col-span-3 p-8 md:p-10 flex flex-col justify-between transition-all duration-500 ${
+                  direction === "next"
+                    ? "animate-[slideInRight_0.45s_cubic-bezier(0.16,1,0.3,1)]"
+                    : "animate-[slideInLeft_0.45s_cubic-bezier(0.16,1,0.3,1)]"
+                }`}
+              >
+                <div>
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-ms-red/20 text-xl shadow-inner border border-ms-red/30">
+                        {current.icon}
+                      </span>
+                      <div>
+                        <span className="text-[10px] font-bold tracking-widest text-ms-red uppercase">
+                          Section {current.number}
+                        </span>
+                        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+                          {current.title}
+                        </h2>
+                      </div>
+                    </div>
+                    <span className="hidden lg:inline-block text-[10px] font-mono tracking-widest text-white/30 uppercase border border-white/10 rounded-full px-2.5 py-0.5">
+                      Medstar Clinic
+                    </span>
+                  </div>
+
+                  <p className="mt-4 text-sm md:text-base text-white/80 leading-relaxed font-light">
+                    {current.text}
+                  </p>
                 </div>
 
-                {/* Navigation Arrow Controls */}
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    aria-label="Previous Slide"
-                    onClick={handlePrev}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white/20 hover:text-white transition-all active:scale-95 shadow-sm text-sm"
-                  >
-                    ←
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Next Slide"
-                    onClick={handleNext}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-ms-red text-white hover:bg-ms-red-dark transition-all active:scale-95 shadow-md text-sm"
-                  >
-                    →
-                  </button>
+                <div className="mt-8 pt-5 border-t border-white/10 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs text-white/40 font-medium">
+                    <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
+                    <span>{isPaused ? "Paused (Reading mode)" : "Auto-scrolling every 5s"}</span>
+                  </div>
+
+                  {/* Navigation Arrow Controls */}
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      aria-label="Previous Slide"
+                      onClick={handlePrev}
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white/20 hover:text-white transition-all active:scale-95 shadow-sm text-xs"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Next Slide"
+                      onClick={handleNext}
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-ms-red text-white hover:bg-ms-red-dark transition-all active:scale-95 shadow-md text-xs"
+                    >
+                      →
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
