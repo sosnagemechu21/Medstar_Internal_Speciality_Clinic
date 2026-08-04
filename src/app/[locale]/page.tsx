@@ -320,7 +320,7 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
-    }, 10000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [slides.length]);
 
@@ -340,30 +340,36 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
               <button
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`px-4 py-2.5 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
+                className={`relative overflow-hidden px-5 py-2.5 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
                   idx === activeIndex
                     ? "bg-ms-red text-white shadow-lg shadow-ms-red/30 scale-105"
                     : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80"
                 }`}
               >
                 {s.title}
+                {idx === activeIndex && (
+                  <span
+                    key={`progress-${activeIndex}`}
+                    className="absolute bottom-0 left-0 h-0.5 bg-white/80 animate-[progress_5s_linear]"
+                  />
+                )}
               </button>
             ))}
           </div>
 
           {/* Card */}
-          <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-md shadow-2xl">
+          <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-md shadow-2xl transition-all duration-500">
             <div className="grid md:grid-cols-5 gap-0">
               {/* Illustration side */}
               <div className="relative md:col-span-2 flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent p-10">
-                <div className="h-56 w-56 sm:h-64 sm:w-64">
+                <div className="h-56 w-56 sm:h-64 sm:w-64 transition-transform duration-500 hover:scale-105">
                   <DoctorIllustration />
                 </div>
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(204,41,54,0.18),transparent_70%)]" />
               </div>
 
               {/* Text side */}
-              <div className="md:col-span-3 p-8 md:p-12">
+              <div key={activeIndex} className="md:col-span-3 p-8 md:p-12 animate-[fadeIn_0.5s_ease-in-out]">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="h-1.5 w-12 rounded-full" style={{ background: current.accent }} />
                   <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">{current.title}</h2>
