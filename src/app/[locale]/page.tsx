@@ -246,49 +246,6 @@ function HeroSection({ locale }: { locale: Locale }) {
   );
 }
 
-function DoctorIllustration() {
-  return (
-    <svg
-      viewBox="0 0 200 200"
-      className="w-full h-full"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      {/* Halo / glow */}
-      <circle cx="100" cy="100" r="92" fill="url(#halo)" />
-      <defs>
-        <radialGradient id="halo" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#CC2936" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#CC2936" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      {/* shoulders */}
-      <path d="M60 172c8-26 28-34 40-34s32 8 40 34" fill="#1E3A8A" />
-      {/* neck */}
-      <rect x="88" y="98" width="24" height="22" rx="10" fill="#E8B88A" />
-      {/* head */}
-      <circle cx="100" cy="78" r="34" fill="#F2C79B" />
-      {/* hair */}
-      <path d="M66 80c0-26 15-44 34-44s34 18 34 44c-8-14-20-20-34-20s-26 6-34 20z" fill="#2B2B3A" />
-      {/* eyes */}
-      <circle cx="88" cy="80" r="4" fill="#1F2937" />
-      <circle cx="112" cy="80" r="4" fill="#1F2937" />
-      <circle cx="89" cy="79" r="1.4" fill="#fff" />
-      <circle cx="113" cy="79" r="1.4" fill="#fff" />
-      {/* smile */}
-      <path d="M92 92c4 3 12 3 16 0" stroke="#B4693A" strokeWidth="2.4" strokeLinecap="round" />
-      {/* blush */}
-      <circle cx="82" cy="88" r="5" fill="#F4A2A2" opacity="0.6" />
-      <circle cx="118" cy="88" r="5" fill="#F4A2A2" opacity="0.6" />
-      {/* stethoscope */}
-      <path d="M100 106v10M100 110c-8 0-12-5-12-12M100 110c8 0 12-5 12-12" stroke="#CC2936" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <circle cx="88" cy="90" r="6" stroke="#CC2936" strokeWidth="3" fill="none" />
-    </svg>
-  );
-}
-
 function IntroMissionVisionSection({ locale }: { locale: Locale }) {
   const L = t[locale as keyof typeof t].introMissionVision;
   const [activeIndex, setActiveIndex] = useState(0);
