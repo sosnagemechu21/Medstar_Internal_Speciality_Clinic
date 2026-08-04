@@ -68,13 +68,36 @@ async function main() {
     },
   });
 
-const doctorPasswordHash = await bcrypt.hash('Doctor@2026!', 10);
-
-const doctorUser1 = await prisma.user.create({
+  const dawitAmareHash = await bcrypt.hash('dawitamare@1234', 10);
+  const doctorUserAmare = await prisma.user.create({
     data: {
-      email: 'doctor1@medstar.com', // <-- Added required email field here
+      email: 'dawitamare@medstar.com',
+      phoneNumber: '+251911999999',
+      passwordHash: dawitAmareHash,
+      role: 'doctor',
+    },
+  });
+
+  await prisma.doctor.create({
+    data: {
+      userId: doctorUserAmare.id,
+      specialtyId: cardiology.id,
+      firstNameEn: 'Dawit',
+      lastNameEn: 'Amare',
+      firstNameAm: 'ዳዊት',
+      lastNameAm: 'አማረ',
+      experienceYears: 12,
+      bioEn: 'Expert Cardiologist specializing in heart condition treatments.',
+      bioAm: 'በልብ ህክምና ልዩ ባለሙያ ከ12 ዓመት በላይ ልምድ ያላቸው።',
+    },
+  });
+
+  const dawitAbebeHash = await bcrypt.hash('dawitabebe@1234', 10);
+  const doctorUser1 = await prisma.user.create({
+    data: {
+      email: 'doctor1@medstar.com',
       phoneNumber: '+251911111111',
-      passwordHash: doctorPasswordHash,
+      passwordHash: dawitAbebeHash,
       role: 'doctor',
     },
   });
@@ -83,21 +106,23 @@ const doctorUser1 = await prisma.user.create({
     data: {
       userId: doctorUser1.id,
       specialtyId: cardiology.id,
-      firstNameEn: 'Dr. Dawit',
+      firstNameEn: 'Dawit',
       lastNameEn: 'Abebe',
-      firstNameAm: 'ዶ/ር ዳዊት',
+      firstNameAm: 'ዳዊት',
       lastNameAm: 'አበበ',
+      experienceYears: 10,
       bioEn: 'Senior Cardiologist with 10+ years of clinical practice.',
       bioAm: 'ከ10 ዓመት በላይ ክሊኒካዊ ልምድ ያላቸው ከፍተኛ የልብ ሐኪም።',
     },
   });
 
-const doctorUser2 = await prisma.user.create({
+  const helenTadesseHash = await bcrypt.hash('helentadesse@1234', 10);
+  const doctorUser2 = await prisma.user.create({
     data: {
-      email: "doctor2@medstar.com", // <-- Add this required field
-      phoneNumber: "+251922222222", // (This is now optional, but fine to keep)
-      passwordHash: doctorPasswordHash,
-      role: "doctor",
+      email: 'doctor2@medstar.com',
+      phoneNumber: '+251922222222',
+      passwordHash: helenTadesseHash,
+      role: 'doctor',
     },
   });
 
@@ -105,10 +130,11 @@ const doctorUser2 = await prisma.user.create({
     data: {
       userId: doctorUser2.id,
       specialtyId: pediatrics.id,
-      firstNameEn: 'Dr. Helen',
+      firstNameEn: 'Helen',
       lastNameEn: 'Tadesse',
-      firstNameAm: 'ዶ/ር ሄለን',
+      firstNameAm: 'ሄለን',
       lastNameAm: 'ታደሰ',
+      experienceYears: 8,
       bioEn: 'Compassionate pediatrician specializing in neonatal health.',
       bioAm: 'በአራስ ሕፃናት ጤና ላይ ያተኮሩ አፍቃሪ የሕፃናት ሐኪም።',
     },

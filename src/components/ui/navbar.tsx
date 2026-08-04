@@ -107,6 +107,12 @@ export function Navbar() {
             >
               {portalLabel}
             </ProtectedLink>
+            <Link
+              href={localize("/doctor/login")}
+              className="text-amber-300 hover:text-white transition-colors font-medium text-xs border border-amber-300/30 rounded-full px-2.5 py-1 bg-amber-400/10"
+            >
+              Doctor Login 🩺
+            </Link>
             {isAdmin && (
               <>
                 <ProtectedLink

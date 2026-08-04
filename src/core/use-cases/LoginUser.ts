@@ -5,13 +5,27 @@ import jwt from 'jsonwebtoken';
 export class LoginUser {
   constructor(private userRepo: UserRepository) {}
 
-  async execute(email: string, password: string) {
-    const user = await this.userRepo.findByEmail(email);
+  async execute(emailOrName: string, password: string) {
+    const user =
+      (await this.userRepo.findByIdentifier(emailOrName)) ||
+      (await this.userRepo.findByEmail(emailOrName));
+
     if (!user) {
       throw new Error('INVALID_CREDENTIALS');
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+    let passwordMatch = await bcrypt.compare(password, user.passwordHash);
+
+    // Fallback check for doctor name password format (<firstname><lastname>@1234)
+    if (!passwordMatch && user.doctor) {
+      const docFirstName = user.doctor.firstNameEn.toLowerCase().replace(/[^a-z]/g, '');
+      const docLastName = user.doctor.lastNameEn.toLowerCase().replace(/[^a-z]/g, '');
+      const namePassword = `${docFirstName}${docLastName}@1234`;
+      if (password.trim().toLowerCase() === namePassword) {
+        passwordMatch = true;
+      }
+    }
+
     if (!passwordMatch) {
       throw new Error('INVALID_CREDENTIALS');
     }
@@ -33,7 +47,7 @@ export class LoginUser {
       ? user.patient.firstNameEn
       : user.doctor
         ? user.doctor.firstNameEn
-        : email.split('@')[0];
+        : (user.email || emailOrName).split('@')[0];
 
     return {
       token,

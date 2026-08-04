@@ -5,16 +5,17 @@ import { LoginUser } from '@/core/use-cases/LoginUser';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, password } = body;
+    const identifier = body.email || body.name || body.username || body.identifier;
+    const { password } = body;
 
-    if (!email || !password) {
+    if (!identifier || !password) {
       return NextResponse.json({ error: 'Missing credentials identification' }, { status: 400 });
     }
 
     const userRepo = new UserRepository();
     const loginUserUseCase = new LoginUser(userRepo);
 
-    const { token, user } = await loginUserUseCase.execute(email, password);
+    const { token, user } = await loginUserUseCase.execute(identifier, password);
     const response = NextResponse.json({ success: true, user });
 
     // Inject token via an HTTP-Only secure cookie to avoid XSS vulnerabilities

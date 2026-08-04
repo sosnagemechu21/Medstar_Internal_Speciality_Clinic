@@ -321,7 +321,8 @@ export default function BookPage() {
 
   const availableDoctors = booking.specialty
     ? doctors.filter((doctor) => doctor.specialtyId === booking.specialty?.id)
-    : [];
+    : doctors;
+
   const selectedSlot =
     availableSlots.find((slot) => slot.startTime === booking.time) ?? null;
 
@@ -509,9 +510,27 @@ export default function BookPage() {
           {/* Step 1 — Speciality */}
           {step === 1 && (
             <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
-              <h2 className="text-lg font-bold text-ms-blue mb-6">
-                Choose a Speciality
-              </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-lg font-bold text-ms-blue">
+                    Choose a Speciality or Doctor
+                  </h2>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Select a specialty department or jump directly to your preferred specialist.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBooking((b) => ({ ...b, specialty: null }));
+                    setStep(2);
+                  }}
+                  className="rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-ms-blue hover:border-ms-blue hover:bg-ms-blue/5 transition-colors shrink-0"
+                >
+                  Browse All Doctors Directly →
+                </button>
+              </div>
+
               {catalogLoading && (
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center text-sm text-slate-400">
                   Loading specialties…
@@ -538,7 +557,7 @@ export default function BookPage() {
                         }));
                         setStep(2);
                       }}
-                      className="group flex flex-col items-start gap-3 rounded-xl border border-slate-200 p-5 text-left hover:border-ms-blue/40 hover:shadow-md transition-all"
+                      className="group flex flex-col items-start gap-3 rounded-xl border border-slate-200 p-5 text-left hover:border-ms-blue/40 hover:shadow-md transition-all bg-white"
                     >
                       <span className="text-2xl">
                         {getSpecialtyIcon(sp.name)}
@@ -559,25 +578,61 @@ export default function BookPage() {
           )}
 
           {/* Step 2 — Doctor */}
-          {step === 2 && booking.specialty && (
+          {step === 2 && (
             <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-lg font-bold text-ms-blue">
                     Select Your Doctor
                   </h2>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Available {booking.specialty.name} specialists
+                    {booking.specialty
+                      ? `Showing ${booking.specialty.name} specialists (${availableDoctors.length})`
+                      : `Showing all available specialists (${availableDoctors.length})`}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="text-sm text-slate-400 hover:text-ms-blue"
+                  className="text-sm font-semibold text-slate-400 hover:text-ms-blue"
                 >
-                  ← Back
+                  ← Back to Specialities
                 </button>
               </div>
+
+              {/* Specialty Filter Pills */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 border-b border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setBooking((b) => ({ ...b, specialty: null }))}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors ${
+                    booking.specialty === null
+                      ? "bg-ms-blue text-white shadow-xs"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  All Doctors ({doctors.length})
+                </button>
+                {specialties.map((sp) => {
+                  const active = booking.specialty?.id === sp.id;
+                  const docCount = doctors.filter((d) => d.specialtyId === sp.id).length;
+                  return (
+                    <button
+                      key={sp.id}
+                      type="button"
+                      onClick={() => setBooking((b) => ({ ...b, specialty: sp }))}
+                      className={`rounded-full px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors ${
+                        active
+                          ? "bg-ms-blue text-white shadow-xs"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {sp.name} ({docCount})
+                    </button>
+                  );
+                })}
+              </div>
+
               <div className="space-y-3">
                 {catalogLoading && (
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center text-sm text-slate-400">
@@ -593,7 +648,7 @@ export default function BookPage() {
                   !catalogError &&
                   availableDoctors.length === 0 && (
                     <div className="rounded-xl border-2 border-dashed border-slate-200 p-8 text-center text-sm text-slate-400">
-                      No doctors are available for this specialty yet.
+                      No doctors are available for this filter yet.
                     </div>
                   )}
                 {!catalogLoading &&
@@ -604,9 +659,17 @@ export default function BookPage() {
                       doc={doc}
                       onSelect={() => {
                         setSubmitError(null);
+                        const matchedSpecialty =
+                          specialties.find((s) => s.id === doc.specialtyId) || {
+                            id: doc.specialtyId,
+                            name: doc.specialty.name,
+                            description: doc.specialty.description,
+                            doctorCount: 1,
+                          };
                         setBooking((b) => ({
                           ...b,
                           doctor: doc,
+                          specialty: matchedSpecialty,
                           date: null,
                           time: null,
                         }));
