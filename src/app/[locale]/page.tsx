@@ -13,7 +13,6 @@ import type { Locale } from "../../../i18n.config";
 const t = {
   en: {
     hero: {
-      origin: "Addis Ababa · Ethiopia · Est. 2018",
       headline1: "Your Health,",
       headline2: "Our Speciality",
       sub: "World-class specialists. Compassionate care. A clinic built entirely around you.",
@@ -64,7 +63,6 @@ const t = {
   },
   am: {
     hero: {
-      origin: "አዲስ አበባ · ኢትዮጵያ · ከ 2010 ዓ.ም ጀምሮ",
       headline1: "ጤናዎ፣",
       headline2: "የእኛ ልዩ ሙያ",
       sub: "አለም አቀፍ ደረጃቸውን የጠበቁ ስፔሻሊስቶች። ሩህሩህ እንክብካቤ። ሙሉ በሙሉ በእርስዎ ዙሪያ የተገነባ ክሊኒክ።",
@@ -212,13 +210,7 @@ function HeroSection({ locale }: { locale: Locale }) {
         style={{ background: "linear-gradient(120deg, rgba(11,31,107,0.85) 40%, rgba(7,19,59,0.7) 100%)" }}
         aria-hidden="true"
       />
-      <Container className="relative z-20 flex flex-col justify-center flex-1 py-20 md:py-28">
-        <div className="mb-7 inline-flex">
-          <span className="flex items-center gap-2 rounded-full border border-ms-red/40 bg-ms-red/10 px-4 py-2 text-xs font-semibold text-ms-red uppercase tracking-wider backdrop-blur-md">
-            <span className="h-2 w-2 rounded-full bg-ms-red animate-pulse" />
-            {L.origin}
-          </span>
-        </div>
+<Container className="relative z-20 flex flex-col justify-center flex-1 py-20 md:py-28">
         <h1 className="max-w-[600px] leading-[1.08] text-white tracking-tight">
           <span className="block text-5xl font-extrabold md:text-6xl lg:text-7xl">{L.headline1}</span>
           <em className="block text-5xl md:text-6xl lg:text-7xl font-bold not-italic text-white mt-1" style={{ fontFamily: "Merriweather, Georgia, serif", fontStyle: "italic" }}>
@@ -254,6 +246,49 @@ function HeroSection({ locale }: { locale: Locale }) {
   );
 }
 
+function DoctorIllustration() {
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      className="w-full h-full"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      {/* Halo / glow */}
+      <circle cx="100" cy="100" r="92" fill="url(#halo)" />
+      <defs>
+        <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#CC2936" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#CC2936" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* shoulders */}
+      <path d="M60 172c8-26 28-34 40-34s32 8 40 34" fill="#1E3A8A" />
+      {/* neck */}
+      <rect x="88" y="98" width="24" height="22" rx="10" fill="#E8B88A" />
+      {/* head */}
+      <circle cx="100" cy="78" r="34" fill="#F2C79B" />
+      {/* hair */}
+      <path d="M66 80c0-26 15-44 34-44s34 18 34 44c-8-14-20-20-34-20s-26 6-34 20z" fill="#2B2B3A" />
+      {/* eyes */}
+      <circle cx="88" cy="80" r="4" fill="#1F2937" />
+      <circle cx="112" cy="80" r="4" fill="#1F2937" />
+      <circle cx="89" cy="79" r="1.4" fill="#fff" />
+      <circle cx="113" cy="79" r="1.4" fill="#fff" />
+      {/* smile */}
+      <path d="M92 92c4 3 12 3 16 0" stroke="#B4693A" strokeWidth="2.4" strokeLinecap="round" />
+      {/* blush */}
+      <circle cx="82" cy="88" r="5" fill="#F4A2A2" opacity="0.6" />
+      <circle cx="118" cy="88" r="5" fill="#F4A2A2" opacity="0.6" />
+      {/* stethoscope */}
+      <path d="M100 106v10M100 110c-8 0-12-5-12-12M100 110c8 0 12-5 12-12" stroke="#CC2936" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <circle cx="88" cy="90" r="6" stroke="#CC2936" strokeWidth="3" fill="none" />
+    </svg>
+  );
+}
+
 function IntroMissionVisionSection({ locale }: { locale: Locale }) {
   const L = t[locale as keyof typeof t].introMissionVision;
   const [activeIndex, setActiveIndex] = useState(0);
@@ -261,24 +296,21 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
   const slides = [
     {
       title: L.introductionTitle,
-      icon: "🏥",
-      gradient: "from-[#0B1F6B] to-[#1E3A8A]",
+      accent: "#CC2936",
       text: locale === "am"
         ? "ስሙ እንደሚያመለክተው የውስጥ ህክምና ስፔሻላይዝድ ክሊኒክ ነው። ከውሃ እና መስኖ ሚኒስቴር (ውሃ ልማት) ፊት ለፊት ይገኛል።"
         : "As the name indicates it's an Internal Medicine Specialized clinic located in front of Water & irrigation Ministry, equipped with advanced international-standard medical devices.",
     },
     {
       title: L.missionTitle,
-      icon: "🎯",
-      gradient: "from-[#CC2936] to-[#a81f2a]",
+      accent: "#CC2936",
       text: locale === "am"
         ? "ከፍተኛ ጥራት ያለው በታካሚ ላይ ያተኮረ፣ በቀላሉ ተደራሽ፣ ወጪ ቆጣቢ እና የምናገለግለውን ማህበረሰብ ፍላጎት የሚያሟላ የጤና እንክብካቤ አቅራቢ መሆን።"
         : "To be a provider of high quality patient-focused health care that is readily accessible, cost effective and meets the needs of the community we serve.",
     },
     {
       title: L.visionTitle,
-      icon: "👁️",
-      gradient: "from-[#0B1F6B] to-[#CC2936]",
+      accent: "#CC2936",
       text: locale === "am"
         ? "ለልህቀት ባለው ቁርጠኝነት፣ የታካሚዎችን የሚጠበቀውን በማለፍ፣ ጥራት ያለው የህክምና አገልግሎት በማስፋፋት የህብረተሰባችን የጤና እንክብካቤ መሪ መሆን።"
         : "To be distinguished as our community's health care leader for its commitment to excellence, exceeding patient expectations through quality services.",
@@ -295,32 +327,56 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
   const current = slides[activeIndex];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#F4F6FB] to-white py-24">
-      <Container>
-        <div className="relative mx-auto max-w-4xl">
-          <div className="flex justify-center gap-3 mb-10">
+    <section className="relative overflow-hidden bg-[#0a0f1e] py-24 text-white">
+      {/* ambient glow */}
+      <div className="pointer-events-none absolute -top-32 left-1/2 h-96 w-[42rem] -translate-x-1/2 rounded-full bg-ms-red/20 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-ms-blue/30 blur-3xl" />
+
+      <Container className="relative z-10">
+        <div className="mx-auto max-w-5xl">
+          {/* Tabs */}
+          <div className="mb-10 flex justify-center gap-2 sm:gap-3">
             {slides.map((s, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`px-5 py-2.5 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
+                className={`px-4 py-2.5 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
                   idx === activeIndex
-                    ? "bg-[#0B1F6B] text-white shadow-md scale-105"
-                    : "bg-slate-200/70 text-slate-600 hover:bg-slate-300"
+                    ? "bg-ms-red text-white shadow-lg shadow-ms-red/30 scale-105"
+                    : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80"
                 }`}
               >
                 {s.title}
               </button>
             ))}
           </div>
-          <div className="overflow-hidden rounded-3xl shadow-2xl border border-slate-100">
-            <div className={`bg-gradient-to-br ${current.gradient} p-10 md:p-14 text-white relative`}>
-              <div className="absolute top-6 right-8 text-7xl opacity-10">{current.icon}</div>
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-4xl md:text-5xl">{current.icon}</span>
-                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">{current.title}</h2>
+
+          {/* Card */}
+          <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-md shadow-2xl">
+            <div className="grid md:grid-cols-5 gap-0">
+              {/* Illustration side */}
+              <div className="relative md:col-span-2 flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent p-10">
+                <div className="h-56 w-56 sm:h-64 sm:w-64">
+                  <DoctorIllustration />
+                </div>
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(204,41,54,0.18),transparent_70%)]" />
               </div>
-              <p className="text-base md:text-lg text-white/90 leading-relaxed font-light max-w-3xl">{current.text}</p>
+
+              {/* Text side */}
+              <div className="md:col-span-3 p-8 md:p-12">
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="h-1.5 w-12 rounded-full" style={{ background: current.accent }} />
+                  <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">{current.title}</h2>
+                </div>
+                <p className="text-sm md:text-base text-white/75 leading-relaxed font-light">
+                  {current.text}
+                </p>
+                <div className="mt-6 flex items-center gap-2 text-[11px] text-white/40 uppercase tracking-widest">
+                  <span>MedStar Specialty Clinic</span>
+                  <span className="h-px w-8 bg-white/20" />
+                  <span>{current.title}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

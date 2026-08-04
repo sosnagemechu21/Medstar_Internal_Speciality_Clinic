@@ -1,18 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
   id           String   @id @default(uuid())
-  email        String   @unique                  // Required for Email Auth
-  phoneNumber  String?  @unique                  // Optional profile phone number
+  email        String   @unique
+  phoneNumber  String?  @unique
   passwordHash String
-  role         String   @default("patient")      // patient, doctor, admin, staff
+  role         String   @default("patient")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   patient      Patient?
@@ -44,23 +44,22 @@ model Specialty {
 }
 
 model Doctor {
-  id              String   @id @default(uuid())
-  userId          String?  @unique
-  user            User?    @relation(fields: [userId], references: [id])
+  id              String             @id @default(uuid())
+  userId          String?            @unique
+  user            User?              @relation(fields: [userId], references: [id])
   specialtyId     String
-  specialty       Specialty @relation(fields: [specialtyId], references: [id])
+  specialty       Specialty          @relation(fields: [specialtyId], references: [id])
   firstNameEn     String
   lastNameEn      String
   firstNameAm     String
   lastNameAm      String
-  experienceYears Int      @default(1)
-  photoUrl        String?  // To hold the image URL or base64 string
+  experienceYears Int                @default(1)
+  photoUrl        String?
   bioEn           String?
   bioAm           String?
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
+  isActive        Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
   schedules       DoctorSchedule[]
   appointments    Appointment[]
   timeSlots       TimeSlot[]
@@ -70,25 +69,25 @@ model DoctorSchedule {
   id                  String   @id @default(uuid())
   doctorId            String
   doctor              Doctor   @relation(fields: [doctorId], references: [id])
-  dayOfWeek           Int      // 0 = Sunday, 1 = Monday, etc.
-  startTime           String   // e.g., "08:00"
-  endTime             String   // e.g., "17:00"
+  dayOfWeek           Int
+  startTime           String
+  endTime             String
   slotDurationMinutes Int      @default(20)
 }
 
 model Appointment {
-  id                 String   @id @default(uuid())
+  id                 String    @id @default(uuid())
   patientId          String
-  patient            Patient  @relation(fields: [patientId], references: [id])
+  patient            Patient   @relation(fields: [patientId], references: [id])
   doctorId           String
-  doctor             Doctor   @relation(fields: [doctorId], references: [id])
+  doctor             Doctor    @relation(fields: [doctorId], references: [id])
   appointmentDate    DateTime
   startTime          String
   endTime            String
-  status             String   // pending, confirmed, rescheduled, cancelled, completed
+  status             String
   cancellationReason String?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
   payment            Payment?
   timeSlot           TimeSlot?
 
@@ -104,7 +103,7 @@ model TimeSlot {
   appointmentDate DateTime
   startTime       String
   endTime         String
-  status          String       @default("locked") // locked, booked, released
+  status          String       @default("locked")
   appointmentId   String?      @unique
   appointment     Appointment? @relation(fields: [appointmentId], references: [id])
   createdAt       DateTime     @default(now())
@@ -120,8 +119,8 @@ model Payment {
   appointment       Appointment @relation(fields: [appointmentId], references: [id])
   amount            Float
   currency          String      @default("ETB")
-  paymentMethod     String      // Chapa, Telebirr, CBE Birr, Card
-  status            String      // pending, initiated, completed, failed, refunded
+  paymentMethod     String
+  status            String
   providerReference String?     @unique
   paidAt            DateTime?
   createdAt         DateTime    @default(now())

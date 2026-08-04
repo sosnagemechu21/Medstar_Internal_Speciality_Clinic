@@ -846,6 +846,16 @@ export default function BookPage() {
   );
 }
 
+function getInitials(name: string): string {
+  return name
+    .replace(/^Dr\.?\s*/i, "")
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 function DoctorCard({
   doc,
   onSelect,
@@ -857,21 +867,36 @@ function DoctorCard({
     <button
       type="button"
       onClick={onSelect}
-      className="w-full flex items-center justify-between rounded-xl border border-slate-200 p-5 hover:border-ms-blue/40 hover:shadow-md transition-all text-left"
+      className="w-full flex items-center justify-between gap-4 rounded-xl border border-slate-200 p-5 hover:border-ms-blue/40 hover:shadow-md transition-all text-left"
     >
-      <div className="flex items-center gap-4">
-        <div className="h-12 w-12 rounded-full bg-ms-blue/10 flex items-center justify-center text-lg">
-          👨‍⚕️
-        </div>
-        <div>
-          <p className="font-bold text-ms-blue">{doc.name}</p>
+      <div className="flex items-center gap-4 min-w-0">
+        {doc.photoUrl ? (
+          <img
+            src={doc.photoUrl}
+            alt={doc.name}
+            className="h-14 w-14 rounded-full object-cover border-2 border-ms-blue/20 shrink-0"
+          />
+        ) : (
+          <div className="h-14 w-14 shrink-0 rounded-full bg-gradient-to-br from-ms-blue to-ms-blue-mid flex items-center justify-center text-base font-bold text-white">
+            {getInitials(doc.name)}
+          </div>
+        )}
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-bold text-ms-blue">{doc.name}</p>
+            {doc.experienceYears > 0 && (
+              <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-bold text-amber-700 uppercase">
+                {doc.experienceYears}+ yrs
+              </span>
+            )}
+          </div>
           <p className="text-xs text-slate-400">{doc.title}</p>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">
             {doc.bio || doc.specialty.description}
           </p>
         </div>
       </div>
-      <span className="rounded-full bg-green-50 border border-green-200 px-3 py-1 text-[10px] font-bold text-green-600 uppercase">
+      <span className="shrink-0 rounded-full bg-green-50 border border-green-200 px-3 py-1 text-[10px] font-bold text-green-600 uppercase">
         Available
       </span>
     </button>

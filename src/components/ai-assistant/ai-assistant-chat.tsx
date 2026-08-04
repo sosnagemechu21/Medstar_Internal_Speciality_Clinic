@@ -11,6 +11,31 @@ interface Message {
 function searchKnowledgeBase(query: string, data: BrochureData): string {
   const q = query.toLowerCase().trim();
 
+  // Check for greetings
+  if (
+    /\b(hi|hello|hey|hallo)\b/.test(q) ||
+    q === "hi" ||
+    q === "hello" ||
+    q === "hey"
+  ) {
+    return "Hello! I'm MedStar AI Assistant. How can I help you today? You can ask me about our doctors, services, working hours, location, or how to book an appointment.";
+  }
+
+  // Check for help requests
+  if (q.includes("help") || q.includes("assist")) {
+    return "I'm here to help! I can answer questions about our clinic, doctors, services, working hours, location, and appointments. Try asking: \"Book appointment\", \"Doctors\", \"Working hours\", or \"Location\".";
+  }
+
+  // Check for appointments / booking
+  if (
+    q.includes("appointment") ||
+    q.includes("booking") ||
+    q.includes("book") ||
+    q.includes("schedule")
+  ) {
+    return "You can book an appointment in under 2 minutes! Click the \"Book Appointment\" button in the top navigation (or on the homepage), then choose your specialty, pick your preferred doctor, select a date and time, and confirm. Our live calendar shows available slots for each doctor.";
+  }
+
   // Check for introduction
   if (
     q.includes("introduction") ||
@@ -176,11 +201,10 @@ export function AIChatPanel({ onClose }: { onClose: () => void }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isTyping) return;
+const sendMessage = async (rawMessage: string) => {
+    const userMessage = rawMessage.trim();
+    if (!userMessage || isTyping) return;
 
-    const userMessage = input.trim();
     setInput("");
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setIsTyping(true);
@@ -204,6 +228,11 @@ export function AIChatPanel({ onClose }: { onClose: () => void }) {
     }
 
     setIsTyping(false);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendMessage(input);
   };
 
   return (
@@ -274,6 +303,24 @@ export function AIChatPanel({ onClose }: { onClose: () => void }) {
           </div>
         )}
         <div ref={messagesEndRef} />
+      </div>
+
+{/* Quick replies */}
+      <div className="border-t border-slate-200 bg-slate-50 px-3 py-2 flex flex-wrap gap-2">
+        {["Hi", "I need help", "Book appointment"].map((suggestion) => (
+          <button
+            key={suggestion}
+            type="button"
+            disabled={isTyping}
+            onClick={() => {
+              setInput(suggestion);
+              sendMessage(suggestion);
+            }}
+            className="rounded-full border border-ms-blue/30 bg-white px-3 py-1.5 text-xs font-semibold text-ms-blue transition-colors hover:bg-ms-blue hover:text-white disabled:opacity-50"
+          >
+            {suggestion}
+          </button>
+        ))}
       </div>
 
       {/* Input */}

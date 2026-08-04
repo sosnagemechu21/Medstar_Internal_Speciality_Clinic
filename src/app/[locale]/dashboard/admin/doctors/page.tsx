@@ -12,11 +12,12 @@ import { getLocalizedPath } from '@/lib/locale-routing';
 
 const t = {
   en: {
-    administration: 'Administration',
+administration: 'Administration',
     adminWorkspace: 'Admin Workspace',
     adminDesc: 'Create doctor accounts, manage doctor profiles, assign specialties, and maintain clinical roster.',
     doctorPortal: 'Doctor Portal',
     viewDirectory: 'View Public Directory',
+    viewAppointments: 'View Appointments',
     rosterTitle: 'Doctors Roster & Profiles',
     rosterDesc: 'Manage existing doctors. Click edit or remove icon to modify profile.',
     registered: 'Doctors Registered',
@@ -58,8 +59,9 @@ const t = {
     administration: 'አስተዳደር',
     adminWorkspace: 'የአስተዳዳሪ ሥራ ቦታ',
     adminDesc: 'የዶክተር መለያ ይፍጠሩ፣ የዶክተር ፕሮፋይል ያስተዳድሩ፣ ስፔሻሊቲ ያዋቅሩ እና ክሊኒካዊ ቡድን ያዘምኑ።',
-    doctorPortal: 'የዶክተር ፖርታል',
+doctorPortal: 'የዶክተር ፖርታል',
     viewDirectory: 'የህዝብ ማውጫ ይመልከቱ',
+    viewAppointments: 'ቀጠሮዎችን ይመልከቱ',
     rosterTitle: 'የዶክተሮች ዝርዝር እና ፕሮፋይሎች',
     rosterDesc: 'ያሉ ዶክተሮችን ያስተዳድሩ። ፕሮፋይልን ለማስተካከል የአርትዕ ወይም ማስወገድ አዶ ይጫኑ።',
     registered: 'ዶክተሮች ተመዝግበዋል',
@@ -340,11 +342,17 @@ export default function AdminDoctorsPage() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <Link
+<Link
                   href={localize('/dashboard')}
                   className="rounded-full border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-ms-blue/30 hover:text-ms-blue"
                 >
                   {L.doctorPortal}
+                </Link>
+                <Link
+                  href={localize('/dashboard/admin/appointments')}
+                  className="rounded-full border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-ms-blue/30 hover:text-ms-blue"
+                >
+                  {L.viewAppointments}
                 </Link>
                 <Link
                   href={localize('/doctors')}

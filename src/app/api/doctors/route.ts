@@ -45,6 +45,8 @@ export async function GET(request: NextRequest) {
         name: getDoctorDisplayName(doctor, locale),
         title: getLocalizedField(doctor.specialty, 'name', locale),
         bio: getLocalizedField(doctor, 'bio', locale),
+        experienceYears: doctor.experienceYears,
+        photoUrl: doctor.photoUrl,
         isActive: doctor.isActive,
         specialtyId: doctor.specialtyId,
         specialty: {

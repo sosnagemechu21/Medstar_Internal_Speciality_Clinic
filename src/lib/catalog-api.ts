@@ -15,6 +15,8 @@ export type DoctorListItem = {
   name: string;
   title: string;
   bio: string;
+  experienceYears: number;
+  photoUrl: string | null;
   isActive: boolean;
   specialtyId: string;
   specialty: {

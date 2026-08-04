@@ -19,6 +19,7 @@ const t = {
     doctorPortal: "Doctor Portal",
     myPortal: "My Portal",
     adminPanel: "Admin Panel",
+    adminAppointments: "Appointments",
     bookAppointment: "Book Appointment",
     signOut: "Sign Out",
     login: "Login",
@@ -32,6 +33,7 @@ const t = {
     doctorPortal: "የዶክተር ፖርታል",
     myPortal: "የእኔ ፖርታል",
     adminPanel: "አስተዳዳሪ",
+    adminAppointments: "ቀጠሮዎች",
     bookAppointment: "ቀጠሮ ይያዙ",
     signOut: "ውጣ",
     login: "ግባ",
@@ -81,7 +83,7 @@ export function Navbar() {
             >
               {L.home}
             </Link>
-          <Link
+            <Link
               href={localize("/departments")}
               className="hover:text-white transition-colors"
             >
@@ -106,12 +108,20 @@ export function Navbar() {
               {portalLabel}
             </ProtectedLink>
             {isAdmin && (
-              <ProtectedLink
-                href={localize("/dashboard/admin/doctors")}
-                className="hover:text-white transition-colors"
-              >
-                {L.adminPanel}
-              </ProtectedLink>
+              <>
+                <ProtectedLink
+                  href={localize("/dashboard/admin/doctors")}
+                  className="hover:text-white transition-colors"
+                >
+                  {L.adminPanel}
+                </ProtectedLink>
+                <ProtectedLink
+                  href={localize("/dashboard/admin/appointments")}
+                  className="hover:text-white transition-colors"
+                >
+                  {L.adminAppointments}
+                </ProtectedLink>
+              </>
             )}
           </nav>
 
@@ -262,13 +272,22 @@ export function Navbar() {
                 {portalLabel}
               </ProtectedLink>
               {isAdmin && (
-                <ProtectedLink
-                  href={localize("/dashboard/admin/doctors")}
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-white"
-                >
-                  {L.adminPanel}
-                </ProtectedLink>
+                <>
+                  <ProtectedLink
+                    href={localize("/dashboard/admin/doctors")}
+                    onClick={() => setMenuOpen(false)}
+                    className="hover:text-white"
+                  >
+                    {L.adminPanel}
+                  </ProtectedLink>
+                  <ProtectedLink
+                    href={localize("/dashboard/admin/appointments")}
+                    onClick={() => setMenuOpen(false)}
+                    className="hover:text-white"
+                  >
+                    {L.adminAppointments}
+                  </ProtectedLink>
+                </>
               )}
               <hr className="border-white/10 my-1" />
               {!loading && isAuthenticated ? (

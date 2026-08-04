@@ -1,25 +1,18 @@
-# MedStar Clinic - Bug Fixes & Deployment Readiness
+# MedStar Clinic — Deploy Readiness Fixes
 
-## Completed Fixes
+## Task List
 
-### Critical Bugs Fixed
-- [x] **Dashboard AppointmentList bug** (`src/app/[locale]/dashboard/page.tsx`): Fixed `items[0]?.doctor` -> `a.doctor` in the map loop (was always showing first appointment's doctor)
-- [x] **next.config.ts invalid keys**: Removed invalid `eslint` and `turbopack` keys, replaced `as unknown as NextConfig` with proper typing
-- [x] **Security: Stack trace exposure** (`src/app/api/auth/register/route.ts`): Removed `details` and `stack` from error response
-- [x] **proxy.ts type safety**: Changed `request: any` to `request: NextRequest` with proper import
+### Fix Seed Doctor Login
+- [ ] Generate real bcrypt hashes for doctor accounts in `prisma/seed.ts` so `doctor1@medstar.com` and `doctor2@medstar.com` can log in
 
-### Deployment Readiness
-- [x] **Created `.env.example`** with all required environment variables documented for Vercel deployment
-- [x] **Build verified**: `npm run build` succeeds with all routes properly compiled
+### Enforce Real Type Safety
+- [ ] Remove `typescript.ignoreBuildErrors: true` from `next.config.ts` so Vercel build validates types
 
-## Vercel Deployment Steps
-1. Push code to GitHub
-2. Connect repo to Vercel
-3. Set environment variables in Vercel dashboard:
-   - `DATABASE_URL` - PostgreSQL connection string (pooled, port 6543)
-   - `DIRECT_URL` - Direct PostgreSQL connection (port 5432)
-   - `JWT_SECRET` - Secret key for JWT tokens
-   - `NEXT_PUBLIC_SITE_URL` - Your Vercel domain URL
-   - `CHAPA_SECRET_KEY` - (optional) Chapa payment gateway key
-4. Deploy with default settings (Framework: Next.js)
-5. Build command: `npm run build` (auto-detected)
+### Fix Invalid Dependency Version
+- [ ] Fix `eslint-config-next` version typo `^16.2.10i` → `^16.2.12` in `package.json`
+
+### Clean Up Workspace Root Warning
+- [ ] Remove stray `C:/Users/Beza/package-lock.json` duplicate lockfile
+
+### Verify
+- [ ] Rebuild with type validation enabled and confirm clean build
