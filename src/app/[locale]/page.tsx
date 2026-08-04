@@ -318,15 +318,8 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
 
       <Container className="relative z-10">
         <div className="mx-auto max-w-5xl">
-          {/* Interactive Header & Tabs */}
+          {/* Header & Tabs */}
           <div className="mb-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-ms-red animate-ping" />
-              <span className="text-xs font-bold uppercase tracking-widest text-white/50">
-                Interactive Showcase
-              </span>
-            </div>
-
             {/* Tabs */}
             <div className="flex justify-center gap-2 sm:gap-3 bg-white/5 p-1.5 rounded-full border border-white/10 backdrop-blur-md">
               {slides.map((s, idx) => {
@@ -423,12 +416,7 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
                   </p>
                 </div>
 
-                <div className="mt-8 pt-5 border-t border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs text-white/40 font-medium">
-                    <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
-                    <span>{isPaused ? "Paused (Reading mode)" : "Auto-scrolling every 5s"}</span>
-                  </div>
-
+                <div className="mt-8 pt-5 border-t border-white/10 flex items-center justify-end">
                   {/* Navigation Arrow Controls */}
                   <div className="flex items-center gap-2.5">
                     <button
