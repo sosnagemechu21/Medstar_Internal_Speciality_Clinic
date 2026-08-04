@@ -28,8 +28,11 @@ export async function POST(request: Request) {
         ? phoneNumber.trim()
         : `+999${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
+    const defaultDocPassword = `${firstNameEn.toLowerCase().replace(/[^a-z0-9]/g, '')}${lastNameEn.toLowerCase().replace(/[^a-z0-9]/g, '')}@1234`;
+    const effectivePassword = (typeof password === 'string' && password.trim()) ? password.trim() : defaultDocPassword;
+
     // Validate required fields
-    if (!email || !password || !normalizedSpecialtyName || !firstNameEn || !lastNameEn) {
+    if (!email || !normalizedSpecialtyName || !firstNameEn || !lastNameEn) {
       return NextResponse.json({ success: false, error: 'Missing required doctor fields' }, { status: 400 });
     }
 
@@ -47,7 +50,7 @@ export async function POST(request: Request) {
     }
 
     // Hash password securely
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(effectivePassword, 10);
 
     // Run transaction to create User and Doctor profile together
     const result = await prisma.$transaction(async (tx) => {

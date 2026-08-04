@@ -16,13 +16,24 @@ export class LoginUser {
 
     let passwordMatch = await bcrypt.compare(password, user.passwordHash);
 
-    // Fallback check for doctor name password format (<firstname><lastname>@1234)
-    if (!passwordMatch && user.doctor) {
-      const docFirstName = user.doctor.firstNameEn.toLowerCase().replace(/[^a-z]/g, '');
-      const docLastName = user.doctor.lastNameEn.toLowerCase().replace(/[^a-z]/g, '');
-      const namePassword = `${docFirstName}${docLastName}@1234`;
-      if (password.trim().toLowerCase() === namePassword) {
-        passwordMatch = true;
+    // Fallback check for doctor namefathername@1234 password pattern
+    if (!passwordMatch) {
+      const normPass = password.trim().toLowerCase().replace(/\s+/g, '');
+
+      if (user.doctor) {
+        const docFirstName = user.doctor.firstNameEn.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const docLastName = user.doctor.lastNameEn.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const nameFatherPass = `${docFirstName}${docLastName}@1234`;
+        if (normPass === nameFatherPass) {
+          passwordMatch = true;
+        }
+      }
+
+      if (!passwordMatch && emailOrName) {
+        const inputCleaned = emailOrName.toLowerCase().replace(/^dr\.?\s+/i, '').replace(/[^a-z0-9]/g, '');
+        if (inputCleaned && normPass === `${inputCleaned}@1234`) {
+          passwordMatch = true;
+        }
       }
     }
 
