@@ -292,9 +292,14 @@ function DoctorIllustration() {
 function IntroMissionVisionSection({ locale }: { locale: Locale }) {
   const L = t[locale as keyof typeof t].introMissionVision;
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [direction, setDirection] = useState<"next" | "prev">("next");
 
   const slides = [
     {
+      id: "intro",
+      icon: "🏥",
+      number: "01",
       title: L.introductionTitle,
       accent: "#CC2936",
       text: locale === "am"
@@ -302,27 +307,49 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
         : "As the name indicates it's an Internal Medicine Specialized clinic located in front of Water & irrigation Ministry, equipped with advanced international-standard medical devices.",
     },
     {
+      id: "mission",
+      icon: "🎯",
+      number: "02",
       title: L.missionTitle,
-      accent: "#CC2936",
+      accent: "#E11D48",
       text: locale === "am"
         ? "ከፍተኛ ጥራት ያለው በታካሚ ላይ ያተኮረ፣ በቀላሉ ተደራሽ፣ ወጪ ቆጣቢ እና የምናገለግለውን ማህበረሰብ ፍላጎት የሚያሟላ የጤና እንክብካቤ አቅራቢ መሆን።"
         : "To be a provider of high quality patient-focused health care that is readily accessible, cost effective and meets the needs of the community we serve.",
     },
     {
+      id: "vision",
+      icon: "👁️",
+      number: "03",
       title: L.visionTitle,
-      accent: "#CC2936",
+      accent: "#2563EB",
       text: locale === "am"
         ? "ለልህቀት ባለው ቁርጠኝነት፣ የታካሚዎችን የሚጠበቀውን በማለፍ፣ ጥራት ያለው የህክምና አገልግሎት በማስፋፋት የህብረተሰባችን የጤና እንክብካቤ መሪ መሆን።"
         : "To be distinguished as our community's health care leader for its commitment to excellence, exceeding patient expectations through quality services.",
     },
   ];
 
+  const handleNext = useCallback(() => {
+    setDirection("next");
+    setActiveIndex((prev) => (prev + 1) % slides.length);
+  }, [slides.length]);
+
+  const handlePrev = useCallback(() => {
+    setDirection("prev");
+    setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  }, [slides.length]);
+
+  const handleSelect = (index: number) => {
+    setDirection(index > activeIndex ? "next" : "prev");
+    setActiveIndex(index);
+  };
+
   useEffect(() => {
+    if (isPaused) return;
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % slides.length);
+      handleNext();
     }, 5000);
     return () => clearInterval(interval);
-  }, [slides.length]);
+  }, [isPaused, handleNext]);
 
   const current = slides[activeIndex];
 
@@ -334,59 +361,165 @@ function IntroMissionVisionSection({ locale }: { locale: Locale }) {
 
       <Container className="relative z-10">
         <div className="mx-auto max-w-5xl">
-          {/* Tabs */}
-          <div className="mb-10 flex justify-center gap-2 sm:gap-3">
-            {slides.map((s, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveIndex(idx)}
-                className={`relative overflow-hidden px-5 py-2.5 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
-                  idx === activeIndex
-                    ? "bg-ms-red text-white shadow-lg shadow-ms-red/30 scale-105"
-                    : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80"
-                }`}
-              >
-                {s.title}
-                {idx === activeIndex && (
-                  <span
-                    key={`progress-${activeIndex}`}
-                    className="absolute bottom-0 left-0 h-0.5 bg-white/80 animate-[progress_5s_linear]"
-                  />
-                )}
-              </button>
-            ))}
+          {/* Interactive Header & Tabs */}
+          <div className="mb-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-ms-red animate-ping" />
+              <span className="text-xs font-bold uppercase tracking-widest text-white/50">
+                Interactive Showcase
+              </span>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex justify-center gap-2 sm:gap-3 bg-white/5 p-1.5 rounded-full border border-white/10 backdrop-blur-md">
+              {slides.map((s, idx) => {
+                const active = idx === activeIndex;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => handleSelect(idx)}
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
+                      active
+                        ? "bg-ms-red text-white shadow-lg shadow-ms-red/30 scale-105"
+                        : "text-white/60 hover:text-white hover:bg-white/10"
+                    }`}
+                  >
+                    <span>{s.icon}</span>
+                    <span>{s.title}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="text-xs font-mono text-white/40 font-bold">
+              {current.number} / 03
+            </div>
           </div>
 
-          {/* Card */}
-          <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-md shadow-2xl transition-all duration-500">
-            <div className="grid md:grid-cols-5 gap-0">
+          {/* Interactive Motion Card */}
+          <div
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            className="group relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl shadow-2xl transition-all duration-500 hover:border-white/25"
+          >
+            {/* Top 5-second progress line */}
+            <div className="absolute top-0 inset-x-0 h-1 bg-white/10 z-30">
+              <div
+                key={`${activeIndex}-${isPaused}`}
+                className="h-full bg-gradient-to-r from-ms-red to-rose-400 transition-all"
+                style={{
+                  animation: isPaused ? "none" : "progress5s 5s linear infinite",
+                }}
+              />
+            </div>
+
+            <div className="grid md:grid-cols-5 gap-0 min-h-[340px]">
               {/* Illustration side */}
-              <div className="relative md:col-span-2 flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent p-10">
-                <div className="h-56 w-56 sm:h-64 sm:w-64 transition-transform duration-500 hover:scale-105">
+              <div className="relative md:col-span-2 flex flex-col items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent p-10 overflow-hidden">
+                <div className="relative z-10 h-56 w-56 sm:h-64 sm:w-64 transition-transform duration-700 ease-out group-hover:scale-105">
                   <DoctorIllustration />
                 </div>
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(204,41,54,0.18),transparent_70%)]" />
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(204,41,54,0.22),transparent_70%)]" />
+                <span className="absolute bottom-4 left-6 text-[10px] font-mono tracking-widest text-white/30 uppercase">
+                  Medstar Specialty Clinic
+                </span>
               </div>
 
-              {/* Text side */}
-              <div key={activeIndex} className="md:col-span-3 p-8 md:p-12 animate-[fadeIn_0.5s_ease-in-out]">
-                <div className="mb-4 flex items-center gap-3">
-                  <span className="h-1.5 w-12 rounded-full" style={{ background: current.accent }} />
-                  <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">{current.title}</h2>
+              {/* Text side with direction motion */}
+              <div
+                key={activeIndex}
+                className={`relative md:col-span-3 p-8 md:p-12 flex flex-col justify-between transition-all duration-500 ${
+                  direction === "next"
+                    ? "animate-[slideInRight_0.45s_cubic-bezier(0.16,1,0.3,1)]"
+                    : "animate-[slideInLeft_0.45s_cubic-bezier(0.16,1,0.3,1)]"
+                }`}
+              >
+                <div>
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-xl shadow-inner border border-white/10">
+                        {current.icon}
+                      </span>
+                      <div>
+                        <span className="text-[10px] font-bold tracking-widest text-ms-red uppercase">
+                          Section {current.number}
+                        </span>
+                        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+                          {current.title}
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="mt-4 text-base md:text-lg text-white/80 leading-relaxed font-light">
+                    {current.text}
+                  </p>
                 </div>
-                <p className="text-sm md:text-base text-white/75 leading-relaxed font-light">
-                  {current.text}
-                </p>
-                <div className="mt-6 flex items-center gap-2 text-[11px] text-white/40 uppercase tracking-widest">
-                  <span>MedStar Specialty Clinic</span>
-                  <span className="h-px w-8 bg-white/20" />
-                  <span>{current.title}</span>
+
+                <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs text-white/40">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" />
+                    <span>{isPaused ? "Paused (Reading mode)" : "Auto-scrolling every 5s"}</span>
+                  </div>
+
+                  {/* Navigation Arrow Controls */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      aria-label="Previous Slide"
+                      onClick={handlePrev}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white/20 hover:text-white transition-all active:scale-95 shadow-sm"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Next Slide"
+                      onClick={handleNext}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-ms-red text-white hover:bg-ms-red-dark transition-all active:scale-95 shadow-md"
+                    >
+                      →
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </Container>
+
+      {/* Global CSS Animation keyframes for smooth motion */}
+      <style jsx global>{`
+        @keyframes progress5s {
+          0% {
+            width: 0%;
+          }
+          100% {
+            width: 100%;
+          }
+        }
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(30px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+          }
+        }
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-30px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+          }
+        }
+      `}</style>
     </section>
   );
 }
