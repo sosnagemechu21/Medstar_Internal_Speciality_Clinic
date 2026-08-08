@@ -152,20 +152,23 @@ export default function DashboardPage() {
 
   const role = (user.role || 'patient').toLowerCase();
 
-  if (role === 'patient') {
-    return <PatientDashboardView displayName={user.fullName ?? user.displayName} localize={localize} locale={locale} />;
-  }
-
-  if (role === 'doctor' || role === 'admin') {
+  // Admins now land on the patient/customer view (they access admin pages only by direct URL).
+  // Only actual doctors get the doctor portal.
+  if (role === 'doctor') {
     return (
       <DoctorDashboardView
         doctorId={user.doctorId}
-        isAdmin={role === 'admin'}
+        isAdmin={false}
         displayName={user.fullName ?? user.displayName}
         localize={localize}
         locale={locale}
       />
     );
+  }
+
+  // Patient view for everyone else (patients, admins).
+  if (role === 'patient' || role === 'admin') {
+    return <PatientDashboardView displayName={user.fullName ?? user.displayName} localize={localize} locale={locale} />;
   }
 
   return (

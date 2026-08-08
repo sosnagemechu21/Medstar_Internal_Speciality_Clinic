@@ -8,7 +8,6 @@ import { Container } from "@/components/ui/container";
 import { ProtectedLink } from "@/components/auth/protected-link";
 import { resolveLocale } from "@/lib/i18n-utils";
 import { getLocalizedPath, swapLocaleInPathname } from "@/lib/locale-routing";
-import { isStaffRole } from "@/lib/portal-routing";
 import { useAuth } from "@/providers/auth-provider";
 
 const t = {
@@ -54,9 +53,9 @@ export function Navbar() {
   );
   const L = t[locale];
   const nextLocale = locale === "en" ? "am" : "en";
-  const portalLabel =
-    !loading && isStaffRole(user?.role) ? L.doctorPortal : L.myPortal;
-  const isAdmin = !loading && user?.role?.toLowerCase() === "admin";
+// Only actual doctors see the "Doctor Portal" label; admins & patients see "My Portal".
+  const isDoctor = !loading && user?.role?.toLowerCase() === "doctor";
+  const portalLabel = isDoctor ? L.doctorPortal : L.myPortal;
 
   const localize = (href: string) => getLocalizedPath(locale, href);
 
@@ -107,28 +106,6 @@ export function Navbar() {
             >
               {portalLabel}
             </ProtectedLink>
-            <Link
-              href={localize("/doctor/login")}
-              className="text-amber-300 hover:text-white transition-colors font-medium text-xs border border-amber-300/30 rounded-full px-2.5 py-1 bg-amber-400/10"
-            >
-              Doctor Login 🩺
-            </Link>
-            {isAdmin && (
-              <>
-                <ProtectedLink
-                  href={localize("/dashboard/admin/doctors")}
-                  className="hover:text-white transition-colors"
-                >
-                  {L.adminPanel}
-                </ProtectedLink>
-                <ProtectedLink
-                  href={localize("/dashboard/admin/appointments")}
-                  className="hover:text-white transition-colors"
-                >
-                  {L.adminAppointments}
-                </ProtectedLink>
-              </>
-            )}
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -275,26 +252,8 @@ export function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="hover:text-white"
               >
-                {portalLabel}
+{portalLabel}
               </ProtectedLink>
-              {isAdmin && (
-                <>
-                  <ProtectedLink
-                    href={localize("/dashboard/admin/doctors")}
-                    onClick={() => setMenuOpen(false)}
-                    className="hover:text-white"
-                  >
-                    {L.adminPanel}
-                  </ProtectedLink>
-                  <ProtectedLink
-                    href={localize("/dashboard/admin/appointments")}
-                    onClick={() => setMenuOpen(false)}
-                    className="hover:text-white"
-                  >
-                    {L.adminAppointments}
-                  </ProtectedLink>
-                </>
-              )}
               <hr className="border-white/10 my-1" />
               {!loading && isAuthenticated ? (
                 <button

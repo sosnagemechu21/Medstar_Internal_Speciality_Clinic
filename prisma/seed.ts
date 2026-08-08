@@ -57,86 +57,39 @@ async function main() {
     },
   });
 
-  // 3. Create Admin account (login: admin@medstar.com / Admin@2026!)
-  const adminPasswordHash = await bcrypt.hash('Admin@2026!', 10);
+// 3. Create Admin account (login: admin@gmail.com / 12345678)
+  const adminPasswordHash = await bcrypt.hash('12345678', 10);
   await prisma.user.create({
     data: {
-      email: 'admin@medstar.com',
+      email: 'admin@gmail.com',
       phoneNumber: '+251911000000',
       passwordHash: adminPasswordHash,
       role: 'admin',
     },
   });
 
-  const dawitAmareHash = await bcrypt.hash('dawitamare@1234', 10);
-  const doctorUserAmare = await prisma.user.create({
+  // 4. Create Doctor account (login: doctor@gmail.com / 12345678)
+  const doctorPasswordHash = await bcrypt.hash('12345678', 10);
+  const doctorUser = await prisma.user.create({
     data: {
-      email: 'dawitamare@medstar.com',
+      email: 'doctor@gmail.com',
       phoneNumber: '+251911999999',
-      passwordHash: dawitAmareHash,
+      passwordHash: doctorPasswordHash,
       role: 'doctor',
     },
   });
 
   await prisma.doctor.create({
     data: {
-      userId: doctorUserAmare.id,
+      userId: doctorUser.id,
       specialtyId: cardiology.id,
-      firstNameEn: 'Dawit',
-      lastNameEn: 'Amare',
-      firstNameAm: 'ዳዊት',
-      lastNameAm: 'አማረ',
-      experienceYears: 12,
-      bioEn: 'Expert Cardiologist specializing in heart condition treatments.',
-      bioAm: 'በልብ ህክምና ልዩ ባለሙያ ከ12 ዓመት በላይ ልምድ ያላቸው።',
-    },
-  });
-
-  const dawitAbebeHash = await bcrypt.hash('dawitabebe@1234', 10);
-  const doctorUser1 = await prisma.user.create({
-    data: {
-      email: 'doctor1@medstar.com',
-      phoneNumber: '+251911111111',
-      passwordHash: dawitAbebeHash,
-      role: 'doctor',
-    },
-  });
-
-  await prisma.doctor.create({
-    data: {
-      userId: doctorUser1.id,
-      specialtyId: cardiology.id,
-      firstNameEn: 'Dawit',
-      lastNameEn: 'Abebe',
-      firstNameAm: 'ዳዊት',
-      lastNameAm: 'አበበ',
+      firstNameEn: 'Doctors',
+      lastNameEn: 'Demo',
+      firstNameAm: 'ዶክተሮች',
+      lastNameAm: 'ዲሞ',
       experienceYears: 10,
-      bioEn: 'Senior Cardiologist with 10+ years of clinical practice.',
-      bioAm: 'ከ10 ዓመት በላይ ክሊኒካዊ ልምድ ያላቸው ከፍተኛ የልብ ሐኪም።',
-    },
-  });
-
-  const helenTadesseHash = await bcrypt.hash('helentadesse@1234', 10);
-  const doctorUser2 = await prisma.user.create({
-    data: {
-      email: 'doctor2@medstar.com',
-      phoneNumber: '+251922222222',
-      passwordHash: helenTadesseHash,
-      role: 'doctor',
-    },
-  });
-
-  await prisma.doctor.create({
-    data: {
-      userId: doctorUser2.id,
-      specialtyId: pediatrics.id,
-      firstNameEn: 'Helen',
-      lastNameEn: 'Tadesse',
-      firstNameAm: 'ሄለን',
-      lastNameAm: 'ታደሰ',
-      experienceYears: 8,
-      bioEn: 'Compassionate pediatrician specializing in neonatal health.',
-      bioAm: 'በአራስ ሕፃናት ጤና ላይ ያተኮሩ አፍቃሪ የሕፃናት ሐኪም።',
+      bioEn: 'Specialist physician at Medstar Specialty Clinic.',
+      bioAm: 'በሜድስታር ስፔሻሊቲ ክሊኒክ ልዩ የሕክምና ባለሙያ።',
     },
   });
 
