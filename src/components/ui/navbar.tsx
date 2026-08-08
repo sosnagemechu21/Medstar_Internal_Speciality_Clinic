@@ -41,8 +41,7 @@ const t = {
   }
 } as const;
 
-// 1. ADDED: The prop definition for hideDoctorLogin
-export function Navbar({ hideDoctorLogin = false }: { hideDoctorLogin?: boolean }) {
+export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const params = useParams<{ locale?: string }>();
@@ -54,6 +53,7 @@ export function Navbar({ hideDoctorLogin = false }: { hideDoctorLogin?: boolean 
   );
   const L = t[locale];
   const nextLocale = locale === "en" ? "am" : "en";
+  
   // Only actual doctors see the "Doctor Portal" label; admins & patients see "My Portal".
   const isDoctor = !loading && user?.role?.toLowerCase() === "doctor";
   const portalLabel = isDoctor ? L.doctorPortal : L.myPortal;
@@ -169,15 +169,12 @@ export function Navbar({ hideDoctorLogin = false }: { hideDoctorLogin?: boolean 
                 )}
               </div>
             ) : (
-              /* 2. ADDED: Condition to hide the desktop login button */
-              !hideDoctorLogin && (
-                <Link
-                  href={localize("/login")}
-                  className="flex items-center gap-1.5 rounded-full border border-white/30 px-4 py-1.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-                >
-                  {L.login}
-                </Link>
-              )
+              <Link
+                href={localize("/login")}
+                className="flex items-center gap-1.5 rounded-full border border-white/30 px-4 py-1.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+              >
+                {L.login}
+              </Link>
             )}
 
             <ProtectedLink
@@ -270,16 +267,13 @@ export function Navbar({ hideDoctorLogin = false }: { hideDoctorLogin?: boolean 
                   {L.signOut} ({user?.displayName})
                 </button>
               ) : (
-                /* 3. ADDED: Condition to hide the mobile login button */
-                !hideDoctorLogin && (
-                  <Link
-                    href={localize("/login")}
-                    onClick={() => setMenuOpen(false)}
-                    className="hover:text-white"
-                  >
-                    {L.login}
-                  </Link>
-                )
+                <Link
+                  href={localize("/login")}
+                  onClick={() => setMenuOpen(false)}
+                  className="hover:text-white"
+                >
+                  {L.login}
+                </Link>
               )}
               <button
                 type="button"
