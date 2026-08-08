@@ -41,7 +41,8 @@ const t = {
   }
 } as const;
 
-export function Navbar() {
+// 1. ADDED: The prop definition for hideDoctorLogin
+export function Navbar({ hideDoctorLogin = false }: { hideDoctorLogin?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const params = useParams<{ locale?: string }>();
@@ -53,7 +54,7 @@ export function Navbar() {
   );
   const L = t[locale];
   const nextLocale = locale === "en" ? "am" : "en";
-// Only actual doctors see the "Doctor Portal" label; admins & patients see "My Portal".
+  // Only actual doctors see the "Doctor Portal" label; admins & patients see "My Portal".
   const isDoctor = !loading && user?.role?.toLowerCase() === "doctor";
   const portalLabel = isDoctor ? L.doctorPortal : L.myPortal;
 
@@ -168,12 +169,15 @@ export function Navbar() {
                 )}
               </div>
             ) : (
-              <Link
-                href={localize("/login")}
-                className="flex items-center gap-1.5 rounded-full border border-white/30 px-4 py-1.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-              >
-                {L.login}
-              </Link>
+              /* 2. ADDED: Condition to hide the desktop login button */
+              !hideDoctorLogin && (
+                <Link
+                  href={localize("/login")}
+                  className="flex items-center gap-1.5 rounded-full border border-white/30 px-4 py-1.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+                >
+                  {L.login}
+                </Link>
+              )
             )}
 
             <ProtectedLink
@@ -252,7 +256,7 @@ export function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="hover:text-white"
               >
-{portalLabel}
+                {portalLabel}
               </ProtectedLink>
               <hr className="border-white/10 my-1" />
               {!loading && isAuthenticated ? (
@@ -266,13 +270,16 @@ export function Navbar() {
                   {L.signOut} ({user?.displayName})
                 </button>
               ) : (
-                <Link
-                  href={localize("/login")}
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-white"
-                >
-                  {L.login}
-                </Link>
+                /* 3. ADDED: Condition to hide the mobile login button */
+                !hideDoctorLogin && (
+                  <Link
+                    href={localize("/login")}
+                    onClick={() => setMenuOpen(false)}
+                    className="hover:text-white"
+                  >
+                    {L.login}
+                  </Link>
+                )
               )}
               <button
                 type="button"
